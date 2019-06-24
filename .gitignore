@@ -1,0 +1,9 @@
+/.idea
+/cmake-build-debug
+/build
+changescommit
+*.swp
+/src/*.swp
+/.vscode
+*/.vscode
+
