@@ -19,6 +19,7 @@ public:
     QString executablePath;
     QString iconPath;
     QString name = "";
+    QString configFolder = "";
 
 };
 

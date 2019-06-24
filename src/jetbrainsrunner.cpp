@@ -37,44 +37,13 @@ JetbrainsRunner::~JetbrainsRunner() {
 }
 
 void JetbrainsRunner::init() {
-    // Apps can be installed using snap, their toolbox app and by downloading from the website
 
-    QList<JetbrainsApplication> installed;
-    QString home = QDir::homePath();
+    // Apps can be installed using snap, their toolbox app and by downloading from the website
+    QList<JetbrainsApplication> installed = getInstalledList();
     auto dirs = SettingsDirectory::getSettingsDirectories();
 
-    QProcess toolBoxProcess;
-    toolBoxProcess.start("sh", QStringList() << "-c"
-                                             << "ls ~/.local/share/applications | grep jetbrains");
-    toolBoxProcess.waitForFinished();
-    for (const auto &item :toolBoxProcess.readAllStandardOutput().split('\n')) {
-        if (!item.isEmpty()) {
-            if (item == "JetBrains Toolbox") continue;
-            installed.append(JetbrainsApplication(home + "/.local/share/applications/" + item));
-        }
-    }
-    QProcess snapProcess;
-    snapProcess.start("sh",
-                      QStringList() << "-c" << "grep -rl '/var/lib/snapd/desktop/applications/' -e 'jetbrains'");
-    snapProcess.waitForFinished(500);
-    for (const auto &item :snapProcess.readAllStandardOutput().split('\n')) {
-        if (!item.isEmpty()) {
-            installed.append(JetbrainsApplication(item));
-        }
-    }
-    QProcess globallyInstalledProcess;
-    globallyInstalledProcess.start("sh", QStringList() << "-c" << "ls /usr/share/applications | grep jetbrains");
-    globallyInstalledProcess.waitForFinished();
-    for (const auto &item :globallyInstalledProcess.readAllStandardOutput().split('\n')) {
-        if (!item.isEmpty()) {
-            installed.append(JetbrainsApplication("/usr/share/applications/" + item));
-        }
-    }
-    /*for (auto i:installed) {
-        qInfo() << i.name;
-    }*/
     for (auto i:installed) {
-        SettingsDirectory::findCorrespoindingDirectory(dirs, i);
+        SettingsDirectory::findCorrespondingDirectory(dirs, i);
     }
 }
 
@@ -93,6 +62,42 @@ void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::Qu
     Q_UNUSED(match)
 
     // TODO
+}
+
+QList<JetbrainsApplication> JetbrainsRunner::getInstalledList() {
+    QList<JetbrainsApplication> installed;
+    QString home = QDir::homePath();
+
+    // Manually, locally or with Toolbox installed
+    QProcess toolBoxProcess;
+    toolBoxProcess.start("sh", QStringList() << "-c" << "ls ~/.local/share/applications | grep jetbrains");
+    toolBoxProcess.waitForFinished();
+    for (const auto &item :toolBoxProcess.readAllStandardOutput().split('\n')) {
+        if (!item.isEmpty()) {
+            if (item == "JetBrains Toolbox") continue;
+            installed.append(JetbrainsApplication(home + "/.local/share/applications/" + item));
+        }
+    }
+    // Using snap installed
+    QProcess snapProcess;
+    snapProcess.start("sh",
+                      QStringList() << "-c" << "grep -rl '/var/lib/snapd/desktop/applications/' -e 'jetbrains'");
+    snapProcess.waitForFinished(500);
+    for (const auto &item :snapProcess.readAllStandardOutput().split('\n')) {
+        if (!item.isEmpty()) {
+            installed.append(JetbrainsApplication(item));
+        }
+    }
+    //Globally, manually installed
+    QProcess globallyInstalledProcess;
+    globallyInstalledProcess.start("sh", QStringList() << "-c" << "ls /usr/share/applications | grep jetbrains");
+    globallyInstalledProcess.waitForFinished();
+    for (const auto &item :globallyInstalledProcess.readAllStandardOutput().split('\n')) {
+        if (!item.isEmpty()) {
+            installed.append(JetbrainsApplication("/usr/share/applications/" + item));
+        }
+    }
+    return installed;
 }
 
 K_EXPORT_PLASMA_RUNNER(jetbrainsrunner, JetbrainsRunner)

@@ -19,6 +19,7 @@
 #define JETBRAINSRUNNER_H
 
 #include <KRunner/AbstractRunner>
+#include "JetbrainsApplication.h"
 
 class JetbrainsRunner : public Plasma::AbstractRunner {
 Q_OBJECT
@@ -27,6 +28,8 @@ public:
     JetbrainsRunner(QObject *parent, const QVariantList &args);
 
     ~JetbrainsRunner() override;
+
+    static QList<JetbrainsApplication> getInstalledList();
 
 protected Q_SLOTS:
 
