@@ -1,6 +1,6 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"plasma_runner_org.kde.jetbrainsrunner\")
 
-set(jetbrainsrunner_SRCS jetbrainsrunner.cpp)
+set(jetbrainsrunner_SRCS jetbrainsrunner.cpp JetbrainsApplication.cpp JetbrainsApplication.h SettingsDirectory.cpp SettingsDirectory.h)
 
 add_library(krunner_jetbrainsrunner MODULE ${jetbrainsrunner_SRCS})
 target_link_libraries(krunner_jetbrainsrunner KF5::Runner KF5::I18n)

@@ -22,24 +22,35 @@
 #include <QtGui/QtGui>
 #include <iostream>
 
+//TODO Filter unmatched
+//TODO Remove dublicate folder names
+
 JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
         : Plasma::AbstractRunner(parent, args) {
     setObjectName(QStringLiteral("JetbrainsRunner"));
 }
+
+#include "JetbrainsApplication.h"
+#include "SettingsDirectory.h"
 
 JetbrainsRunner::~JetbrainsRunner() {
 }
 
 void JetbrainsRunner::init() {
     // Apps can be installed using snap, their toolbox app and by downloading from the website
-    QStringList installed;
+
+    QList<JetbrainsApplication> installed;
+    QString home = QDir::homePath();
+    auto dirs = SettingsDirectory::getSettingsDirectories();
+
     QProcess toolBoxProcess;
     toolBoxProcess.start("sh", QStringList() << "-c"
                                              << "ls ~/.local/share/applications | grep jetbrains");
     toolBoxProcess.waitForFinished();
     for (const auto &item :toolBoxProcess.readAllStandardOutput().split('\n')) {
         if (!item.isEmpty()) {
-            installed.append("$HOME/.local/share/applications/" + item);
+            if (item == "JetBrains Toolbox") continue;
+            installed.append(JetbrainsApplication(home + "/.local/share/applications/" + item));
         }
     }
     QProcess snapProcess;
@@ -48,8 +59,7 @@ void JetbrainsRunner::init() {
     snapProcess.waitForFinished(500);
     for (const auto &item :snapProcess.readAllStandardOutput().split('\n')) {
         if (!item.isEmpty()) {
-            installed.append(item);
-            qInfo() << item;
+            installed.append(JetbrainsApplication(item));
         }
     }
     QProcess globallyInstalledProcess;
@@ -57,11 +67,15 @@ void JetbrainsRunner::init() {
     globallyInstalledProcess.waitForFinished();
     for (const auto &item :globallyInstalledProcess.readAllStandardOutput().split('\n')) {
         if (!item.isEmpty()) {
-            installed.append("/usr/share/applications/" + item);
+            installed.append(JetbrainsApplication("/usr/share/applications/" + item));
         }
     }
-    std::cout << installed.join('\n').toStdString();
-//ls /usr/share/applications | grep jetbrains
+    /*for (auto i:installed) {
+        qInfo() << i.name;
+    }*/
+    for (auto i:installed) {
+        SettingsDirectory::findCorrespoindingDirectory(dirs, i);
+    }
 }
 
 void JetbrainsRunner::match(Plasma::RunnerContext &context) {
