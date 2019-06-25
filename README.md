@@ -35,4 +35,4 @@ You can also launch KRunner via Alt-F2 and you will find your runner.
 
 ### Screenshots:
 #### Example of launching a Phpstorm project
-![Launch Phpstorm Project](https://raw.githubusercontent.com/alex1701c/NordVPNKrunner/master/JetBrainsRunner/example.png)
+![Launch Phpstorm Project](https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/screenshots/example.png)
