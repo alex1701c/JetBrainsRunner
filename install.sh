@@ -1,11 +1,8 @@
 #!/bin/bash
 
-# TODO Enable if the project is on Github
-if [[ $(basename "$PWD") != "JetbrainsRunner" ]];then
-    #git clone https://github.com/%{USERNAME}/JetbrainsRunner
-    #cd JetbrainsRunner/
-    echo "Please go to the project folder"
-    exit
+if [[ $(basename "$PWD") != "JetBrainsRunner" ]];then
+    git clone https://github.com/alex1701c/JetBrainsRunner
+    cd JetbrainsRunner/
 fi
 
 mkdir -p build
