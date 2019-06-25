@@ -12,7 +12,11 @@
 class JetbrainsApplication {
 public:
 
-    JetbrainsApplication(const QString &desktopFilePath);
+    explicit JetbrainsApplication(const QString &desktopFilePath);
+
+    static void parseXMLFiles(QList<JetbrainsApplication> &apps);
+
+    void parseXMLFile();
 
     QList<QString> recentlyUsed;
     QString desktopFilePath;
@@ -22,6 +26,8 @@ public:
     QString configFolder = "";
 
 };
+
+
 
 
 #endif //JETBRAINSAPPLICATION_H

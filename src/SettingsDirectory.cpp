@@ -70,5 +70,12 @@ QMap<QString, QString> SettingsDirectory::getAliases() {
     };
 }
 
+void SettingsDirectory::findCorrespondingDirectories(const QList<SettingsDirectory> &dirs,
+                                                     QList<JetbrainsApplication> &apps) {
+    for (auto &app:apps) {
+        findCorrespondingDirectory(dirs, app);
+    }
+
+}
 
 #pragma clang diagnostic pop

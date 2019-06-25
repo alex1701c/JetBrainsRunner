@@ -42,46 +42,13 @@ void JetbrainsRunner::init() {
     // Apps can be installed using snap, their toolbox app and by downloading from the website
     QList<JetbrainsApplication> installed = getInstalledList();
     QString home = QDir::homePath();
-    auto dirs = SettingsDirectory::getSettingsDirectories();
+    QList<SettingsDirectory> dirs = SettingsDirectory::getSettingsDirectories();
 
-    for (auto &i:installed) {
-        SettingsDirectory::findCorrespondingDirectory(dirs, i);
-    }
+    SettingsDirectory::findCorrespondingDirectories(dirs, installed);
+    JetbrainsApplication::parseXMLFiles(installed);
 
-    for (auto &i:installed) {
-        QString content = "";
-        QFile f(i.configFolder + "recentProjectDirectories.xml");
-        if (!f.exists()) {
-            QFile f2(i.configFolder + "recentProjects.xml");
-            if (!f2.open(QIODevice::ReadOnly)) {
-                f2.close();
-                qInfo() << "Nothing found for " << i.name;
-                continue;
-            }
-            content = f2.readAll();
-            f2.close();
-
-        } else {
-            f.open(QIODevice::ReadOnly);
-            content = f.readAll();
-            f.close();
-        }
-        QXmlStreamReader reader(content);
-        while (reader.readNextStartElement()) {
-            if (reader.name() == "option" && reader.attributes().value("name") == "recentPaths") {
-                while (reader.readNextStartElement()) {
-                    if (reader.name() == "option") {
-                        i.recentlyUsed.append(
-                                reader.attributes().value("value").toString().replace("$USER_HOME$", home)
-                        );
-                        reader.readElementText();
-                    }
-                }
-            }
-        }
-    }
-    for (const auto& i:installed) {
-        for (const auto& d:i.recentlyUsed) {
+    for (const auto &i:installed) {
+        for (const auto &d:i.recentlyUsed) {
             qInfo() << i.name << d;
         }
     }
