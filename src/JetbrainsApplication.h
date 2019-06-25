@@ -14,6 +14,8 @@ public:
 
     explicit JetbrainsApplication(const QString &desktopFilePath);
 
+    static QList<JetbrainsApplication> getInstalledList();
+
     static void parseXMLFiles(QList<JetbrainsApplication> &apps);
 
     void parseXMLFile();

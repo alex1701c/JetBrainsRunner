@@ -1,16 +1,13 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-pass-by-value"
-//
-// Created by alex on 24.06.19.
-//
+#include <utility>
 
+#include <utility>
 #include <QtCore>
 #include "SettingsDirectory.h"
 #include "JetbrainsApplication.h"
 
 
-SettingsDirectory::SettingsDirectory(const QString &directory, const QString &name, const QString &version) : directory(
-        directory), name(name), version(version) {}
+SettingsDirectory::SettingsDirectory(QString directory, QString name, QString version) : directory(std::move(
+        directory)), name(std::move(name)), version(std::move(version)) {}
 
 QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
     QString home = QDir::homePath();
@@ -66,8 +63,7 @@ QMap<QString, QString> SettingsDirectory::getAliases() {
             {"IntelliJ IDEA Community",   "IdeaIC"},
             {"IntelliJ IDEA Ultimate",    "IntelliJIdea"},
             {"PyCharm Professional",      "PyCharm"},
-            {"PyCharm Community Edition", "PyCharmCE"},
-            {"PyCharm Community Edition", "PyCharmEdu"},
+            {"PyCharm Community Edition", "PyCharmCE"}
     };
 }
 
@@ -78,5 +74,3 @@ void SettingsDirectory::findCorrespondingDirectories(const QList<SettingsDirecto
     }
 
 }
-
-#pragma clang diagnostic pop

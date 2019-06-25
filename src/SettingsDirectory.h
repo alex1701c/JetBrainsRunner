@@ -13,7 +13,7 @@ public:
 
     static QMap<QString, QString> getAliases();
 
-    SettingsDirectory(const QString &directory, const QString &name, const QString &version);
+    SettingsDirectory(QString directory, QString name, QString version);
 
     static QList<SettingsDirectory> getSettingsDirectories();
 

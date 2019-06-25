@@ -29,7 +29,7 @@ public:
 
     ~JetbrainsRunner() override;
 
-    static QList<JetbrainsApplication> getInstalledList();
+    QList<JetbrainsApplication> installed;
 
 protected Q_SLOTS:
 
@@ -39,6 +39,8 @@ public: // Plasma::AbstractRunner API
     void match(Plasma::RunnerContext &context) override;
 
     void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) override;
+
+    QList<Plasma::QueryMatch> addAppNameMatches(const JetbrainsApplication &app, const QString &term);
 };
 
 #endif
