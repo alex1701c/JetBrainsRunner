@@ -1,8 +1,6 @@
-
-! In Development🛠️
-
 Required Dependencies
 ----------------------
+
 Debian/Ubuntu:  
 sudo apt install cmake extra-cmake-modules build-essential libkf5runner-dev libkf5textwidgets-dev qtdeclarative5-dev gettext libnotify-bi
 
@@ -15,14 +13,17 @@ sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf
 The easiest way to install is:  
 `curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash`
 
--- Build instructions --
+Or you can do it manually:
 
-cd /path/to/JetBrainsRunner
-mkdir -p build
+```
+git clone https://github.com/alex1701c/JetBrainsRunner  
+cd JetBrainsRunner/
+mkdir build  
 cd build
 cmake -DQT_PLUGIN_INSTALL_DIR=`kf5-config --qt-plugins` ..
 make
 sudo make install
+```
 
 Restart krunner to load the runner (in a terminal type: kquitapp5 krunner;kstart5 krunner )
 
@@ -34,5 +35,8 @@ You can also launch KRunner via Alt-F2 and you will find your runner.
 
 
 ### Screenshots:
-#### Example of launching a Phpstorm project
-![Launch Phpstorm Project](https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/screenshots/example.png)
+#### Available CLion projects
+![Available CLion projects](https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/screenshots/multible_projects.png)
+
+#### Search for project by name
+![ Search for project by name](https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/screenshots/launch_by_name.png)
