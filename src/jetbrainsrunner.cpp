@@ -47,9 +47,12 @@ void JetbrainsRunner::init() {
     SettingsDirectory::findCorrespondingDirectories(dirs, installed);
     JetbrainsApplication::parseXMLFiles(installed);
 
+    installed = JetbrainsApplication::filterApps(installed);
+
     for (const auto &i:installed) {
+        qInfo() << "\n<------------ " << i.name << " ------------------->";
         for (const auto &d:i.recentlyUsed) {
-            qInfo() << i.name << d;
+            qInfo() << d;
         }
     }
 }

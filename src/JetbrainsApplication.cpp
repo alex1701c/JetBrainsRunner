@@ -21,7 +21,7 @@ void JetbrainsApplication::parseXMLFile() {
         QFile f2(this->configFolder + "recentProjects.xml");
         if (!f2.open(QIODevice::ReadOnly)) {
             f2.close();
-            qInfo() << "Nothing found for " << this->name;
+            //qInfo() << "No entry found for " << this->name;
             return;
         }
         content = f2.readAll();
@@ -53,3 +53,12 @@ void JetbrainsApplication::parseXMLFiles(QList<JetbrainsApplication> &apps) {
     }
 }
 
+QList<JetbrainsApplication> JetbrainsApplication::filterApps(QList<JetbrainsApplication> &apps) {
+    QList<JetbrainsApplication> final;
+    for (auto const&app:apps){
+        if(!app.recentlyUsed.empty()){
+            final.append(app);
+        }
+    }
+    return final;
+}

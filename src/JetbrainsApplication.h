@@ -18,6 +18,8 @@ public:
 
     void parseXMLFile();
 
+    static QList<JetbrainsApplication> filterApps(QList<JetbrainsApplication> &apps);
+
     QList<QString> recentlyUsed;
     QString desktopFilePath;
     QString executablePath;
@@ -26,8 +28,6 @@ public:
     QString configFolder = "";
 
 };
-
-
 
 
 #endif //JETBRAINSAPPLICATION_H
