@@ -67,6 +67,7 @@ QMap<QString, QString> SettingsDirectory::getAliases() {
             {"IntelliJ IDEA Ultimate",    "IntelliJIdea"},
             {"PyCharm Professional",      "PyCharm"},
             {"PyCharm Community Edition", "PyCharmCE"},
+            {"PyCharm Community Edition", "PyCharmEdu"},
     };
 }
 
