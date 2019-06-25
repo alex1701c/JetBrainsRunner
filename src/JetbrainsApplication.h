@@ -14,7 +14,7 @@ public:
 
     JetbrainsApplication(const QString &desktopFilePath);
 
-    QStringList recentlyUsed;
+    QList<QString> recentlyUsed;
     QString desktopFilePath;
     QString executablePath;
     QString iconPath;

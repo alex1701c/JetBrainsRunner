@@ -10,8 +10,7 @@
 
 
 SettingsDirectory::SettingsDirectory(const QString &directory, const QString &name, const QString &version) : directory(
-        directory), name(name), version(version) {
-}
+        directory), name(name), version(version) {}
 
 QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
     QString home = QDir::homePath();
@@ -41,11 +40,11 @@ void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory
     // Exact match or space in name
     for (const auto &dir :dirs) {
         if (dir.name == app.name) {
-            qInfo() << app.desktopFilePath.split('/').last() << " --> " << dir.directory;
+            app.configFolder = dir.directory + "/config/options/";
             return;
         }
         if (dir.name == QString(app.name).replace(" ", "")) {
-            qInfo() << app.desktopFilePath.split('/').last() << " --> " << dir.directory;
+            app.configFolder = dir.directory + "/config/options/";
             return;
         }
     }
@@ -55,7 +54,7 @@ void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory
     if (aliases.count(app.name.replace(" + JBR11", "")) == 0)return;
     for (const auto &dir :dirs) {
         if (dir.name == aliases.find(app.name).value()) {
-            qInfo() << app.desktopFilePath.split('/').last() << " ---alias--> " << dir.directory;
+            app.configFolder = dir.directory + "/config/options/";
             return;
         }
     }
