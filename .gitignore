@@ -1,3 +1,4 @@
+src/config/ui_jetbrainsrunner_config.h
 /.idea
 /cmake-build-debug
 /build

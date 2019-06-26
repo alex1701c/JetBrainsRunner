@@ -36,14 +36,13 @@ Q_OBJECT
 public:
     explicit JetbrainsRunnerConfig(QWidget *parent = nullptr, const QVariantList &args = QVariantList());
 
+    KConfigGroup config;
+
 public Q_SLOTS:
 
     void save() override;
 
-    void load() override;
-
     void defaults() override;
-
 
 private:
     JetbrainsRunnerConfigForm *m_ui;

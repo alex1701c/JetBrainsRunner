@@ -19,12 +19,8 @@
 
 // KF
 #include <KLocalizedString>
+#include <KSharedConfig>
 #include <QtGui/QtGui>
-#include <iostream>
-#include <QtXml/QDomDocument>
-
-//TODO Filter unmatched
-//TODO Remove dublicate folder names
 
 JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
         : Plasma::AbstractRunner(parent, args) {
@@ -45,6 +41,8 @@ void JetbrainsRunner::init() {
     JetbrainsApplication::parseXMLFiles(installed);
     installed = JetbrainsApplication::filterApps(installed);
 
+    config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
+
 #ifndef LOG_INSTALLED
     for (const auto &i:installed) {
         qInfo() << "\n<------------ " << i.name << " ------------------->";
@@ -60,15 +58,12 @@ void JetbrainsRunner::match(Plasma::RunnerContext &context) {
     const QString term = context.query().toLower();
     QList<Plasma::QueryMatch> matches;
 
-    for (auto const &app:installed) {
-        if (QString(app.name).replace(" ", "").toLower().startsWith(term)) {
-            matches.append(addAppNameMatches(app));
-        }
+    if (config.readEntry("LaunchByAppName", "true") == "true") {
+        matches.append(addAppNameMatches(term));
     }
-
-    matches.append(addProjectNameMatches(term));
-
-
+    if (config.readEntry("LaunchByProjectName", "true") == "true") {
+        matches.append(addProjectNameMatches(term));
+    }
     context.addMatches(matches);
 }
 
@@ -78,15 +73,20 @@ void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::Qu
     QProcess::startDetached(match.data().toString());
 }
 
-QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const JetbrainsApplication &app) {
+QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
-    for (const auto &dir:app.recentlyUsed) {
-        Plasma::QueryMatch match(this);
-        match.setText(app.name + " Launch " + dir.split('/').last());
-        match.setIconName(app.iconPath);
-        match.setData(QString(app.executablePath).replace("%f", dir));
-        matches.append(match);
+    for (auto const &app:installed) {
+        if (QString(app.name).replace(" ", "").toLower().startsWith(term)) {
+            for (const auto &dir:app.recentlyUsed) {
+                Plasma::QueryMatch match(this);
+                match.setText(app.name + " Launch " + dir.split('/').last());
+                match.setIconName(app.iconPath);
+                match.setData(QString(app.executablePath).replace("%f", dir));
+                matches.append(match);
+            }
+        }
     }
+
     return matches;
 }
 

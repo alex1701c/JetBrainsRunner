@@ -53,7 +53,7 @@ QList<JetbrainsApplication> JetbrainsApplication::getInstalledList() {
 void JetbrainsApplication::parseXMLFile() {
     // Recent folders are in recentProjectDirectories.xml or in recentProjects.xml located
     QString content = "";
-    if(this->configFolder.isEmpty()) return;
+    if (this->configFolder.isEmpty()) return;
     QFile f(this->configFolder + "recentProjectDirectories.xml");
     if (!f.exists()) {
         QFile f2(this->configFolder + "recentProjects.xml");
@@ -76,9 +76,11 @@ void JetbrainsApplication::parseXMLFile() {
         if (reader.name() == "option" && reader.attributes().value("name") == "recentPaths") {
             while (reader.readNextStartElement()) {
                 if (reader.name() == "option") {
-                    this->recentlyUsed.append(
-                            reader.attributes().value("value").toString().replace("$USER_HOME$", QDir::homePath())
-                    );
+                    QString recentPath = reader.attributes().value("value")
+                            .toString().replace("$USER_HOME$", QDir::homePath());
+                    if (QDir(recentPath).exists()) {
+                        this->recentlyUsed.append(recentPath);
+                    }
                     reader.readElementText();
                 }
             }

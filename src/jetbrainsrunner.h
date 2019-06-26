@@ -31,6 +31,8 @@ public:
 
     QList<JetbrainsApplication> installed;
 
+    KConfigGroup config;
+
 protected Q_SLOTS:
 
     void init() override;
@@ -40,7 +42,7 @@ public: // Plasma::AbstractRunner API
 
     void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) override;
 
-    QList<Plasma::QueryMatch> addAppNameMatches(const JetbrainsApplication &app);
+    QList<Plasma::QueryMatch> addAppNameMatches(const QString &term);
     QList<Plasma::QueryMatch> addProjectNameMatches(const QString &term);
 };
 

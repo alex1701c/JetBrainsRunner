@@ -36,12 +36,29 @@
       <string>JetbrainsRunner Config</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Hello World !</string>
-        </property>
-       </widget>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QCheckBox" name="appNameSearch">
+          <property name="text">
+           <string>Enable search by application name</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="projectNameSearch">
+          <property name="text">
+           <string>Enable search by project name</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
