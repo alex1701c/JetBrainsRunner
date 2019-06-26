@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [[ $(basename "$PWD") !=  "JetBrainsRunner"* ]];then
-    echo "no match"
     git clone https://github.com/alex1701c/JetBrainsRunner
     cd JetBrainsRunner/
 fi
