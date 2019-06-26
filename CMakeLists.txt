@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_MODULE_PA
 # Find the required Libaries
 find_package(Qt5 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets Core Quick QuickWidgets Xml)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS I18n Service Runner TextWidgets ConfigWidgets PlasmaQuick)
-add_compile_definitions(LOG_INSTALLED) #If you disable this, the plugin will print the installed aps and their projects
+#add_compile_definitions(LOG_INSTALLED) #If you enable this, the plugin will print the installed aps and their projects
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)

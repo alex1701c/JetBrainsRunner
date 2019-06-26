@@ -2,7 +2,7 @@
 
 if [[ $(basename "$PWD") != "JetBrainsRunner" ]];then
     git clone https://github.com/alex1701c/JetBrainsRunner
-    cd JetbrainsRunner/
+    cd JetBrainsRunner/
 fi
 
 mkdir -p build

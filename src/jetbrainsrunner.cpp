@@ -43,7 +43,7 @@ void JetbrainsRunner::init() {
 
     config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
 
-#ifndef LOG_INSTALLED
+#ifdef LOG_INSTALLED
     for (const auto &i:installed) {
         qInfo() << "\n<------------ " << i.name << " ------------------->";
         for (const auto &d:i.recentlyUsed) {
