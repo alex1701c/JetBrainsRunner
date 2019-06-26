@@ -1,5 +1,5 @@
 /*
-   Copyright %{CURRENT_YEAR} by %{AUTHOR} <%{EMAIL}>
+   Copyright 2019 by Alex alexkp12355@gmail.com
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -79,7 +79,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
         if (QString(app.name).replace(" ", "").toLower().startsWith(term)) {
             for (const auto &dir:app.recentlyUsed) {
                 Plasma::QueryMatch match(this);
-                match.setText(app.name + " Launch " + dir.split('/').last());
+                match.setText(app.name + " launch " + dir.split('/').last());
                 match.setIconName(app.iconPath);
                 match.setData(QString(app.executablePath).replace("%f", dir));
                 matches.append(match);

@@ -1,13 +1,13 @@
 [Desktop Entry]
 Name=JetbrainsRunner
-Comment=JetbrainsRunner runner
-Icon=planetkde
+Comment=Runner to open your recent JetBrains projects
+Icon=/usr/share/icons/jetbrains.png
 
 X-KDE-ServiceTypes=Plasma/Runner
 Type=Service
 X-KDE-Library=krunner_jetbrainsrunner
-X-KDE-PluginInfo-Author=%{AUTHOR}
-X-KDE-PluginInfo-Email=%{EMAIL}
+X-KDE-PluginInfo-Author=Alex1701c
+X-KDE-PluginInfo-Email=alexkp12355@gmail.com
 X-KDE-PluginInfo-Name=jetbrainsrunner
 X-KDE-PluginInfo-Version=0.1
 X-KDE-PluginInfo-License=LGPL 2.1+
