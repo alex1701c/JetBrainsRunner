@@ -31,12 +31,13 @@ After this you should see your runner in the system settings:
 
 systemsettings5 (Head to "Search")
 
-You can also launch KRunner via Alt-F2 and you will find your runner.
+You can also launch KRunner via Alt-F2 and you will find your runner.  
+Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
 
 
 ### Screenshots:
 #### Available CLion projects
-![Available CLion projects](https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/screenshots/multible_projects.png)
+![Available CLion projects](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/multible_projects.png)
 
 #### Search for project by name
-![ Search for project by name](https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/screenshots/launch_by_name.png)
+![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)

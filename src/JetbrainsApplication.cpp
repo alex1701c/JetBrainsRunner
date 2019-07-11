@@ -1,7 +1,3 @@
-//
-// Created by alex on 24.06.19.
-//
-
 #include "JetbrainsApplication.h"
 #include <KSharedConfig>
 #include <KConfigCore/KConfigGroup>

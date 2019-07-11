@@ -1,6 +1,4 @@
 #include <utility>
-
-#include <utility>
 #include <QtCore>
 #include "SettingsDirectory.h"
 #include "JetbrainsApplication.h"

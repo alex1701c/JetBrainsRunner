@@ -1,7 +1,3 @@
-//
-// Created by alex on 24.06.19.
-//
-
 #ifndef JETBRAINSAPPLICATION_H
 #define JETBRAINSAPPLICATION_H
 
