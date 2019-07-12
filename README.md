@@ -41,3 +41,6 @@ Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
 
 #### Search for project by name
 ![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)
+
+#### Search projects of app
+![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/search_projects_of_app.png)
