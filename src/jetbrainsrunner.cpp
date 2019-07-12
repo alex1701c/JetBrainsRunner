@@ -63,7 +63,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
         regExp.indexIn(term);
         QString termName = regExp.capturedTexts().at(1);
         QString termProject = regExp.capturedTexts().last();
-        if (QString(app.name).replace(" ", "").toLower().startsWith(termName)) {
+        if (!termName.isEmpty() && QString(app.name).replace(" ", "").toLower().startsWith(termName)) {
             for (const auto &dir:app.recentlyUsed) {
                 if (termProject.isEmpty() || dir.split('/').last().startsWith(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
