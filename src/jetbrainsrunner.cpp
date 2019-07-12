@@ -59,13 +59,19 @@ void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::Qu
 QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
     for (auto const &app:installed) {
-        if (QString(app.name).replace(" ", "").toLower().startsWith(term)) {
+        QRegExp regExp(R"(^(\w+)(?: (.+))?$)");
+        regExp.indexIn(term);
+        QString termName = regExp.capturedTexts().at(1);
+        QString termProject = regExp.capturedTexts().last();
+        if (QString(app.name).replace(" ", "").toLower().startsWith(termName)) {
             for (const auto &dir:app.recentlyUsed) {
-                Plasma::QueryMatch match(this);
-                match.setText(app.name + " launch " + dir.split('/').last());
-                match.setIconName(app.iconPath);
-                match.setData(QString(app.executablePath).replace("%f", dir));
-                matches.append(match);
+                if (termProject.isEmpty() || dir.split('/').last().startsWith(termProject, Qt::CaseInsensitive)) {
+                    Plasma::QueryMatch match(this);
+                    match.setText(app.name + " launch " + dir.split('/').last());
+                    match.setIconName(app.iconPath);
+                    match.setData(QString(app.executablePath).replace("%f", dir));
+                    matches.append(match);
+                }
             }
         }
     }
