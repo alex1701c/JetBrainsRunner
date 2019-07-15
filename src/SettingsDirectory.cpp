@@ -15,15 +15,16 @@ QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
     QStringList entries = directory.entryList(QDir::Hidden | QDir::Dirs);
 
     // Iterate reversed over entries
-    int midx = entries.size() - 1;
-    for (int i = midx; i <= midx && i >= 0; i--) {
+    int maxIndex = entries.size() - 1;
+    for (int i = maxIndex; i <= maxIndex && i >= 0; i--) {
         auto const &e = entries.at(i);
+        // Contains name and version number live testing => https://regex101.com/r/pMOkox/1
         if (e.contains(QRegExp(R"(^\.[A-Z][a-zA-Z]+(\d+\.\d+)$)"))) {
             QRegExp exp(R"(^\.([A-Z][a-zA-Z]+)(\d+\.\d+)$)");
             exp.indexIn(e);
             if (!exp.capturedTexts().empty()) {
-                auto sdir = SettingsDirectory(home + "/" + e, exp.capturedTexts().at(1), exp.capturedTexts().last());
-                dirs.append(sdir);
+                auto settingsDirectory  = SettingsDirectory(home + "/" + e, exp.capturedTexts().at(1), exp.capturedTexts().last());
+                dirs.append(settingsDirectory);
             }
         }
     }
@@ -44,7 +45,7 @@ void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory
         }
     }
 
-    // Handle ultimate/community editions and experimental runtimes
+    // Handle Ultimate/Community editions and experimental java runtime
     QMap<QString, QString> aliases = getAliases();
     if (aliases.count(app.name.replace(" + JBR11", "")) == 0)return;
     for (const auto &dir :dirs) {

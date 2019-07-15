@@ -26,9 +26,8 @@ QList<JetbrainsApplication> JetbrainsApplication::getInstalledList() {
     }
     // Using snap installed
     QProcess snapProcess;
-    snapProcess.start("sh",
-                      QStringList() << "-c" << "grep -rl '/var/lib/snapd/desktop/applications/' -e 'jetbrains'");
-    snapProcess.waitForFinished(500);
+    snapProcess.start("sh", QStringList() << "-c" << "grep -rl '/var/lib/snapd/desktop/applications/' -e 'jetbrains'");
+    snapProcess.waitForFinished();
     for (const auto &item :snapProcess.readAllStandardOutput().split('\n')) {
         if (!item.isEmpty()) {
             installed.append(JetbrainsApplication(item));
@@ -72,8 +71,7 @@ void JetbrainsApplication::parseXMLFile() {
         if (reader.name() == "option" && reader.attributes().value("name") == "recentPaths") {
             while (reader.readNextStartElement()) {
                 if (reader.name() == "option") {
-                    QString recentPath = reader.attributes().value("value")
-                            .toString().replace("$USER_HOME$", QDir::homePath());
+                    QString recentPath = reader.attributes().value("value").toString().replace("$USER_HOME$", QDir::homePath());
                     if (QDir(recentPath).exists()) {
                         this->recentlyUsed.append(recentPath);
                     }
@@ -91,11 +89,11 @@ void JetbrainsApplication::parseXMLFiles(QList<JetbrainsApplication> &apps) {
 }
 
 QList<JetbrainsApplication> JetbrainsApplication::filterApps(QList<JetbrainsApplication> &apps) {
-    QList<JetbrainsApplication> final;
+    QList<JetbrainsApplication> notEmpty;
     for (auto const &app:apps) {
         if (!app.recentlyUsed.empty()) {
-            final.append(app);
+            notEmpty.append(app);
         }
     }
-    return final;
+    return notEmpty;
 }

@@ -1,5 +1,6 @@
 #include "jetbrainsrunner.h"
-
+#include "JetbrainsApplication.h"
+#include "SettingsDirectory.h"
 // KF
 #include <KLocalizedString>
 #include <KSharedConfig>
@@ -10,11 +11,7 @@ JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
     setObjectName(QStringLiteral("JetbrainsRunner"));
 }
 
-#include "JetbrainsApplication.h"
-#include "SettingsDirectory.h"
-
-JetbrainsRunner::~JetbrainsRunner() {
-}
+JetbrainsRunner::~JetbrainsRunner() = default;
 
 void JetbrainsRunner::init() {
 
@@ -58,12 +55,15 @@ void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::Qu
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
+
+    QRegExp regExp(R"(^(\w+)(?: (.+))?$)");
+    regExp.indexIn(term);
+    QString termName = regExp.capturedTexts().at(1);
+    QString termProject = regExp.capturedTexts().last();
+    if (termName.isEmpty()) return matches;
+
     for (auto const &app:installed) {
-        QRegExp regExp(R"(^(\w+)(?: (.+))?$)");
-        regExp.indexIn(term);
-        QString termName = regExp.capturedTexts().at(1);
-        QString termProject = regExp.capturedTexts().last();
-        if (!termName.isEmpty() && QString(app.name).replace(" ", "").toLower().startsWith(termName)) {
+        if (QString(app.name).replace(" ", "").startsWith(termName, Qt::CaseInsensitive)) {
             for (const auto &dir:app.recentlyUsed) {
                 if (termProject.isEmpty() || dir.split('/').last().startsWith(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
@@ -83,7 +83,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
     QList<Plasma::QueryMatch> matches;
     for (auto const &app:installed) {
         for (const auto &dir:app.recentlyUsed) {
-            if (QString(dir).split('/').last().toLower().startsWith(term)) {
+            if (dir.split('/').last().startsWith(term, Qt::CaseInsensitive)) {
                 Plasma::QueryMatch match(this);
                 match.setText(" Launch " + dir.split('/').last() + " in " + app.name);
                 match.setIconName(app.iconPath);

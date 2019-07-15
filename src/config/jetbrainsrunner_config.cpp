@@ -1,9 +1,6 @@
 #include "jetbrainsrunner_config.h"
 #include <KSharedConfig>
 #include <KPluginFactory>
-#include <krunner/abstractrunner.h>
-#include <QtCore/QProcess>
-#include <QtWidgets/QGridLayout>
 
 K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory, registerPlugin<JetbrainsRunnerConfig>("kcm_krunner_jetbrainsrunner");)
 
@@ -24,9 +21,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     connect(m_ui->appNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
 
-
     load();
-
 }
 
 
