@@ -22,7 +22,6 @@ void JetbrainsRunner::init() {
     installed = JetbrainsApplication::filterApps(installed);
 
     config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
-
 #ifdef LOG_INSTALLED
     for (const auto &i:installed) {
         qInfo() << "\n<------------ " << i.name << " ------------------->";
@@ -64,12 +63,15 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
 
     for (auto const &app:installed) {
         if (QString(app.name).replace(" ", "").startsWith(termName, Qt::CaseInsensitive)) {
-            for (const auto &dir:app.recentlyUsed) {
+            const int recentProjectsCount = app.recentlyUsed.size();
+            for (int i = 0; i < recentProjectsCount; ++i) {
+                const auto &dir = app.recentlyUsed.at(i);
                 if (termProject.isEmpty() || dir.split('/').last().startsWith(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
                     match.setText(app.name + " launch " + dir.split('/').last());
                     match.setIconName(app.iconPath);
                     match.setData(QString(app.executablePath).replace("%f", dir));
+                    match.setRelevance((float) 1 / (i + 1));
                     matches.append(match);
                 }
             }
