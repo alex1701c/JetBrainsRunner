@@ -16,6 +16,13 @@ JetbrainsRunner::~JetbrainsRunner() = default;
 void JetbrainsRunner::init() {
 
     installed = JetbrainsApplication::getInstalledList();
+#ifdef LOG_INSTALLED
+    qInfo() << "\n<-------- Read installed Jetbrains Applications ------------>";
+    for (const auto &app:installed) {
+        qInfo() << app.name;
+    }
+    qInfo() << "\n";
+#endif
     QList<SettingsDirectory> dirs = SettingsDirectory::getSettingsDirectories();
     SettingsDirectory::findCorrespondingDirectories(dirs, installed);
     JetbrainsApplication::parseXMLFiles(installed);
@@ -23,6 +30,7 @@ void JetbrainsRunner::init() {
 
     config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
 #ifdef LOG_INSTALLED
+    qInfo() << "<------------- Projects and their recently used project paths ----------------------->";
     for (const auto &i:installed) {
         qInfo() << "\n<------------ " << i.name << " ------------------->";
         for (const auto &d:i.recentlyUsed) {

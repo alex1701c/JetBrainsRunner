@@ -94,6 +94,11 @@ QList<JetbrainsApplication> JetbrainsApplication::filterApps(QList<JetbrainsAppl
         if (!app.recentlyUsed.empty()) {
             notEmpty.append(app);
         }
+#ifdef LOG_INSTALLED
+        else {
+            qInfo() << "Found not projects for: " << app.name;
+        }
+#endif
     }
     return notEmpty;
 }
