@@ -21,6 +21,7 @@ public:
     KConfigGroup config;
 
 public Q_SLOTS:
+    void validateOptions();
 
     void save() override;
 

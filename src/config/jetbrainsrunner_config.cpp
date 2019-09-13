@@ -19,8 +19,10 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     m_ui->projectNameSearch->setChecked(config.readEntry("LaunchByProjectName", "true") == "true");
 
     connect(m_ui->appNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
+    connect(m_ui->appNameSearch, SIGNAL(clicked(bool)), this, SLOT(validateOptions()));
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
-
+    connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(validateOptions()));
+    validateOptions();
     load();
 }
 
@@ -39,6 +41,11 @@ void JetbrainsRunnerConfig::defaults() {
     m_ui->appNameSearch->setChecked(true);
     m_ui->projectNameSearch->setChecked(true);
     emit changed(true);
+}
+
+void JetbrainsRunnerConfig::validateOptions() {
+    m_ui->appNameSearch->setDisabled(m_ui->appNameSearch->isChecked() && !m_ui->projectNameSearch->isChecked());
+    m_ui->projectNameSearch->setDisabled(m_ui->projectNameSearch->isChecked() && !m_ui->appNameSearch->isChecked());
 }
 
 
