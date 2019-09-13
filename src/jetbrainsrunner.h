@@ -1,6 +1,8 @@
 #ifndef JETBRAINSRUNNER_H
 #define JETBRAINSRUNNER_H
 
+//#define LOG_INSTALLED
+
 #include <KRunner/AbstractRunner>
 #include "JetbrainsApplication.h"
 

@@ -34,13 +34,21 @@ systemsettings5 (Head to "Search")
 You can also launch KRunner via Alt-F2 and you will find your runner.  
 Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
 
-
 ### Screenshots:
-#### Available CLion projects
+#### Available CLion projects  
 ![Available CLion projects](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/multible_projects.png)
 
-#### Search for project by name
+#### Search for project by name  
 ![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)
 
-#### Search projects of app
+#### Search projects of app  
 ![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/search_projects_of_app.png)
+
+### Issues:  
+If you have any problems with this plugin please open an issue on Github and provide some information:  
+- Which JetBrains application is not working
+- How is it installed (snap/toolbox/downloaded from website)
+- Do you have/had other editions (community, educational etc.) of this application installed
+- The debug output of this plugin. In order to get it you have to uncomment the `add_compile_definitions(LOG_INSTALLED` line in the CMakeLists.txt file.  
+Then you have to reinstall the plugin and restart it using `kquitapp5 krunner;kstart5 krunner;qdbus org.kde.krunner /App org.kde.krunner.App.query "test"`.  
+If the add_compile_definitions command is not found you can uncomment the definitions in the jetbrainsrunner and JetbrainsApplication header files. 

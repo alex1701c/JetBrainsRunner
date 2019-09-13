@@ -1,6 +1,7 @@
 #ifndef JETBRAINSAPPLICATION_H
 #define JETBRAINSAPPLICATION_H
 
+//#define LOG_INSTALLED
 
 #include <QtCore/QStringList>
 #include <ostream>

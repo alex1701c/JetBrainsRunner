@@ -21,9 +21,15 @@ void JetbrainsRunner::init() {
     for (const auto &app:installed) {
         qInfo() << app.name;
     }
-    qInfo() << "\n";
 #endif
     QList<SettingsDirectory> dirs = SettingsDirectory::getSettingsDirectories();
+#ifdef LOG_INSTALLED
+    qInfo() << "\n<-------- All possible Settings directories ------------>";
+    for (const auto &dir:dirs) {
+        qInfo() << dir.directory << dir.name << dir.version;
+    }
+    qInfo() << "\n";
+#endif
     SettingsDirectory::findCorrespondingDirectories(dirs, installed);
     JetbrainsApplication::parseXMLFiles(installed);
     installed = JetbrainsApplication::filterApps(installed);
