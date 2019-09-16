@@ -54,7 +54,9 @@ void JetbrainsApplication::parseXMLFile() {
         QFile f2(this->configFolder + "recentProjects.xml");
         if (!f2.open(QIODevice::ReadOnly)) {
             f2.close();
-            //qInfo() << "No entry found for " << this->name;
+#ifdef LOG_INSTALLED
+            qInfo() << "No entry found for " << this->name;
+#endif
             return;
         }
         content = f2.readAll();
@@ -65,19 +67,30 @@ void JetbrainsApplication::parseXMLFile() {
         f.close();
     }
 
-    // Extract paths from XML file content
+    // Go to RecentDirectoryProjectsManager component
     QXmlStreamReader reader(content);
+    reader.readNextStartElement();
+    reader.readNextStartElement();
+
+    // Go through elements until the recentPaths option element is selected
+    for (int i = 0; i < 4; ++i) {
+        reader.readNextStartElement();
+        if (reader.name() != "option" || reader.attributes().value("name") != "recentPaths") {
+            reader.skipCurrentElement();
+        } else {
+            reader.name();
+            break;
+        }
+    }
+
+    // Extract paths from XML element
     while (reader.readNextStartElement()) {
-        if (reader.name() == "option" && reader.attributes().value("name") == "recentPaths") {
-            while (reader.readNextStartElement()) {
-                if (reader.name() == "option") {
-                    QString recentPath = reader.attributes().value("value").toString().replace("$USER_HOME$", QDir::homePath());
-                    if (QDir(recentPath).exists()) {
-                        this->recentlyUsed.append(recentPath);
-                    }
-                    reader.readElementText();
-                }
+        if (reader.name() == "option") {
+            QString recentPath = reader.attributes().value("value").toString().replace("$USER_HOME$", QDir::homePath());
+            if (QDir(recentPath).exists()) {
+                this->recentlyUsed.append(recentPath);
             }
+            reader.readElementText();
         }
     }
 }
