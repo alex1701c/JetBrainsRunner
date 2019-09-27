@@ -76,15 +76,15 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
     if (termName.isEmpty()) return matches;
 
     for (auto const &app:installed) {
-        if (QString(app.name).replace(" ", "").startsWith(termName, Qt::CaseInsensitive)) {
-            const int recentProjectsCount = app.recentlyUsed.size();
+        if (QString(app->name).replace(" ", "").startsWith(termName, Qt::CaseInsensitive)) {
+            const int recentProjectsCount = app->recentlyUsed.size();
             for (int i = 0; i < recentProjectsCount; ++i) {
-                const auto &dir = app.recentlyUsed.at(i);
+                const auto &dir = app->recentlyUsed.at(i);
                 if (termProject.isEmpty() || dir.split('/').last().startsWith(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
-                    match.setText(app.name + " launch " + dir.split('/').last());
-                    match.setIconName(app.iconPath);
-                    match.setData(QString(app.executablePath).replace("%f", dir));
+                    match.setText(app->name + " launch " + dir.split('/').last());
+                    match.setIconName(app->iconPath);
+                    match.setData(QString(app->executablePath).replace("%f", dir));
                     match.setRelevance((float) 1 / (i + 1));
                     matches.append(match);
                 }
@@ -98,12 +98,12 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
 QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
     for (auto const &app:installed) {
-        for (const auto &dir:app.recentlyUsed) {
+        for (const auto &dir:app->recentlyUsed) {
             if (dir.split('/').last().startsWith(term, Qt::CaseInsensitive)) {
                 Plasma::QueryMatch match(this);
-                match.setText(" Launch " + dir.split('/').last() + " in " + app.name);
-                match.setIconName(app.iconPath);
-                match.setData(QString(app.executablePath).replace("%f", dir));
+                match.setText(" Launch " + dir.split('/').last() + " in " + app->name);
+                match.setIconName(app->iconPath);
+                match.setData(QString(app->executablePath).replace("%f", dir));
                 matches.append(match);
             }
         }

@@ -31,31 +31,31 @@ QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
     return dirs;
 }
 
-void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication &app) {
+void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication* app) {
 
     // Exact match or space in name
-    app.name.remove(" Release");
+    app->name.remove(" Release");
     for (const auto &dir :dirs) {
-        if (dir.name == app.name) {
-            app.configFolder = dir.directory + "/config/options/";
+        if (dir.name == app->name) {
+            app->configFolder = dir.directory + "/config/options/";
             return;
         }
-        if (dir.name == QString(app.name).replace(" ", "")) {
-            app.configFolder = dir.directory + "/config/options/";
+        if (dir.name == QString(app->name).replace(" ", "")) {
+            app->configFolder = dir.directory + "/config/options/";
             return;
         }
-        if (dir.name == app.name.remove(" RC").remove(" EAP")) {
-            app.configFolder = dir.directory + "/config/options/";
+        if (dir.name == app->name.remove(" RC").remove(" EAP")) {
+            app->configFolder = dir.directory + "/config/options/";
             return;
         }
     }
 
     // Handle Ultimate/Community editions and experimental java runtime
     QMap<QString, QString> aliases = getAliases();
-    if (aliases.count(app.name.remove(" + JBR11")) == 0) return;
+    if (aliases.count(app->name.remove(" + JBR11")) == 0) return;
     for (const auto &dir :dirs) {
-        if (dir.name == aliases.find(app.name).value()) {
-            app.configFolder = dir.directory + "/config/options/";
+        if (dir.name == aliases.find(app->name).value()) {
+            app->configFolder = dir.directory + "/config/options/";
             return;
         }
     }
@@ -73,7 +73,7 @@ QMap<QString, QString> SettingsDirectory::getAliases() {
 }
 
 void SettingsDirectory::findCorrespondingDirectories(const QList<SettingsDirectory> &dirs,
-                                                     QList<JetbrainsApplication> &apps) {
+                                                     QList<JetbrainsApplication*> &apps) {
     for (auto &app:apps) {
         findCorrespondingDirectory(dirs, app);
     }

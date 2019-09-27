@@ -13,9 +13,9 @@ public:
 
     static QList<SettingsDirectory> getSettingsDirectories();
 
-    static void findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication &app);
+    static void findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication *app);
 
-    static void findCorrespondingDirectories(const QList<SettingsDirectory> &dirs, QList<JetbrainsApplication> &apps);
+    static void findCorrespondingDirectories(const QList<SettingsDirectory> &dirs, QList<JetbrainsApplication *> &apps);
 
 
     QString directory;

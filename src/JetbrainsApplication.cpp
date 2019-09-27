@@ -3,15 +3,17 @@
 #include <KConfigCore/KConfigGroup>
 #include <QtGui/QtGui>
 
-JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) : desktopFilePath(desktopFilePath) {
+JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) :
+        QFileSystemWatcher(nullptr), desktopFilePath(desktopFilePath) {
     KConfigGroup config = KSharedConfig::openConfig(desktopFilePath)->group("Desktop Entry");
     iconPath = config.readEntry("Icon");
     executablePath = config.readEntry("Exec");
     name = config.readEntry("Name");
+    connect(this, SIGNAL(fileChanged(QString)), this, SLOT(configChanged(QString)));
 }
 
-QList<JetbrainsApplication> JetbrainsApplication::getInstalledList() {
-    QList<JetbrainsApplication> installed;
+QList<JetbrainsApplication *> JetbrainsApplication::getInstalledList() {
+    QList<JetbrainsApplication *> installed;
     QString home = QDir::homePath();
 
     // Manually, locally or with Toolbox installed
@@ -21,7 +23,7 @@ QList<JetbrainsApplication> JetbrainsApplication::getInstalledList() {
     for (const auto &item :toolBoxProcess.readAllStandardOutput().split('\n')) {
         if (!item.isEmpty()) {
             if (item == "JetBrains Toolbox") continue;
-            installed.append(JetbrainsApplication(home + "/.local/share/applications/" + item));
+            installed.append(new JetbrainsApplication(home + "/.local/share/applications/" + item));
         }
     }
     // Using snap installed
@@ -30,7 +32,7 @@ QList<JetbrainsApplication> JetbrainsApplication::getInstalledList() {
     snapProcess.waitForFinished();
     for (const auto &item :snapProcess.readAllStandardOutput().split('\n')) {
         if (!item.isEmpty()) {
-            installed.append(JetbrainsApplication(item));
+            installed.append(new JetbrainsApplication(item));
         }
     }
     //Globally, manually installed
@@ -39,33 +41,40 @@ QList<JetbrainsApplication> JetbrainsApplication::getInstalledList() {
     globallyInstalledProcess.waitForFinished();
     for (const auto &item :globallyInstalledProcess.readAllStandardOutput().split('\n')) {
         if (!item.isEmpty()) {
-            installed.append(JetbrainsApplication("/usr/share/applications/" + item));
+            installed.append(new JetbrainsApplication("/usr/share/applications/" + item));
         }
     }
     return installed;
 }
 
-void JetbrainsApplication::parseXMLFile() {
+void JetbrainsApplication::parseXMLFile(QString content) {
     // Recent folders are in recentProjectDirectories.xml or in recentProjects.xml located
-    QString content = "";
-    if (this->configFolder.isEmpty()) return;
-    QFile f(this->configFolder + "recentProjectDirectories.xml");
-    if (!f.exists()) {
-        QFile f2(this->configFolder + "recentProjects.xml");
-        if (!f2.open(QIODevice::ReadOnly)) {
-            f2.close();
+    // If the method is triggered by the file watcher the content is provided
+    if (content.isEmpty()) {
+        if (this->configFolder.isEmpty()) return;
+        QFile f(this->configFolder + "recentProjectDirectories.xml");
+        if (!f.exists()) {
+            QFile f2(this->configFolder + "recentProjects.xml");
+            if (!f2.open(QIODevice::ReadOnly)) {
+                f2.close();
 #ifdef LOG_INSTALLED
-            qInfo() << "No entry found for " << this->name;
+                qInfo() << "No entry found for " << this->name;
 #endif
-            return;
+                return;
+            }
+            this->addPath(f2.fileName());
+            content = f2.readAll();
+            f2.close();
+        } else {
+            if (f.open(QIODevice::ReadOnly)) {
+                content = f.readAll();
+                f.close();
+                this->addPath(f.fileName());
+            }
         }
-        content = f2.readAll();
-        f2.close();
-    } else {
-        f.open(QIODevice::ReadOnly);
-        content = f.readAll();
-        f.close();
     }
+
+    if (content.isEmpty()) return;
 
     // Go to RecentDirectoryProjectsManager component
     QXmlStreamReader reader(content);
@@ -95,16 +104,16 @@ void JetbrainsApplication::parseXMLFile() {
     }
 }
 
-void JetbrainsApplication::parseXMLFiles(QList<JetbrainsApplication> &apps) {
+void JetbrainsApplication::parseXMLFiles(QList<JetbrainsApplication *> &apps) {
     for (auto &app:apps) {
-        app.parseXMLFile();
+        app->parseXMLFile();
     }
 }
 
-QList<JetbrainsApplication> JetbrainsApplication::filterApps(QList<JetbrainsApplication> &apps) {
-    QList<JetbrainsApplication> notEmpty;
+QList<JetbrainsApplication *> JetbrainsApplication::filterApps(QList<JetbrainsApplication *> &apps) {
+    QList<JetbrainsApplication *> notEmpty;
     for (auto const &app:apps) {
-        if (!app.recentlyUsed.empty()) {
+        if (!app->recentlyUsed.empty()) {
             notEmpty.append(app);
         }
 #ifdef LOG_INSTALLED
@@ -115,3 +124,4 @@ QList<JetbrainsApplication> JetbrainsApplication::filterApps(QList<JetbrainsAppl
     }
     return notEmpty;
 }
+

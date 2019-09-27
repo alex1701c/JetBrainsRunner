@@ -1,3 +1,9 @@
+## JetBrainsRunner
+
+This plugin allows you to launch your recent JetBrains projects from Krunner.
+Additionally it has file watchers implemented, these reload the configuration when
+new projects get added/removed.  
+
 Required Dependencies
 ----------------------
 

@@ -14,7 +14,7 @@ public:
 
     ~JetbrainsRunner() override;
 
-    QList<JetbrainsApplication> installed;
+    QList<JetbrainsApplication*> installed;
 
     KConfigGroup config;
 
