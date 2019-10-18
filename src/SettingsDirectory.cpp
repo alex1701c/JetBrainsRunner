@@ -33,8 +33,9 @@ QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
 
 void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication* app) {
 
-    // Exact match or space in name
     app->name.remove(" Release");
+    app->name.remove(" Edition");
+    // Exact match or space in name
     for (const auto &dir :dirs) {
         if (dir.name == app->name) {
             app->configFolder = dir.directory + "/config/options/";
@@ -67,7 +68,6 @@ QMap<QString, QString> SettingsDirectory::getAliases() {
             {"IntelliJ IDEA Community",   "IdeaIC"},
             {"IntelliJ IDEA Ultimate",    "IntelliJIdea"},
             {"PyCharm Professional",      "PyCharm"},
-            {"PyCharm Community Edition", "PyCharmCE"},
             {"PyCharm Community",         "PyCharmCE"}
     };
 }
