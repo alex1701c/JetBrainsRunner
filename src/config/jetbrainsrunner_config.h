@@ -4,6 +4,7 @@
 #include "ui_jetbrainsrunner_config.h"
 #include <KCModule>
 #include <KConfigCore/KConfigGroup>
+#include <QtNetwork/QNetworkReply>
 
 class JetbrainsRunnerConfigForm : public QWidget, public Ui::JetbrainsRunnerConfigUi {
 Q_OBJECT
@@ -18,9 +19,14 @@ Q_OBJECT
 public:
     explicit JetbrainsRunnerConfig(QWidget *parent = nullptr, const QVariantList &args = QVariantList());
 
+    void makeVersionRequest();
+
     KConfigGroup config;
 
 public Q_SLOTS:
+
+    void displayUpdateNotification(QNetworkReply *reply);
+
     void validateOptions();
 
     void save() override;

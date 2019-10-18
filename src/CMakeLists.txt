@@ -3,7 +3,7 @@ add_definitions(-DTRANSLATION_DOMAIN=\"plasma_runner_org.kde.jetbrainsrunner\")
 set(jetbrainsrunner_SRCS jetbrainsrunner.cpp JetbrainsApplication.cpp JetbrainsApplication.h SettingsDirectory.cpp SettingsDirectory.h)
 
 add_library(krunner_jetbrainsrunner MODULE ${jetbrainsrunner_SRCS})
-target_link_libraries(krunner_jetbrainsrunner KF5::Runner KF5::I18n)
+target_link_libraries(krunner_jetbrainsrunner KF5::Runner KF5::I18n Qt5::Network)
 
 set(kcm_krunner_jetbrainsrunner_SRCS
         config/jetbrainsrunner_config.cpp
@@ -14,6 +14,7 @@ add_library(kcm_krunner_jetbrainsrunner MODULE ${kcm_krunner_jetbrainsrunner_SRC
 target_link_libraries(kcm_krunner_jetbrainsrunner
         Qt5::Core
         Qt5::Gui
+        Qt5::Network
         KF5::CoreAddons
         KF5::ConfigCore
         KF5::I18n

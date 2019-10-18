@@ -4,6 +4,7 @@
 //#define LOG_INSTALLED
 
 #include <KRunner/AbstractRunner>
+#include <QtNetwork/QNetworkReply>
 #include "JetbrainsApplication.h"
 
 class JetbrainsRunner : public Plasma::AbstractRunner {
@@ -25,6 +26,8 @@ public:
 protected Q_SLOTS:
 
     void init() override;
+
+    void displayUpdateNotification(QNetworkReply *reply);
 
 public: // Plasma::AbstractRunner API
     void match(Plasma::RunnerContext &context) override;

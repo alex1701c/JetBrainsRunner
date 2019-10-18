@@ -1,6 +1,10 @@
 #include "jetbrainsrunner_config.h"
 #include <KSharedConfig>
 #include <KPluginFactory>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QtWidgets/QLabel>
 
 K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory, registerPlugin<JetbrainsRunnerConfig>("kcm_krunner_jetbrainsrunner");)
 
@@ -23,7 +27,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(validateOptions()));
     validateOptions();
-    load();
+    makeVersionRequest();
 }
 
 
@@ -46,6 +50,42 @@ void JetbrainsRunnerConfig::defaults() {
 void JetbrainsRunnerConfig::validateOptions() {
     m_ui->appNameSearch->setDisabled(m_ui->appNameSearch->isChecked() && !m_ui->projectNameSearch->isChecked());
     m_ui->projectNameSearch->setDisabled(m_ui->projectNameSearch->isChecked() && !m_ui->appNameSearch->isChecked());
+}
+
+void JetbrainsRunnerConfig::makeVersionRequest() {
+    auto manager = new QNetworkAccessManager(this);
+    QNetworkRequest request(QUrl("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases"));
+    manager->get(request);
+    connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
+}
+
+void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
+    if (reply->error() == QNetworkReply::NoError) {
+        QString displayText;
+        auto jsonObject = QJsonDocument::fromJson(reply->readAll());
+        if (jsonObject.isArray()) {
+            for (const auto &githubReleaseObj:jsonObject.array()) {
+                if (githubReleaseObj.isObject()) {
+                    auto githubRelease = githubReleaseObj.toObject();
+                    if (githubRelease.value("tag_name").toString() > "1.2.1") {
+                        displayText.append(githubRelease.value("tag_name").toString() + ": " +
+                                           githubRelease.value("name").toString() + "\n");
+                    }
+                }
+            }
+        }
+        if (!displayText.isEmpty()) {
+            displayText.prepend("Current Version: 1.2.1\n");
+            displayText.prepend("<pre>Updates Available !\n");
+            displayText.append("Please go to <a href=\"https://github.com/alex1701c/JetBrainsRunner\">"\
+                               "https://github.com/alex1701c/JetBrainsRunner</a>\nand get the latest version</pre>");
+            auto displayLabel = new QLabel(displayText, m_ui->parentLayout);
+            displayLabel->setTextFormat(Qt::RichText);
+            displayLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+            displayLabel->setOpenExternalLinks(true);
+            m_ui->verticalLayout_2->insertWidget(0, displayLabel);
+        }
+    }
 }
 
 

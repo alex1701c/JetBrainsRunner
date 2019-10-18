@@ -5,6 +5,7 @@
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <QtGui/QtGui>
+#include <QDate>
 
 JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
         : Plasma::AbstractRunner(parent, args) {
@@ -35,6 +36,14 @@ void JetbrainsRunner::init() {
     installed = JetbrainsApplication::filterApps(installed);
 
     config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
+    QDate lastUpdateCheckDate = QDate::fromString(config.readEntry("checkedUpdateDate"));
+    if (!config.hasKey("checkedUpdateDate") || !lastUpdateCheckDate.isValid() ||
+        lastUpdateCheckDate.addDays(7) <= QDate::currentDate()) {
+        auto manager = new QNetworkAccessManager(this);
+        QNetworkRequest request(QUrl("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases"));
+        manager->get(request);
+        connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
+    }
 #ifdef LOG_INSTALLED
     qInfo() << "<------------- Projects and their recently used project paths ----------------------->";
     for (const auto &i:installed) {
@@ -109,6 +118,32 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
         }
     }
     return matches;
+}
+
+void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
+    if (reply->error() == QNetworkReply::NoError) {
+        QString displayText;
+        auto jsonObject = QJsonDocument::fromJson(reply->readAll());
+        if (jsonObject.isArray()) {
+            for (const auto &githubReleaseObj:jsonObject.array()) {
+                if (githubReleaseObj.isObject()) {
+                    auto githubRelease = githubReleaseObj.toObject();
+                    if (githubRelease.value("tag_name").toString() > "1.2.1") {
+                        displayText.append(githubRelease.value("tag_name").toString() + ": " +
+                                           githubRelease.value("name").toString() + "\n");
+                    }
+                }
+            }
+        }
+        if (!displayText.isEmpty()) {
+            displayText.prepend("New Versions Available:\n");
+            displayText.append("Please go to https://github.com/alex1701c/JetBrainsRunner</a>");
+            QProcess::startDetached("notify-send", QStringList{
+                    "JetBrains Runner Updates!", displayText, "--icon", "/usr/share/icons/jetbrains.png", "--expire-time", "5000"
+            });
+        }
+        config.writeEntry("checkedUpdateDate", QDate::currentDate().toString());
+    }
 }
 
 K_EXPORT_PLASMA_RUNNER(jetbrainsrunner, JetbrainsRunner)
