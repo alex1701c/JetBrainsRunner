@@ -19,7 +19,7 @@ void JetbrainsRunner::init() {
 #ifdef LOG_INSTALLED
     qInfo() << "\n<-------- Read installed Jetbrains Applications ------------>";
     for (const auto &app:installed) {
-        qInfo() << app.name;
+        qInfo() << app->name;
     }
 #endif
     QList<SettingsDirectory> dirs = SettingsDirectory::getSettingsDirectories();
@@ -38,8 +38,8 @@ void JetbrainsRunner::init() {
 #ifdef LOG_INSTALLED
     qInfo() << "<------------- Projects and their recently used project paths ----------------------->";
     for (const auto &i:installed) {
-        qInfo() << "\n<------------ " << i.name << " ------------------->";
-        for (const auto &d:i.recentlyUsed) {
+        qInfo() << "\n<------------ " << i->name << " ------------------->";
+        for (const auto &d:i->recentlyUsed) {
             qInfo() << d;
         }
     }

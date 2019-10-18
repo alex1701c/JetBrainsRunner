@@ -33,8 +33,7 @@ QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
 
 void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication* app) {
 
-    app->name.remove(" Release");
-    app->name.remove(" Edition");
+    app->name = app->name.remove(" Release").remove(" Edition").remove(" + JBR11").remove(" RC").remove(" EAP");
     // Exact match or space in name
     for (const auto &dir :dirs) {
         if (dir.name == app->name) {
@@ -45,15 +44,11 @@ void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory
             app->configFolder = dir.directory + "/config/options/";
             return;
         }
-        if (dir.name == app->name.remove(" RC").remove(" EAP")) {
-            app->configFolder = dir.directory + "/config/options/";
-            return;
-        }
     }
 
     // Handle Ultimate/Community editions and experimental java runtime
     QMap<QString, QString> aliases = getAliases();
-    if (aliases.count(app->name.remove(" + JBR11")) == 0) return;
+    if (aliases.count(app->name) == 0) return;
     for (const auto &dir :dirs) {
         if (dir.name == aliases.find(app->name).value()) {
             app->configFolder = dir.directory + "/config/options/";

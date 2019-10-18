@@ -37,8 +37,9 @@ public Q_SLOTS:
             this->parseXMLFile(content);
         }
 #ifdef LOG_INSTALLED
-        qInfo() << "File Changed Event: " << file;
+            qInfo() << "File Changed Event: " << file;
 #endif
+        qInfo() << "Changed config: " << file;
     };
 
 };

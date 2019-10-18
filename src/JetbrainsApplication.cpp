@@ -118,7 +118,7 @@ QList<JetbrainsApplication *> JetbrainsApplication::filterApps(QList<JetbrainsAp
         }
 #ifdef LOG_INSTALLED
         else {
-            qInfo() << "Found not projects for: " << app.name;
+            qInfo() << "Found not projects for: " << app->name;
         }
 #endif
     }
