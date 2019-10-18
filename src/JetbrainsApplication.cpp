@@ -44,6 +44,9 @@ QList<JetbrainsApplication *> JetbrainsApplication::getInstalledList() {
             installed.append(new JetbrainsApplication("/usr/share/applications/" + item));
         }
     }
+    for (const auto &aurInstalledFile:getAURInstalledFiles()) {
+        installed.append(new JetbrainsApplication(aurInstalledFile));
+    }
     return installed;
 }
 
@@ -123,5 +126,23 @@ QList<JetbrainsApplication *> JetbrainsApplication::filterApps(QList<JetbrainsAp
 #endif
     }
     return notEmpty;
+}
+
+QStringList JetbrainsApplication::getAURInstalledFiles() {
+    QStringList aurFiles = {
+            "rubymine.desktop",
+            "pycharm-professional.desktop",
+            "pycharm-eap.desktop",
+            "charm.desktop",
+            "jetbrains-clion.desktop",
+            "rider.desktop",
+    };
+    const QString installationLocation = "/usr/share/applications/";
+    QStringList validAurFiles;
+    for (const auto &aurFile:aurFiles) {
+        if (QFile::exists(installationLocation + aurFile)) validAurFiles.append(installationLocation + aurFile);
+    }
+
+    return validAurFiles;
 }
 

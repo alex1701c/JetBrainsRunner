@@ -19,6 +19,8 @@ public:
 
     static QList<JetbrainsApplication *> filterApps(QList<JetbrainsApplication *> &apps);
 
+    static QStringList getAURInstalledFiles();
+
     QList<QString> recentlyUsed;
     QString desktopFilePath;
     QString executablePath;
