@@ -7,4 +7,4 @@ changescommit
 /src/*.swp
 /.vscode
 */.vscode
-
+src/config/ui_jetbrainsrunner_config_mapping_item.h

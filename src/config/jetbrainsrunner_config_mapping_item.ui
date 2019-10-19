@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>%{AUTHOR}</author>
+ <class>JetbrainsRunnerConfigItemUi</class>
+ <widget class="QWidget" name="JetbrainsRunnerConfigItemUi">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>669</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>300</width>
+    <height>0</height>
+   </size>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="topMargin">
+    <number>25</number>
+   </property>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="configDesktoFilePushButton">
+       <property name="text">
+        <string>Select .desktop File</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="configFolderPushButton">
+       <property name="text">
+        <string>Select Config Folder/File</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="configReadWidget" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item alignment="Qt::AlignLeft">
+           <widget class="QLabel" name="applicationIconLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignLeft">
+           <widget class="QLabel" name="appNameLabel">
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Recent Projects:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="recentProjectsLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="deletePushButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset theme="delete">
+       <normaloff>.</normaloff>.</iconset>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

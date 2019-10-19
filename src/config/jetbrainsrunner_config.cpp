@@ -26,6 +26,8 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     connect(m_ui->appNameSearch, SIGNAL(clicked(bool)), this, SLOT(validateOptions()));
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(validateOptions()));
+    connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(addNewMappingItem()));
+    connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(changed()));
     validateOptions();
     makeVersionRequest();
 }
@@ -86,6 +88,14 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
             m_ui->verticalLayout_2->insertWidget(0, displayLabel);
         }
     }
+}
+
+void JetbrainsRunnerConfig::addNewMappingItem() {
+    m_ui->manualMappingVBox->addWidget(new JetbrainsRunnerConfigMappingItem(this));
+}
+
+void JetbrainsRunnerConfig::deleteMappingItem() {
+    this->sender()->parent()->deleteLater();
 }
 
 

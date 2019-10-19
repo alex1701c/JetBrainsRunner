@@ -7,9 +7,12 @@ target_link_libraries(krunner_jetbrainsrunner KF5::Runner KF5::I18n Qt5::Network
 
 set(kcm_krunner_jetbrainsrunner_SRCS
         config/jetbrainsrunner_config.cpp
-        )
+        JetbrainsApplication.cpp
+        SettingsDirectory.cpp
+        config/jetbrainsrunner_config_mapping_item.h)
 
 ki18n_wrap_ui(kcm_krunner_jetbrainsrunner_SRCS config/jetbrainsrunner_config.ui)
+ki18n_wrap_ui(kcm_krunner_jetbrainsrunner_SRCS config/jetbrainsrunner_config_mapping_item.ui)
 add_library(kcm_krunner_jetbrainsrunner MODULE ${kcm_krunner_jetbrainsrunner_SRCS})
 target_link_libraries(kcm_krunner_jetbrainsrunner
         Qt5::Core

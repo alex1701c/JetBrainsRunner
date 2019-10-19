@@ -27,6 +27,10 @@ public Q_SLOTS:
 
     void displayUpdateNotification(QNetworkReply *reply);
 
+    void addNewMappingItem();
+
+    void deleteMappingItem();
+
     void validateOptions();
 
     void save() override;
