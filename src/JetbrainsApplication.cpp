@@ -12,43 +12,6 @@ JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) :
     connect(this, SIGNAL(fileChanged(QString)), this, SLOT(configChanged(QString)));
 }
 
-QList<JetbrainsApplication *> JetbrainsApplication::getInstalledList() {
-    QList<JetbrainsApplication *> installed;
-    QString home = QDir::homePath();
-
-    // Manually, locally or with Toolbox installed
-    QProcess toolBoxProcess;
-    toolBoxProcess.start("sh", QStringList() << "-c" << "ls ~/.local/share/applications | grep jetbrains");
-    toolBoxProcess.waitForFinished();
-    for (const auto &item :toolBoxProcess.readAllStandardOutput().split('\n')) {
-        if (!item.isEmpty()) {
-            if (item == "JetBrains Toolbox") continue;
-            installed.append(new JetbrainsApplication(home + "/.local/share/applications/" + item));
-        }
-    }
-    // Using snap installed
-    QProcess snapProcess;
-    snapProcess.start("sh", QStringList() << "-c" << "grep -rl '/var/lib/snapd/desktop/applications/' -e 'jetbrains'");
-    snapProcess.waitForFinished();
-    for (const auto &item :snapProcess.readAllStandardOutput().split('\n')) {
-        if (!item.isEmpty()) {
-            installed.append(new JetbrainsApplication(item));
-        }
-    }
-    //Globally, manually installed
-    QProcess globallyInstalledProcess;
-    globallyInstalledProcess.start("sh", QStringList() << "-c" << "ls /usr/share/applications | grep jetbrains");
-    globallyInstalledProcess.waitForFinished();
-    for (const auto &item :globallyInstalledProcess.readAllStandardOutput().split('\n')) {
-        if (!item.isEmpty()) {
-            installed.append(new JetbrainsApplication("/usr/share/applications/" + item));
-        }
-    }
-    for (const auto &aurInstalledFile:getAURInstalledFiles()) {
-        installed.append(new JetbrainsApplication(aurInstalledFile));
-    }
-    return installed;
-}
 
 void JetbrainsApplication::parseXMLFile(QString content) {
     // Recent folders are in recentProjectDirectories.xml or in recentProjects.xml located
@@ -128,20 +91,68 @@ QList<JetbrainsApplication *> JetbrainsApplication::filterApps(QList<JetbrainsAp
     return notEmpty;
 }
 
-QStringList JetbrainsApplication::getAURInstalledFiles() {
-    QStringList aurFiles = {
-            "rubymine.desktop",
-            "pycharm-professional.desktop",
-            "pycharm-eap.desktop",
-            "charm.desktop",
-            "rider.desktop",
+QStringList JetbrainsApplication::getAdditionalDesktopFileLocations() {
+    QStringList additionalDesktopFileLocations = {
+            "/usr/share/applications/rubymine.desktop",
+            "/usr/share/applications/pycharm-professional.desktop",
+            "/usr/share/applications/pycharm-eap.desktop",
+            "/usr/share/applications/charm.desktop",
+            "/usr/share/applications/rider.desktop",
     };
-    const QString installationLocation = "/usr/share/applications/";
-    QStringList validAurFiles;
-    for (const auto &aurFile:aurFiles) {
-        if (QFile::exists(installationLocation + aurFile)) validAurFiles.append(installationLocation + aurFile);
+    QStringList validFiles;
+    for (const auto &aurFile:additionalDesktopFileLocations) {
+        if (QFile::exists(aurFile)) validFiles.append(aurFile);
     }
 
-    return validAurFiles;
+    return validFiles;
+}
+
+QMap<QString, QString> JetbrainsApplication::getInstalledApplicationPaths(const KConfigGroup &customMappingConfig) {
+    QMap<QString, QString> applicationPaths;
+    const QString home = QDir::homePath();
+
+
+    // Manually, locally or with Toolbox installed
+    const QString localPath = home + "/.local/share/applications/";
+    QDir localJetbrainsApplications(localPath);
+    localJetbrainsApplications.setNameFilters(QStringList{"jetbrains-*"});
+    for (const auto &item : localJetbrainsApplications.entryList()) {
+        if (!item.isEmpty()) {
+            applicationPaths.insert(filterApplicationName(KSharedConfig::openConfig(localPath + item)->
+                    group("Desktop Entry").readEntry("Name")), localPath + item);
+        }
+    }
+    // Globally installed
+    const QString globalPath = "/usr/share/applications/";
+    QDir globalJetbrainsApplications(globalPath);
+    globalJetbrainsApplications.setNameFilters(QStringList{"jetbrains-*"});
+    for (const auto &item : globalJetbrainsApplications.entryList()) {
+        if (!item.isEmpty()) {
+            applicationPaths.insert(filterApplicationName(KSharedConfig::openConfig(globalPath + item)->
+                    group("Desktop Entry").readEntry("Name")), globalPath + item);
+        }
+    }
+
+    // AUR/Snap/Other  installed
+    for (const auto &item : getAdditionalDesktopFileLocations()) {
+        if (!item.isEmpty()) {
+            applicationPaths.insert(filterApplicationName(KSharedConfig::openConfig(item)->
+                    group("Desktop Entry").readEntry("Name")), item);
+        }
+    }
+
+    // Add manually configured entries
+    for (const auto &mappingEntry: customMappingConfig.entryMap().toStdMap()) {
+        if (QFile::exists(mappingEntry.first) && QFile::exists(mappingEntry.second)) {
+            applicationPaths.insert(filterApplicationName(KSharedConfig::openConfig(mappingEntry.first)->
+                    group("Desktop Entry").readEntry("Name")), mappingEntry.first);
+        }
+    }
+
+    return applicationPaths;
+}
+
+QString JetbrainsApplication::filterApplicationName(const QString &name) {
+    return QString(name).remove(" Release").remove(" Edition").remove(" + JBR11").remove(" RC").remove(" EAP");
 }
 

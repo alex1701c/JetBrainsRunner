@@ -15,7 +15,9 @@ public:
 
     ~JetbrainsRunner() override;
 
-    QList<JetbrainsApplication*> installed;
+    bool launchByAppName, launchByProjectName;
+
+    QList<JetbrainsApplication *> installed;
 
     KConfigGroup config;
 
@@ -26,6 +28,8 @@ public:
 protected Q_SLOTS:
 
     void init() override;
+
+    void reloadConfiguration() override;
 
     void displayUpdateNotification(QNetworkReply *reply);
 

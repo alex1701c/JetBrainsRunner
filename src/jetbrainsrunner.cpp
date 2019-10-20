@@ -16,79 +16,58 @@ JetbrainsRunner::~JetbrainsRunner() = default;
 
 void JetbrainsRunner::init() {
     config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
-    const auto mappingMap = config.group("CustomMapping").entryMap();
-    installed = JetbrainsApplication::getInstalledList();
-
-    // Remove .desktop files that are automatically found but manually configured
-    if (!mappingMap.empty()) {
-        for (const auto &installedApp:installed) {
-            if (mappingMap.contains(installedApp->desktopFilePath)) {
-                installed.removeOne(installedApp);
-            }
-        }
-    }
-#ifdef LOG_INSTALLED
-    qInfo() << "\n<-------- Read installed Jetbrains Applications ------------>";
-    for (const auto &app:installed) {
-        qInfo() << app->name << app->desktopFilePath;
-    }
-#endif
-    QList<SettingsDirectory> dirs = SettingsDirectory::getSettingsDirectories();
-#ifdef LOG_INSTALLED
-    qInfo() << "\n<-------- All possible Settings directories ------------>";
-    for (const auto &dir:dirs) {
-        qInfo() << dir.directory << dir.name << dir.version;
-    }
-    qInfo() << "\n";
-#endif
-    SettingsDirectory::findCorrespondingDirectories(dirs, installed);
-    JetbrainsApplication::parseXMLFiles(installed);
-    installed = JetbrainsApplication::filterApps(installed);
-
-    // Add manually configured entries
-    for (const auto &mappingEntry: mappingMap.toStdMap()) {
-        auto *customApp = new JetbrainsApplication(mappingEntry.first);
-        QFile xmlConfigFile(mappingEntry.second);
-        if (xmlConfigFile.open(QFile::ReadOnly)) {
-            customApp->parseXMLFile(xmlConfigFile.readAll());
-            customApp->addPath(mappingEntry.second);
-            if (!customApp->recentlyUsed.isEmpty()) {
-                installed.append(customApp);
-            }
-        }
-    }
-
-    if (config.readEntry("NotifyUpdates", "true") == "true") {
-        // Check once a week if there is an update available, if yes display a notification
-        QDate lastUpdateCheckDate = QDate::fromString(config.readEntry("checkedUpdateDate"));
-        if (!config.hasKey("checkedUpdateDate") || !lastUpdateCheckDate.isValid() ||
-            lastUpdateCheckDate.addDays(7) <= QDate::currentDate()) {
-            auto manager = new QNetworkAccessManager(this);
-            QNetworkRequest request(QUrl("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases"));
-            manager->get(request);
-            connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
-        }
-    }
-#ifdef LOG_INSTALLED
-    qInfo() << "<------------- Projects and their recently used project paths ----------------------->";
-    for (const auto &i:installed) {
-        qInfo() << "\n<------------ " << i->name << " ------------------->";
-        for (const auto &d:i->recentlyUsed) {
-            qInfo() << d;
-        }
-    }
-#endif
+    reloadConfiguration();
 }
 
+
+void JetbrainsRunner::reloadConfiguration() {
+    // General settings
+    launchByAppName = config.readEntry("LaunchByAppName", "true") == "true";
+    launchByProjectName = config.readEntry("LaunchByProjectName", "true") == "true";
+    installed.clear();
+
+    // Initialize/read settings for JetbrainsApplications
+    const auto mappingMap = config.group("CustomMapping").entryMap();
+    QList<JetbrainsApplication *> appList;
+    QList<JetbrainsApplication *> automaticAppList;
+    auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"));
+
+    // Split manually configured and automatically found apps
+    for (const auto &p:desktopPaths.toStdMap()) {
+        // Desktop file is manually specified
+        if (mappingMap.contains(p.second)) {
+            auto customMappedApp = new JetbrainsApplication(p.second);
+            QFile xmlConfigFile(mappingMap.value(p.second));
+            if (xmlConfigFile.open(QFile::ReadOnly)) {
+                customMappedApp->parseXMLFile(xmlConfigFile.readAll());
+                // Add path for filewatcher
+                customMappedApp->addPath(mappingMap.value(p.second));
+                if (!customMappedApp->recentlyUsed.isEmpty()) {
+                    appList.append(customMappedApp);
+                }
+            }
+            xmlConfigFile.close();
+        } else {
+            automaticAppList.append(new JetbrainsApplication(p.second));
+        }
+    }
+
+    // Find automatically config directory, read config file and filter apps
+    SettingsDirectory::findCorrespondingDirectories(SettingsDirectory::getSettingsDirectories(), automaticAppList);
+    JetbrainsApplication::parseXMLFiles(automaticAppList);
+    automaticAppList = JetbrainsApplication::filterApps(automaticAppList);
+    appList.append(automaticAppList);
+    installed = appList;
+}
 
 void JetbrainsRunner::match(Plasma::RunnerContext &context) {
     const QString term = context.query().toLower();
     QList<Plasma::QueryMatch> matches;
 
-    if (config.readEntry("LaunchByAppName", "true") == "true") {
+    if (launchByAppName) {
         matches.append(addAppNameMatches(term));
     }
-    if (config.readEntry("LaunchByProjectName", "true") == "true") {
+    if (launchByProjectName) {
         matches.append(addProjectNameMatches(term));
     }
     context.addMatches(matches);

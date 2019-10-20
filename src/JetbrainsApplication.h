@@ -4,6 +4,7 @@
 //#define LOG_INSTALLED
 
 #include <QtCore>
+#include <KConfigCore/KConfigGroup>
 
 class JetbrainsApplication : public QFileSystemWatcher {
 Q_OBJECT
@@ -11,7 +12,7 @@ public:
 
     explicit JetbrainsApplication(const QString &desktopFilePath);
 
-    static QList<JetbrainsApplication *> getInstalledList();
+    static QMap<QString, QString> getInstalledApplicationPaths(const KConfigGroup &customMappingConfig);
 
     static void parseXMLFiles(QList<JetbrainsApplication *> &apps);
 
@@ -19,7 +20,10 @@ public:
 
     static QList<JetbrainsApplication *> filterApps(QList<JetbrainsApplication *> &apps);
 
-    static QStringList getAURInstalledFiles();
+    static QStringList getAdditionalDesktopFileLocations();
+
+    static QString filterApplicationName(const QString &name);
+
 
     QList<QString> recentlyUsed;
     QString desktopFilePath;
