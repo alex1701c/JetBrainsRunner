@@ -15,12 +15,22 @@ JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
 JetbrainsRunner::~JetbrainsRunner() = default;
 
 void JetbrainsRunner::init() {
-
+    config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
+    const auto mappingMap = config.group("CustomMapping").entryMap();
     installed = JetbrainsApplication::getInstalledList();
+
+    // Remove .desktop files that are automatically found but manually configured
+    if (!mappingMap.empty()) {
+        for (const auto &installedApp:installed) {
+            if (mappingMap.contains(installedApp->desktopFilePath)) {
+                installed.removeOne(installedApp);
+            }
+        }
+    }
 #ifdef LOG_INSTALLED
     qInfo() << "\n<-------- Read installed Jetbrains Applications ------------>";
     for (const auto &app:installed) {
-        qInfo() << app->name;
+        qInfo() << app->name << app->desktopFilePath;
     }
 #endif
     QList<SettingsDirectory> dirs = SettingsDirectory::getSettingsDirectories();
@@ -35,14 +45,29 @@ void JetbrainsRunner::init() {
     JetbrainsApplication::parseXMLFiles(installed);
     installed = JetbrainsApplication::filterApps(installed);
 
-    config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
-    QDate lastUpdateCheckDate = QDate::fromString(config.readEntry("checkedUpdateDate"));
-    if (!config.hasKey("checkedUpdateDate") || !lastUpdateCheckDate.isValid() ||
-        lastUpdateCheckDate.addDays(7) <= QDate::currentDate()) {
-        auto manager = new QNetworkAccessManager(this);
-        QNetworkRequest request(QUrl("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases"));
-        manager->get(request);
-        connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
+    // Add manually configured entries
+    for (const auto &mappingEntry: mappingMap.toStdMap()) {
+        auto *customApp = new JetbrainsApplication(mappingEntry.first);
+        QFile xmlConfigFile(mappingEntry.second);
+        if (xmlConfigFile.open(QFile::ReadOnly)) {
+            customApp->parseXMLFile(xmlConfigFile.readAll());
+            customApp->addPath(mappingEntry.second);
+            if (!customApp->recentlyUsed.isEmpty()) {
+                installed.append(customApp);
+            }
+        }
+    }
+
+    if (config.readEntry("NotifyUpdates", "true") == "true") {
+        // Check once a week if there is an update available, if yes display a notification
+        QDate lastUpdateCheckDate = QDate::fromString(config.readEntry("checkedUpdateDate"));
+        if (!config.hasKey("checkedUpdateDate") || !lastUpdateCheckDate.isValid() ||
+            lastUpdateCheckDate.addDays(7) <= QDate::currentDate()) {
+            auto manager = new QNetworkAccessManager(this);
+            QNetworkRequest request(QUrl("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases"));
+            manager->get(request);
+            connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
+        }
     }
 #ifdef LOG_INSTALLED
     qInfo() << "<------------- Projects and their recently used project paths ----------------------->";
@@ -94,7 +119,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                     match.setText(app->name + " launch " + dir.split('/').last());
                     match.setIconName(app->iconPath);
                     match.setData(QString(app->executablePath).replace("%f", dir));
-                    match.setRelevance((float) 1 / (i + 1));
+                    match.setRelevance((float) 1 / (float) (i + 1));
                     matches.append(match);
                 }
             }
@@ -128,7 +153,7 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > "1.2.1") {
+                    if (githubRelease.value("tag_name").toString() > "1.1.1") {
                         displayText.append(githubRelease.value("tag_name").toString() + ": " +
                                            githubRelease.value("name").toString() + "\n");
                     }

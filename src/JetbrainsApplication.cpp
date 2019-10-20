@@ -134,7 +134,6 @@ QStringList JetbrainsApplication::getAURInstalledFiles() {
             "pycharm-professional.desktop",
             "pycharm-eap.desktop",
             "charm.desktop",
-            "jetbrains-clion.desktop",
             "rider.desktop",
     };
     const QString installationLocation = "/usr/share/applications/";

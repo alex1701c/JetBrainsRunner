@@ -19,11 +19,12 @@ Q_OBJECT
 public:
     explicit JetbrainsRunnerConfig(QWidget *parent = nullptr, const QVariantList &args = QVariantList());
 
-    void makeVersionRequest();
-
     KConfigGroup config;
 
+    KConfigGroup customMappingGroup;
 public Q_SLOTS:
+
+    void makeVersionRequest();
 
     void displayUpdateNotification(QNetworkReply *reply);
 
@@ -32,6 +33,8 @@ public Q_SLOTS:
     void deleteMappingItem();
 
     void validateOptions();
+
+    void load() override;
 
     void save() override;
 

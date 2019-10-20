@@ -24,6 +24,31 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
+      <widget class="QWidget" name="configTitleWidget" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="applicationIconLabel">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="appNameLabel">
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="configDesktoFilePushButton">
        <property name="text">
         <string>Select .desktop File</string>
@@ -31,9 +56,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="configFolderPushButton">
+      <widget class="QPushButton" name="configXMLFilePushButton">
        <property name="text">
-        <string>Select Config Folder/File</string>
+        <string>Select  XML Config File</string>
        </property>
       </widget>
      </item>
@@ -41,37 +66,7 @@
       <widget class="QWidget" name="configReadWidget" native="true">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item alignment="Qt::AlignLeft">
-           <widget class="QLabel" name="applicationIconLabel">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignLeft">
-           <widget class="QLabel" name="appNameLabel">
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Recent Projects:</string>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QLabel" name="recentProjectsLabel">
             <property name="text">
@@ -86,7 +81,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item alignment="Qt::AlignTop">
     <widget class="QPushButton" name="deletePushButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

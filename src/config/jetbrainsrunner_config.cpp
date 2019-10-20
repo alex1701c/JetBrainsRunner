@@ -1,4 +1,5 @@
 #include "jetbrainsrunner_config.h"
+#include "jetbrainsrunner_config_mapping_item.h"
 #include <KSharedConfig>
 #include <KPluginFactory>
 #include <QJsonDocument>
@@ -14,31 +15,55 @@ JetbrainsRunnerConfigForm::JetbrainsRunnerConfigForm(QWidget *parent) : QWidget(
 
 JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList &args) : KCModule(parent, args) {
     m_ui = new JetbrainsRunnerConfigForm(this);
+    m_ui->setMinimumWidth(400);
     auto *layout = new QGridLayout(this);
     layout->addWidget(m_ui, 0, 0);
 
     config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
-
-    m_ui->appNameSearch->setChecked(config.readEntry("LaunchByAppName", "true") == "true");
-    m_ui->projectNameSearch->setChecked(config.readEntry("LaunchByProjectName", "true") == "true");
+    customMappingGroup = config.group("CustomMapping");
 
     connect(m_ui->appNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->appNameSearch, SIGNAL(clicked(bool)), this, SLOT(validateOptions()));
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->projectNameSearch, SIGNAL(clicked(bool)), this, SLOT(validateOptions()));
+    connect(m_ui->updatesCheckBox, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(addNewMappingItem()));
     connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(changed()));
     validateOptions();
-    makeVersionRequest();
 }
 
 
+void JetbrainsRunnerConfig::load() {
+    m_ui->appNameSearch->setChecked(config.readEntry("LaunchByAppName", "true") == "true");
+    m_ui->projectNameSearch->setChecked(config.readEntry("LaunchByProjectName", "true") == "true");
+    m_ui->updatesCheckBox->setChecked(config.readEntry("NotifyUpdates", "true") == "true");
+    if (m_ui->updatesCheckBox->isChecked()) {
+        makeVersionRequest();
+    }
+
+    for (const auto &entry: customMappingGroup.entryMap().toStdMap()) {
+        m_ui->manualMappingVBox->addWidget(new JetbrainsRunnerConfigMappingItem(this, entry.first, entry.second));
+    }
+}
+
 void JetbrainsRunnerConfig::save() {
+    config.writeEntry("LaunchByAppName", m_ui->appNameSearch->isChecked());
+    config.writeEntry("LaunchByProjectName", m_ui->projectNameSearch->isChecked());
+    config.writeEntry("NotifyUpdates", m_ui->updatesCheckBox->isChecked());
 
-    KCModule::save();
 
-    config.writeEntry("LaunchByAppName", m_ui->appNameSearch->isChecked() ? "true" : "false");
-    config.writeEntry("LaunchByProjectName", m_ui->projectNameSearch->isChecked() ? "true" : "false");
+    const int itemCount = m_ui->manualMappingVBox->count();
+    // Reset config by deleting group
+    customMappingGroup.deleteGroup();
+    // Write items to config
+    for (int i = 0; i < itemCount; ++i) {
+        auto *item = reinterpret_cast<JetbrainsRunnerConfigMappingItem *>(m_ui->manualMappingVBox->itemAt(i)->widget());
+        const QString desktopFilePath = item->configDesktoFilePushButton->text().remove("&");
+        const QString configFilePath = item->configXMLFilePushButton->text().remove("&");
+        if (QFile::exists(desktopFilePath) && QFile::exists(configFilePath)) {
+            customMappingGroup.writeEntry(desktopFilePath, configFilePath);
+        }
+    }
 
     emit changed();
 }
@@ -93,6 +118,7 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
 void JetbrainsRunnerConfig::addNewMappingItem() {
     m_ui->manualMappingVBox->addWidget(new JetbrainsRunnerConfigMappingItem(this));
 }
+
 
 void JetbrainsRunnerConfig::deleteMappingItem() {
     this->sender()->parent()->deleteLater();
