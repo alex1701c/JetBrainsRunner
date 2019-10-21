@@ -25,6 +25,7 @@ void JetbrainsRunner::reloadConfiguration() {
     launchByAppName = config.readEntry("LaunchByAppName", "true") == "true";
     launchByProjectName = config.readEntry("LaunchByProjectName", "true") == "true";
     installed.clear();
+    appNameRegex = QRegExp(R"(^(\w+)(?: (.+))?$)");
 
     // Initialize/read settings for JetbrainsApplications
     const auto mappingMap = config.group("CustomMapping").entryMap();
@@ -82,14 +83,14 @@ void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::Qu
 QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
 
-    QRegExp regExp(R"(^(\w+)(?: (.+))?$)");
-    regExp.indexIn(term);
-    QString termName = regExp.capturedTexts().at(1);
-    QString termProject = regExp.capturedTexts().last();
-    if (termName.isEmpty()) return matches;
+    appNameRegex.indexIn(term);
+    QString termName = appNameRegex.capturedTexts().at(1);
+    QString termProject = appNameRegex.capturedTexts().at(2);
 
     for (auto const &app:installed) {
-        if (QString(app->name).replace(" ", "").startsWith(termName, Qt::CaseInsensitive)) {
+        if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive)
+            || (app->secondName && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))
+                ) {
             const int recentProjectsCount = app->recentlyUsed.size();
             for (int i = 0; i < recentProjectsCount; ++i) {
                 const auto &dir = app->recentlyUsed.at(i);

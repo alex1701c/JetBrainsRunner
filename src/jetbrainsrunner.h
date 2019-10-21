@@ -16,6 +16,7 @@ public:
     ~JetbrainsRunner() override;
 
     bool launchByAppName, launchByProjectName;
+    QRegExp appNameRegex;
 
     QList<JetbrainsApplication *> installed;
 

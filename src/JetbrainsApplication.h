@@ -31,6 +31,8 @@ public:
     QString iconPath;
     QString name = "";
     QString configFolder = "";
+    bool secondName = false;
+    QString nameArray[2] = {"", ""};
 
 public Q_SLOTS:
 

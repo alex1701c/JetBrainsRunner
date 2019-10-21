@@ -9,6 +9,22 @@ JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) :
     iconPath = config.readEntry("Icon");
     executablePath = config.readEntry("Exec");
     name = config.readEntry("Name");
+
+    // Allow the user to search for both names like Android Studio
+    auto nameList = filterApplicationName(QString(name))
+            .remove(" Professional")
+            .remove(" Community")
+            .remove(" Ultimate")
+            .remove(" Edu")
+            .split(" ");
+    if (nameList.count() > 0) {
+        nameArray[0] = nameList.at(0);
+        if (nameList.count() == 2) {
+            secondName = true;
+            nameArray[1] = nameList.at(1);
+        }
+
+    }
     connect(this, SIGNAL(fileChanged(QString)), this, SLOT(configChanged(QString)));
 }
 
