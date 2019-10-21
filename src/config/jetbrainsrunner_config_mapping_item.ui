@@ -50,6 +50,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="configDesktoFilePushButton">
+       <property name="toolTip">
+        <string>Select the .desktop file which launches your application</string>
+       </property>
        <property name="text">
         <string>Select .desktop File</string>
        </property>
@@ -57,6 +60,10 @@
      </item>
      <item>
       <widget class="QPushButton" name="configXMLFilePushButton">
+       <property name="toolTip">
+        <string>Select the XML config file for the application this file is located in:
+&quot;.NAME.VERSION/config/options&quot; and is called recentProjectDirectories.xml or recentProjects.xml</string>
+       </property>
        <property name="text">
         <string>Select  XML Config File</string>
        </property>
@@ -88,6 +95,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Delete this item</string>
      </property>
      <property name="text">
       <string/>

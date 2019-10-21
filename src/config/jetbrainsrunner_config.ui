@@ -55,6 +55,9 @@
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
              <widget class="QCheckBox" name="appNameSearch">
+              <property name="toolTip">
+               <string>Allows you to search for the name of the application, for exaple &quot;Clion&quot;</string>
+              </property>
               <property name="text">
                <string>Enable search by application name</string>
               </property>
@@ -65,6 +68,9 @@
             </item>
             <item>
              <widget class="QCheckBox" name="projectNameSearch">
+              <property name="toolTip">
+               <string>Search by project name, you might want to disable this if you get to many suggestions</string>
+              </property>
               <property name="text">
                <string>Enable search by project name</string>
               </property>
@@ -75,8 +81,21 @@
             </item>
             <item>
              <widget class="QCheckBox" name="updatesCheckBox">
+              <property name="toolTip">
+               <string>Checks weekly if an update is available and sends a notification or shows it in the config dialog</string>
+              </property>
               <property name="text">
                <string>Notify when new versions are available</string>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignLeft">
+             <widget class="QPushButton" name="logFilePushButton">
+              <property name="toolTip">
+               <string>Generate a log file for debugging purposes</string>
+              </property>
+              <property name="text">
+               <string>Generate Log File</string>
               </property>
              </widget>
             </item>
@@ -88,6 +107,10 @@
               <layout class="QVBoxLayout" name="verticalLayout_3">
                <item>
                 <widget class="QPushButton" name="newManualMappingPushButton">
+                 <property name="toolTip">
+                  <string>Add a new entry which mapps a specific .desktop file to a specific XML config file
+This is useful if the automatic mapping of the plugin does not work</string>
+                 </property>
                  <property name="text">
                   <string>Add New Mapping Entry</string>
                  </property>

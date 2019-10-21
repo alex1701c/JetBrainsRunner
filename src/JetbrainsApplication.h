@@ -1,8 +1,6 @@
 #ifndef JETBRAINSAPPLICATION_H
 #define JETBRAINSAPPLICATION_H
 
-//#define LOG_INSTALLED
-
 #include <QtCore>
 #include <KConfigCore/KConfigGroup>
 
@@ -12,13 +10,14 @@ public:
 
     explicit JetbrainsApplication(const QString &desktopFilePath);
 
-    static QMap<QString, QString> getInstalledApplicationPaths(const KConfigGroup &customMappingConfig);
+    static QMap<QString, QString>
+    getInstalledApplicationPaths(const KConfigGroup &customMappingConfig, QString *debugMessage = nullptr);
 
-    static void parseXMLFiles(QList<JetbrainsApplication *> &apps);
+    static void parseXMLFiles(QList<JetbrainsApplication *> &apps, QString *debugMessage = nullptr);
 
-    void parseXMLFile(QString fileContent = "");
+    void parseXMLFile(QString fileContent = "", QString *debugMessage = nullptr);
 
-    static QList<JetbrainsApplication *> filterApps(QList<JetbrainsApplication *> &apps);
+    static QList<JetbrainsApplication *> filterApps(QList<JetbrainsApplication *> &apps, QString *debugMessage = nullptr);
 
     static QStringList getAdditionalDesktopFileLocations();
 
@@ -44,12 +43,7 @@ public Q_SLOTS:
             f.close();
             this->parseXMLFile(content);
         }
-#ifdef LOG_INSTALLED
-            qInfo() << "File Changed Event: " << file;
-#endif
-        qInfo() << "Changed config: " << file;
     };
-
 };
 
 

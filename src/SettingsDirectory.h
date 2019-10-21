@@ -11,7 +11,7 @@ public:
 
     SettingsDirectory(QString directory, QString name, QString version);
 
-    static QList<SettingsDirectory> getSettingsDirectories();
+    static QList<SettingsDirectory> getSettingsDirectories(QString *debugMessage = nullptr);
 
     static void findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication *app);
 

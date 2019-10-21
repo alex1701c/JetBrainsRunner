@@ -7,7 +7,7 @@
 SettingsDirectory::SettingsDirectory(QString directory, QString name, QString version) : directory(std::move(
         directory)), name(std::move(name)), version(std::move(version)) {}
 
-QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
+QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories(QString *debugMessage) {
     QString home = QDir::homePath();
     QList<SettingsDirectory> dirs;
 
@@ -28,11 +28,16 @@ QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories() {
             }
         }
     }
+    if (debugMessage != nullptr) {
+        debugMessage->append("========== Find Available Config Folders ==========\n");
+        for (const auto &d:dirs) {
+            debugMessage->append(d.name + " " + d.directory + "\n");
+        }
+    }
     return dirs;
 }
 
-void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication* app) {
-
+void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication *app) {
     app->name = app->name.remove(" Release").remove(" Edition").remove(" + JBR11").remove(" RC").remove(" EAP");
     // Exact match or space in name
     for (const auto &dir :dirs) {
@@ -60,17 +65,16 @@ void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory
 
 QMap<QString, QString> SettingsDirectory::getAliases() {
     return {
-            {"IntelliJ IDEA Community",   "IdeaIC"},
-            {"IntelliJ IDEA Ultimate",    "IntelliJIdea"},
-            {"PyCharm Professional",      "PyCharm"},
-            {"PyCharm Community",         "PyCharmCE"}
+            {"IntelliJ IDEA Community", "IdeaIC"},
+            {"IntelliJ IDEA Ultimate",  "IntelliJIdea"},
+            {"PyCharm Professional",    "PyCharm"},
+            {"PyCharm Community",       "PyCharmCE"}
     };
 }
 
 void SettingsDirectory::findCorrespondingDirectories(const QList<SettingsDirectory> &dirs,
-                                                     QList<JetbrainsApplication*> &apps) {
+                                                     QList<JetbrainsApplication *> &apps) {
     for (auto &app:apps) {
         findCorrespondingDirectory(dirs, app);
     }
-
 }

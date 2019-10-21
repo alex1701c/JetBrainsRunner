@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QtWidgets/QLabel>
+#include <SettingsDirectory.h>
 
 K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory, registerPlugin<JetbrainsRunnerConfig>("kcm_krunner_jetbrainsrunner");)
 
@@ -29,6 +30,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     connect(m_ui->updatesCheckBox, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(addNewMappingItem()));
     connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(changed()));
+    connect(m_ui->logFilePushButton, SIGNAL(clicked(bool)), this, SLOT(exportDebugFile()));
     validateOptions();
 }
 
@@ -86,6 +88,49 @@ void JetbrainsRunnerConfig::makeVersionRequest() {
     connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
 }
 
+void JetbrainsRunnerConfig::exportDebugFile() {
+    QString filename = QFileDialog::getSaveFileName(this, "Save file", "", ".txt");
+    if (!filename.isEmpty()) {
+
+        auto debugString = new QString();
+        const auto mappingMap = config.group("CustomMapping").entryMap();
+        QList<JetbrainsApplication *> appList;
+        QList<JetbrainsApplication *> automaticAppList;
+        auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"));
+
+        // Split manually configured and automatically found apps
+        for (const auto &p:desktopPaths.toStdMap()) {
+            // Desktop file is manually specified
+            if (mappingMap.contains(p.second)) {
+                auto customMappedApp = new JetbrainsApplication(p.second);
+                QFile xmlConfigFile(mappingMap.value(p.second));
+                if (xmlConfigFile.open(QFile::ReadOnly)) {
+                    customMappedApp->parseXMLFile(xmlConfigFile.readAll());
+                    // Add path for filewatcher
+                    customMappedApp->addPath(mappingMap.value(p.second));
+                    if (!customMappedApp->recentlyUsed.isEmpty()) {
+                        appList.append(customMappedApp);
+                    }
+                }
+                xmlConfigFile.close();
+            } else {
+                automaticAppList.append(new JetbrainsApplication(p.second));
+            }
+        }
+
+        SettingsDirectory::findCorrespondingDirectories(SettingsDirectory::getSettingsDirectories(debugString), automaticAppList);
+        JetbrainsApplication::parseXMLFiles(automaticAppList, debugString);
+        automaticAppList = JetbrainsApplication::filterApps(automaticAppList, debugString);
+
+        auto *f = new QFile(filename);
+        f->open(QIODevice::WriteOnly | QIODevice::Text);
+        f->write(debugString->toLocal8Bit());
+        qInfo() << *debugString;
+        f->flush();
+        f->close();
+    }
+}
+
 void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
     if (reply->error() == QNetworkReply::NoError) {
         QString displayText;
@@ -115,10 +160,10 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
     }
 }
 
+
 void JetbrainsRunnerConfig::addNewMappingItem() {
     m_ui->manualMappingVBox->addWidget(new JetbrainsRunnerConfigMappingItem(this));
 }
-
 
 void JetbrainsRunnerConfig::deleteMappingItem() {
     this->sender()->parent()->deleteLater();

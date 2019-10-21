@@ -23,6 +23,7 @@ public:
 
     KConfigGroup customMappingGroup;
 public Q_SLOTS:
+    void exportDebugFile();
 
     void makeVersionRequest();
 
