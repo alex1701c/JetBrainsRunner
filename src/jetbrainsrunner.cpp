@@ -85,6 +85,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
 
     appNameRegex.indexIn(term);
     QString termName = appNameRegex.capturedTexts().at(1);
+    if (termName.isEmpty()) return matches;
     QString termProject = appNameRegex.capturedTexts().at(2);
 
     for (auto const &app:installed) {
