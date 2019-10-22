@@ -83,7 +83,10 @@ void JetbrainsApplication::parseXMLFile(QString content, QString *debugMessage) 
     // Extract paths from XML element
     while (reader.readNextStartElement()) {
         if (reader.name() == "option") {
-            QString recentPath = reader.attributes().value("value").toString().replace("$USER_HOME$", QDir::homePath());
+            QString recentPath = reader.attributes()
+                    .value("value")
+                    .toString()
+                    .replace("$USER_HOME$", QDir::homePath());
             if (QDir(recentPath).exists()) {
                 this->recentlyUsed.append(recentPath);
             }
@@ -91,9 +94,15 @@ void JetbrainsApplication::parseXMLFile(QString content, QString *debugMessage) 
         }
     }
     if (debugMessage != nullptr) {
-        for (const auto &recent:recentlyUsed) {
-            debugMessage->append("Recently used project folder for " + this->name + " " + recent + "\n");
+        debugMessage->append("=====Recently used project folder for " + this->name + "=====\n");
+        if (!recentlyUsed.isEmpty()) {
+            for (const auto &recent:recentlyUsed) {
+                debugMessage->append("    " + recent + "\n");
+            }
+        } else {
+            debugMessage->append("    NO PROJECTS\n");
         }
+        debugMessage->append("\n");
     }
 }
 

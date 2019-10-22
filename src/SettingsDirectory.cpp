@@ -38,7 +38,7 @@ QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories(QString *debu
 }
 
 void SettingsDirectory::findCorrespondingDirectory(const QList<SettingsDirectory> &dirs, JetbrainsApplication *app) {
-    app->name = app->name.remove(" Release").remove(" Edition").remove(" + JBR11").remove(" RC").remove(" EAP");
+    app->name = JetbrainsApplication::filterApplicationName(app->name);
     // Exact match or space in name
     for (const auto &dir :dirs) {
         if (dir.name == app->name) {

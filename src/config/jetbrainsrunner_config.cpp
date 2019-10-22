@@ -99,13 +99,16 @@ void JetbrainsRunnerConfig::exportDebugFile() {
         auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"));
 
         // Split manually configured and automatically found apps
+        if (mappingMap.count() > 0) {
+            debugString->append("========== Custom Configured Applications ==========\n");
+        }
         for (const auto &p:desktopPaths.toStdMap()) {
             // Desktop file is manually specified
             if (mappingMap.contains(p.second)) {
                 auto customMappedApp = new JetbrainsApplication(p.second);
                 QFile xmlConfigFile(mappingMap.value(p.second));
                 if (xmlConfigFile.open(QFile::ReadOnly)) {
-                    customMappedApp->parseXMLFile(xmlConfigFile.readAll());
+                    customMappedApp->parseXMLFile(xmlConfigFile.readAll(), debugString);
                     // Add path for filewatcher
                     customMappedApp->addPath(mappingMap.value(p.second));
                     if (!customMappedApp->recentlyUsed.isEmpty()) {
@@ -125,7 +128,6 @@ void JetbrainsRunnerConfig::exportDebugFile() {
         auto *f = new QFile(filename);
         f->open(QIODevice::WriteOnly | QIODevice::Text);
         f->write(debugString->toLocal8Bit());
-        qInfo() << *debugString;
         f->flush();
         f->close();
     }
