@@ -35,6 +35,10 @@ public Q_SLOTS:
 
     void validateOptions();
 
+    void validateFormattingString();
+
+    void setDefaultFormatting();
+
     void load() override;
 
     void save() override;

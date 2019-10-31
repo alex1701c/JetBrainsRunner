@@ -22,6 +22,8 @@ void JetbrainsRunner::init() {
 
 void JetbrainsRunner::reloadConfiguration() {
     // General settings
+    formatString = config.readEntry("FormatString");
+    if (!formatString.contains("%PROJECT")) formatString = "%APPNAME launch %PROJECT";
     launchByAppName = config.readEntry("LaunchByAppName", "true") == "true";
     launchByProjectName = config.readEntry("LaunchByProjectName", "true") == "true";
     installed.clear();
@@ -89,15 +91,20 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
     QString termProject = appNameRegex.capturedTexts().at(2);
 
     for (auto const &app:installed) {
-        if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive)
-            || (app->secondName && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))
+        if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
+            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))
                 ) {
             const int recentProjectsCount = app->recentlyUsed.size();
             for (int i = 0; i < recentProjectsCount; ++i) {
                 const auto &dir = app->recentlyUsed.at(i);
-                if (termProject.isEmpty() || dir.split('/').last().startsWith(termProject, Qt::CaseInsensitive)) {
+                const QString dirName = dir.split('/').last();
+                if (termProject.isEmpty() || dirName.startsWith(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
-                    match.setText(app->name + " launch " + dir.split('/').last());
+                    match.setText(QString(formatString)
+                                          .replace("%PROJECT", dirName)
+                                          .replace("%APPNAME", app->name)
+                                          .replace("%APP", app->shortName)
+                    );
                     match.setIconName(app->iconPath);
                     match.setData(QString(app->executablePath).replace("%f", dir));
                     match.setRelevance((float) 1 / (float) (i + 1));
@@ -113,10 +120,24 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
 QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
     for (auto const &app:installed) {
+        // If the plugin displays search suggestions by appname and the application name matches the search
+        // term the options have already been created in the addAppNameMatches method
+        // => this app should be skipped to avoid duplicates
+        if ((launchByAppName &&
+             app->nameArray[0].startsWith(term, Qt::CaseInsensitive)) ||
+            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(term, Qt::CaseInsensitive))
+                ) {
+            continue;
+        }
         for (const auto &dir:app->recentlyUsed) {
-            if (dir.split('/').last().startsWith(term, Qt::CaseInsensitive)) {
+            const QString dirName = dir.split('/').last();
+            if (dirName.startsWith(term, Qt::CaseInsensitive)) {
                 Plasma::QueryMatch match(this);
-                match.setText(" Launch " + dir.split('/').last() + " in " + app->name);
+                match.setText(QString(formatString)
+                                      .replace("%PROJECT", dirName)
+                                      .replace("%APPNAME", app->name)
+                                      .replace("%APP", app->shortName)
+                );
                 match.setIconName(app->iconPath);
                 match.setData(QString(app->executablePath).replace("%f", dir));
                 matches.append(match);
@@ -134,7 +155,7 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > "1.2.1") {
+                    if (githubRelease.value("tag_name").toString() > "1.2.2") {
                         displayText.append(githubRelease.value("tag_name").toString() + ": " +
                                            githubRelease.value("name").toString() + "\n");
                     }

@@ -16,7 +16,7 @@ JetbrainsRunnerConfigForm::JetbrainsRunnerConfigForm(QWidget *parent) : QWidget(
 
 JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList &args) : KCModule(parent, args) {
     m_ui = new JetbrainsRunnerConfigForm(this);
-    m_ui->setMinimumWidth(400);
+    m_ui->setMinimumWidth(600);
     auto *layout = new QGridLayout(this);
     layout->addWidget(m_ui, 0, 0);
 
@@ -30,15 +30,23 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     connect(m_ui->updatesCheckBox, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(addNewMappingItem()));
     connect(m_ui->newManualMappingPushButton, SIGNAL(clicked(bool)), this, SLOT(changed()));
+    connect(m_ui->formatStringLineEdit, SIGNAL(textChanged(QString)), this, SLOT(changed()));
+    connect(m_ui->formatStringLineEdit, SIGNAL(textChanged(QString)), this, SLOT(validateFormattingString()));
+    connect(m_ui->defaultFormattingPushButton, SIGNAL(clicked(bool)), this, SLOT(setDefaultFormatting()));
+    connect(m_ui->defaultFormattingPushButton, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->logFilePushButton, SIGNAL(clicked(bool)), this, SLOT(exportDebugFile()));
     validateOptions();
 }
 
 
 void JetbrainsRunnerConfig::load() {
+    m_ui->formatStringValidationLabel->setHidden(true);
+    m_ui->formatStringValidationLabel->setStyleSheet("QLabel { color : red }");
+    m_ui->defaultFormattingPushButton->setHidden(true);
     m_ui->appNameSearch->setChecked(config.readEntry("LaunchByAppName", "true") == "true");
     m_ui->projectNameSearch->setChecked(config.readEntry("LaunchByProjectName", "true") == "true");
     m_ui->updatesCheckBox->setChecked(config.readEntry("NotifyUpdates", "true") == "true");
+    m_ui->formatStringLineEdit->setText(config.readEntry("FormatString", "%APPNAME launch %PROJECT"));
     if (m_ui->updatesCheckBox->isChecked()) {
         makeVersionRequest();
     }
@@ -52,7 +60,7 @@ void JetbrainsRunnerConfig::save() {
     config.writeEntry("LaunchByAppName", m_ui->appNameSearch->isChecked());
     config.writeEntry("LaunchByProjectName", m_ui->projectNameSearch->isChecked());
     config.writeEntry("NotifyUpdates", m_ui->updatesCheckBox->isChecked());
-
+    config.writeEntry("FormatString", m_ui->formatStringLineEdit->text());
 
     const int itemCount = m_ui->manualMappingVBox->count();
     // Reset config by deleting group
@@ -73,6 +81,7 @@ void JetbrainsRunnerConfig::save() {
 void JetbrainsRunnerConfig::defaults() {
     m_ui->appNameSearch->setChecked(true);
     m_ui->projectNameSearch->setChecked(true);
+    m_ui->formatStringLineEdit->setText("%APPNAME launch %PROJECT");
     emit changed(true);
 }
 
@@ -141,7 +150,7 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > "1.2.1") {
+                    if (githubRelease.value("tag_name").toString() > "1.2.2") {
                         displayText.append(githubRelease.value("tag_name").toString() + ": " +
                                            githubRelease.value("name").toString() + "\n");
                     }
@@ -149,7 +158,7 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
             }
         }
         if (!displayText.isEmpty()) {
-            displayText.prepend("Current Version: 1.2.1\n");
+            displayText.prepend("Current Version: 1.2.2\n");
             displayText.prepend("<pre>Updates Available !\n");
             displayText.append("Please go to <a href=\"https://github.com/alex1701c/JetBrainsRunner\">"\
                                "https://github.com/alex1701c/JetBrainsRunner</a>\nand get the latest version</pre>");
@@ -169,6 +178,26 @@ void JetbrainsRunnerConfig::addNewMappingItem() {
 
 void JetbrainsRunnerConfig::deleteMappingItem() {
     this->sender()->parent()->deleteLater();
+}
+
+void JetbrainsRunnerConfig::validateFormattingString() {
+    const QString text = m_ui->formatStringLineEdit->text();
+    if (text.isEmpty()) {
+        m_ui->formatStringValidationLabel->setText("The formatting string can not be empty");
+        m_ui->formatStringValidationLabel->setHidden(false);
+        m_ui->defaultFormattingPushButton->setHidden(false);
+    } else if (!text.contains("%PROJECT")) {
+        m_ui->formatStringValidationLabel->setText("The formatting string must contain %PROJECT");
+        m_ui->formatStringValidationLabel->setHidden(false);
+        m_ui->defaultFormattingPushButton->setHidden(true);
+    } else {
+        m_ui->formatStringValidationLabel->setHidden(true);
+        m_ui->defaultFormattingPushButton->setHidden(true);
+    }
+}
+
+void JetbrainsRunnerConfig::setDefaultFormatting() {
+    m_ui->formatStringLineEdit->setText("%APPNAME launch %PROJECT");
 }
 
 

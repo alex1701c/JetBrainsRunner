@@ -9,6 +9,14 @@ JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) :
     iconPath = config.readEntry("Icon");
     executablePath = config.readEntry("Exec");
     name = config.readEntry("Name");
+    shortName = QString(name)
+            .remove(" Edition")
+            .remove(" Professional")
+            .remove(" Ultimate")
+            .remove(" + JBR11")
+            .remove(" RC")
+            .remove(" EAP")
+            .replace("Community", "CE");
 
     // Allow the user to search for both names like Android Studio
     auto nameList = filterApplicationName(QString(name))
@@ -20,7 +28,6 @@ JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) :
     if (nameList.count() > 0) {
         nameArray[0] = nameList.at(0);
         if (nameList.count() == 2) {
-            secondName = true;
             nameArray[1] = nameList.at(1);
         }
 

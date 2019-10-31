@@ -89,6 +89,65 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="formattingRulesLabel">
+              <property name="text">
+               <string>Formatting Rules:
+%APPNAME is the application name
+%APP is the short application name where words are removed/shortened
+for example &quot;Community&quot; gets replaced by &quot; CE&quot; and &quot;Edition&quot; gets removed
+%PROJECT is the directory name</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QLabel" name="formatStringValidationLabel">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="defaultFormattingPushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Set to default</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Format String</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="formatStringLineEdit">
+                <property name="toolTip">
+                 <string>This string is used to create the displayed text in the options</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
             <item alignment="Qt::AlignLeft">
              <widget class="QPushButton" name="logFilePushButton">
               <property name="toolTip">
@@ -112,7 +171,7 @@
 This is useful if the automatic mapping of the plugin does not work</string>
                  </property>
                  <property name="text">
-                  <string>Add New Mapping Entry</string>
+                  <string notr="true">Add New Mapping Entry</string>
                  </property>
                 </widget>
                </item>
