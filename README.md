@@ -19,16 +19,17 @@ Fedora
 `sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify`
 
 The easiest way to install is:  
-`curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash`
+`curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash`  
+Or you can install it without admin privileges:  
+`curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install-user.sh | bash`  
 
-Or you can do it manually:
-
+Or you can do it manually (with admin privileges):
 ```
 git clone https://github.com/alex1701c/JetBrainsRunner  
 cd JetBrainsRunner/
 mkdir build  
 cd build
-cmake -DQT_PLUGIN_INSTALL_DIR=`kf5-config --qt-plugins` ..
+cmake -DQT_PLUGIN_INSTALL_DIR=`kf5-config --qt-plugins` -DICON_INSTALL_DIR="/usr/share/icons/"  ..
 make
 sudo make install
 ```
@@ -61,7 +62,7 @@ After this you can change the displayed text for the run options using the displ
 If the plugin has issues finding the installed applications or finding the correct config file you can specify them manually.
 Once the files have been selected the icon, name and recent project get displayed.  
 If you have to do manual you are welcome to create a pull request and add the application path to the default configuration:
-https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L129
+https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L137
 ![Config Dialog](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/config_dialog.png)
 
 ### Issues:  

@@ -136,11 +136,26 @@ QList<JetbrainsApplication *> JetbrainsApplication::filterApps(QList<JetbrainsAp
 
 QStringList JetbrainsApplication::getAdditionalDesktopFileLocations() {
     QStringList additionalDesktopFileLocations = {
+            // AUR applications
             "/usr/share/applications/rubymine.desktop",
             "/usr/share/applications/pycharm-professional.desktop",
             "/usr/share/applications/pycharm-eap.desktop",
             "/usr/share/applications/charm.desktop",
             "/usr/share/applications/rider.desktop",
+            // Snap applications
+            "/var/lib/snapd/desktop/applications/clion_clion.desktop",
+            "/var/lib/snapd/desktop/applications/datagrip_datagrip.desktop",
+            "/var/lib/snapd/desktop/applications/goland_goland.desktop",
+            "/var/lib/snapd/desktop/applications/pycharm-community_pycharm-community.desktop",
+            "/var/lib/snapd/desktop/applications/pycharm-educational_pycharm-educational.desktop",
+            "/var/lib/snapd/desktop/applications/pycharm-professional_pycharm-professional.desktop",
+            "/var/lib/snapd/desktop/applications/rubymine_rubymine.desktop",
+            "/var/lib/snapd/desktop/applications/webstorm_webstorm.desktop",
+            "/var/lib/snapd/desktop/applications/intellij-idea-community_intellij-idea-community.desktop",
+            "/var/lib/snapd/desktop/applications/intellij-idea-educational_intellij-idea-educational.desktop",
+            "/var/lib/snapd/desktop/applications/intellij-idea-ultimate_intellij-idea-ultimate.desktop",
+            "/var/lib/snapd/desktop/applications/phpstorm_phpstorm.desktop",
+            "/var/lib/snapd/desktop/applications/rider_rider.desktop",
     };
     QStringList validFiles;
     for (const auto &additionalFile:additionalDesktopFileLocations) {
