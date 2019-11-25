@@ -32,7 +32,7 @@ public:
 public Q_SLOTS:
 
     void openDesktopFileChooser() {
-        QString desktopFile = QFileDialog::getOpenFileName(this, tr("Select Desktop File"), "",
+        const QString desktopFile = QFileDialog::getOpenFileName(this, tr("Select Desktop File"), "",
                                                            tr("Desktop File (*.desktop)"));
         if (!desktopFile.isEmpty()) {
             this->configDesktoFilePushButton->setText(desktopFile);
@@ -41,7 +41,7 @@ public Q_SLOTS:
     }
 
     void openConfigFileChooser() {
-        QString configLocation =
+        const QString configLocation =
                 QFileDialog::getOpenFileName(this, tr("Select Config File"), "",
                                              tr("XML File (*.xml)"));
         if (!configLocation.isEmpty()) {
@@ -59,7 +59,7 @@ public Q_SLOTS:
             this->appNameLabel->setText(newApp.name
                                                 .remove(" Release").remove(" Edition")
                                                 .remove(" + JBR11").remove(" RC").remove(" EAP"));
-            QPixmap pixmap(newApp.iconPath);
+            const QPixmap pixmap(newApp.iconPath);
             this->applicationIconLabel->setPixmap(pixmap);
             this->applicationIconLabel->setMask(pixmap.mask());
         } else {

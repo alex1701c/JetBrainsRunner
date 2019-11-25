@@ -29,7 +29,7 @@ git clone https://github.com/alex1701c/JetBrainsRunner
 cd JetBrainsRunner/
 mkdir build  
 cd build
-cmake -DQT_PLUGIN_INSTALL_DIR=`kf5-config --qt-plugins` -DICON_INSTALL_DIR="/usr/share/icons/"  ..
+cmake -DQT_PLUGIN_INSTALL_DIR=`kf5-config --qt-plugins` ..
 make
 sudo make install
 ```

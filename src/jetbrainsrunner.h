@@ -1,8 +1,6 @@
 #ifndef JETBRAINSRUNNER_H
 #define JETBRAINSRUNNER_H
 
-//#define LOG_INSTALLED
-
 #include <KRunner/AbstractRunner>
 #include <QtNetwork/QNetworkReply>
 #include "JetbrainsApplication.h"
@@ -15,13 +13,12 @@ public:
 
     ~JetbrainsRunner() override;
 
+    QFileSystemWatcher watcher;
     bool launchByAppName, launchByProjectName;
     QString formatString;
     QRegExp appNameRegex;
 
     QList<JetbrainsApplication *> installed;
-
-    KConfigGroup config;
 
     QList<Plasma::QueryMatch> addAppNameMatches(const QString &term);
 
@@ -31,7 +28,7 @@ protected Q_SLOTS:
 
     void init() override;
 
-    void reloadConfiguration() override;
+    void reloadPluginConfiguration(const QString &configFile = "");
 
     void displayUpdateNotification(QNetworkReply *reply);
 

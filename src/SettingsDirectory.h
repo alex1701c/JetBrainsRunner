@@ -9,7 +9,7 @@ public:
 
     static QMap<QString, QString> getAliases();
 
-    SettingsDirectory(QString directory, QString name, QString version);
+    SettingsDirectory(QString directory, QString name);
 
     static QList<SettingsDirectory> getSettingsDirectories(QString *debugMessage = nullptr);
 
@@ -20,7 +20,6 @@ public:
 
     QString directory;
     QString name;
-    QString version;
 };
 
 

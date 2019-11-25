@@ -30,5 +30,6 @@ add_dependencies(krunner_jetbrainsrunner kcm_krunner_jetbrainsrunner)
 
 install(TARGETS krunner_jetbrainsrunner kcm_krunner_jetbrainsrunner DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES plasma-runner-jetbrainsrunner.desktop config/plasma-runner-jetbrainsrunner_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+set(ICON_INSTALL_DIR "/usr/share/pixmaps/" CACHE STRING "Default icon directory")
 install(FILES jetbrains.png DESTINATION ${ICON_INSTALL_DIR})
 #Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64

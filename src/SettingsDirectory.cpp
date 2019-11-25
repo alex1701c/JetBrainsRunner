@@ -4,28 +4,25 @@
 #include "JetbrainsApplication.h"
 
 
-SettingsDirectory::SettingsDirectory(QString directory, QString name, QString version) : directory(std::move(
-        directory)), name(std::move(name)), version(std::move(version)) {}
+SettingsDirectory::SettingsDirectory(QString directory, QString name) : directory(std::move(
+        directory)), name(std::move(name)) {}
 
 QList<SettingsDirectory> SettingsDirectory::getSettingsDirectories(QString *debugMessage) {
-    QString home = QDir::homePath();
+    const QString home = QDir::homePath();
     QList<SettingsDirectory> dirs;
 
-    QDir directory(home);
-    QStringList entries = directory.entryList(QDir::Hidden | QDir::Dirs);
+    const QStringList entries = QDir(home).entryList(QDir::Hidden | QDir::Dirs);
 
     // Iterate reversed over entries
-    int maxIndex = entries.size() - 1;
+    const int maxIndex = entries.size() - 1;
+    QRegExp configFolder(R"(^\.[A-Z][a-zA-Z]+(\d+\.\d+)$)");
+    QRegExp configFolderName(R"(^\.([A-Z][a-zA-Z]+)(\d+\.\d+)$)");
     for (int i = maxIndex; i <= maxIndex && i >= 0; i--) {
         auto const &e = entries.at(i);
         // Contains name and version number live testing => https://regex101.com/r/pMOkox/1
-        if (e.contains(QRegExp(R"(^\.[A-Z][a-zA-Z]+(\d+\.\d+)$)"))) {
-            QRegExp exp(R"(^\.([A-Z][a-zA-Z]+)(\d+\.\d+)$)");
-            exp.indexIn(e);
-            if (!exp.capturedTexts().empty()) {
-                auto settingsDirectory = SettingsDirectory(home + "/" + e, exp.capturedTexts().at(1), exp.capturedTexts().last());
-                dirs.append(settingsDirectory);
-            }
+        if (e.contains(configFolder)) {
+            configFolderName.indexIn(e);
+            dirs.append(SettingsDirectory(home + "/" + e, configFolderName.capturedTexts().at(1)));
         }
     }
     if (debugMessage != nullptr) {

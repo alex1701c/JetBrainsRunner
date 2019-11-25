@@ -135,7 +135,7 @@ QList<JetbrainsApplication *> JetbrainsApplication::filterApps(QList<JetbrainsAp
 }
 
 QStringList JetbrainsApplication::getAdditionalDesktopFileLocations() {
-    QStringList additionalDesktopFileLocations = {
+    const QStringList additionalDesktopFileLocations = {
             // AUR applications
             "/usr/share/applications/rubymine.desktop",
             "/usr/share/applications/pycharm-professional.desktop",
@@ -173,8 +173,7 @@ JetbrainsApplication::getInstalledApplicationPaths(const KConfigGroup &customMap
 
     // Manually, locally or with Toolbox installed
     const QString localPath = home + "/.local/share/applications/";
-    QDir localJetbrainsApplications(localPath);
-    localJetbrainsApplications.setNameFilters(QStringList{"jetbrains-*"});
+    const QDir localJetbrainsApplications(localPath,{"jetbrains-*"});
     if (debugMessage != nullptr) {
         debugMessage->append("========== Locally Installed Jetbrains Applications ==========\n");
     }
@@ -189,8 +188,7 @@ JetbrainsApplication::getInstalledApplicationPaths(const KConfigGroup &customMap
     }
     // Globally installed
     const QString globalPath = "/usr/share/applications/";
-    QDir globalJetbrainsApplications(globalPath);
-    globalJetbrainsApplications.setNameFilters(QStringList{"jetbrains-*"});
+    const QDir globalJetbrainsApplications(globalPath,{"jetbrains-*"});
     if (debugMessage != nullptr) {
         debugMessage->append("========== Globally Installed Jetbrains Applications ==========\n");
     }

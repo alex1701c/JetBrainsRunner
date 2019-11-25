@@ -22,12 +22,9 @@ if [[ -z "${QT_PLUGIN_PATH}" || "${QT_PLUGIN_PATH}" != *".local/lib/qt/plugins/"
     export QT_PLUGIN_PATH=~/.local/lib/qt/plugins/:$QT_PLUGIN_PATH
 fi
 
-cmake -DQT_PLUGIN_INSTALL_DIR="~/.local/lib/qt/plugins" -DKDE_INSTALL_KSERVICES5DIR="~/.local/share/kservices5" -DICON_INSTALL_DIR="~/.local/share/icons/"  ..
-# Override icon in .desktop file
+cmake -DQT_PLUGIN_INSTALL_DIR="~/.local/lib/qt/plugins" -DKDE_INSTALL_KSERVICES5DIR="~/.local/share/kservices5" -DICON_INSTALL_DIR="~/.local/share/pixmaps/"  ..
 make -j$(nproc)
 make install
-# Change the icon line
-sed -i "s/Icon=.*/Icon=\/home\/$(echo $USER)\/\.local\/share\/icons\/jetbrains.png/" ~/.local/share/kservices5/plasma-runner-jetbrainsrunner.desktop
 
 kquitapp5 krunner 2> /dev/null
 kstart5 --windowclass krunner krunner > /dev/null 2>&1 &

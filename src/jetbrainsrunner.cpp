@@ -15,12 +15,37 @@ JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
 JetbrainsRunner::~JetbrainsRunner() = default;
 
 void JetbrainsRunner::init() {
-    config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
-    reloadConfiguration();
+    const QString configFolder = QDir::homePath() + "/.config/krunnerplugins/";
+    const QDir configDir(configFolder);
+    if (!configDir.exists()) configDir.mkpath(configFolder);
+    // Create file
+    QFile configFile(configFolder + "jetbrainsrunnerrc");
+    if (!configFile.exists()) {
+        configFile.open(QIODevice::WriteOnly);
+        configFile.close();
+    }
+    // Add file watcher for config
+    watcher.addPath(configFolder + "jetbrainsrunnerrc");
+    connect(&watcher, SIGNAL(fileChanged(QString)), this, SLOT(reloadPluginConfiguration(QString)));
+    reloadPluginConfiguration();
 }
 
 
-void JetbrainsRunner::reloadConfiguration() {
+void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
+    qInfo() << "JBR Reload Config";
+    KConfigGroup config = KSharedConfig::openConfig(QDir::homePath() + "/.config/krunnerplugins/jetbrainsrunnerrc")
+            ->group("Config");
+    // Force sync from file
+    if (!configFile.isEmpty()) config.config()->reparseConfiguration();
+
+    // If the file gets edited with a text editor, it often gets replaced by the edited version
+    // https://stackoverflow.com/a/30076119/9342842
+    if (!configFile.isEmpty()) {
+        if (QFile::exists(configFile)) {
+            watcher.addPath(configFile);
+        }
+    }
+
     // General settings
     formatString = config.readEntry("FormatString");
     if (!formatString.contains("%PROJECT")) formatString = "%APPNAME launch %PROJECT";
@@ -33,7 +58,7 @@ void JetbrainsRunner::reloadConfiguration() {
     const auto mappingMap = config.group("CustomMapping").entryMap();
     QList<JetbrainsApplication *> appList;
     QList<JetbrainsApplication *> automaticAppList;
-    auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"));
+    const auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"));
 
     // Split manually configured and automatically found apps
     for (const auto &p:desktopPaths.toStdMap()) {
@@ -61,6 +86,18 @@ void JetbrainsRunner::reloadConfiguration() {
     automaticAppList = JetbrainsApplication::filterApps(automaticAppList);
     appList.append(automaticAppList);
     installed = appList;
+
+    // Version update notification
+    QDate lastUpdateCheckDate = QDate::fromString(config.readEntry("checkedUpdateDate"));
+    if (config.readEntry("NotifyUpdates", "true") == "true" && (
+            !lastUpdateCheckDate.isValid() ||
+            lastUpdateCheckDate.addDays(7) <= QDate::currentDate())) {
+        auto manager = new QNetworkAccessManager(this);
+        QNetworkRequest request(QUrl("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases"));
+        manager->get(request);
+        connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
+        config.writeEntry("checkedUpdateDate", QDate::currentDate().toString());
+    }
 }
 
 void JetbrainsRunner::match(Plasma::RunnerContext &context) {
@@ -88,7 +125,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
     appNameRegex.indexIn(term);
     QString termName = appNameRegex.capturedTexts().at(1);
     if (termName.isEmpty()) return matches;
-    QString termProject = appNameRegex.capturedTexts().at(2);
+    const QString termProject = appNameRegex.capturedTexts().at(2);
 
     for (auto const &app:installed) {
         if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
@@ -150,12 +187,12 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
 void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
     if (reply->error() == QNetworkReply::NoError) {
         QString displayText;
-        auto jsonObject = QJsonDocument::fromJson(reply->readAll());
+        const auto jsonObject = QJsonDocument::fromJson(reply->readAll());
         if (jsonObject.isArray()) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
-                    auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > "1.2.2") {
+                    const auto githubRelease = githubReleaseObj.toObject();
+                    if (githubRelease.value("tag_name").toString() > "0.2.2") {
                         displayText.append(githubRelease.value("tag_name").toString() + ": " +
                                            githubRelease.value("name").toString() + "\n");
                     }
@@ -166,10 +203,9 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             displayText.prepend("New Versions Available:\n");
             displayText.append("Please go to https://github.com/alex1701c/JetBrainsRunner</a>");
             QProcess::startDetached("notify-send", QStringList{
-                    "JetBrains Runner Updates!", displayText, "--icon", "/usr/share/icons/jetbrains.png", "--expire-time", "5000"
+                    "JetBrains Runner Updates!", displayText, "--icon", "jetbrains", "--expire-time", "5000"
             });
         }
-        config.writeEntry("checkedUpdateDate", QDate::currentDate().toString());
     }
 }
 

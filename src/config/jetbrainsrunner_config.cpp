@@ -75,6 +75,8 @@ void JetbrainsRunnerConfig::save() {
         }
     }
 
+    config.config()->sync();
+
     emit changed();
 }
 
@@ -98,7 +100,7 @@ void JetbrainsRunnerConfig::makeVersionRequest() {
 }
 
 void JetbrainsRunnerConfig::exportDebugFile() {
-    QString filename = QFileDialog::getSaveFileName(this, "Save file", "", ".txt");
+    const QString filename = QFileDialog::getSaveFileName(this, "Save file", "", ".txt");
     if (!filename.isEmpty()) {
 
         auto debugString = new QString();
@@ -145,12 +147,12 @@ void JetbrainsRunnerConfig::exportDebugFile() {
 void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
     if (reply->error() == QNetworkReply::NoError) {
         QString displayText;
-        auto jsonObject = QJsonDocument::fromJson(reply->readAll());
+        const auto jsonObject = QJsonDocument::fromJson(reply->readAll());
         if (jsonObject.isArray()) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
-                    auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > "1.2.2") {
+                    const auto githubRelease = githubReleaseObj.toObject();
+                    if (githubRelease.value("tag_name").toString() > "1.3.0") {
                         displayText.append(githubRelease.value("tag_name").toString() + ": " +
                                            githubRelease.value("name").toString() + "\n");
                     }
