@@ -20,7 +20,8 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     auto *layout = new QGridLayout(this);
     layout->addWidget(m_ui, 0, 0);
 
-    config = KSharedConfig::openConfig("krunnerrc")->group("Runners").group("JetBrainsRunner");
+    config = KSharedConfig::openConfig(QDir::homePath() + "/.config/krunnerplugins/jetbrainsrunnerrc")
+            ->group("Config");
     customMappingGroup = config.group("CustomMapping");
 
     connect(m_ui->appNameSearch, SIGNAL(clicked(bool)), this, SLOT(changed()));
@@ -34,6 +35,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     connect(m_ui->formatStringLineEdit, SIGNAL(textChanged(QString)), this, SLOT(validateFormattingString()));
     connect(m_ui->defaultFormattingPushButton, SIGNAL(clicked(bool)), this, SLOT(setDefaultFormatting()));
     connect(m_ui->defaultFormattingPushButton, SIGNAL(clicked(bool)), this, SLOT(changed()));
+    connect(m_ui->showCategoryCheckBox, SIGNAL(clicked(bool)), this, SLOT(changed()));
     connect(m_ui->logFilePushButton, SIGNAL(clicked(bool)), this, SLOT(exportDebugFile()));
     validateOptions();
 }
@@ -46,6 +48,7 @@ void JetbrainsRunnerConfig::load() {
     m_ui->appNameSearch->setChecked(config.readEntry("LaunchByAppName", "true") == "true");
     m_ui->projectNameSearch->setChecked(config.readEntry("LaunchByProjectName", "true") == "true");
     m_ui->updatesCheckBox->setChecked(config.readEntry("NotifyUpdates", "true") == "true");
+    m_ui->showCategoryCheckBox->setChecked(config.readEntry("DisplayInCategories") == "true");
     m_ui->formatStringLineEdit->setText(config.readEntry("FormatString", "%APPNAME launch %PROJECT"));
     if (m_ui->updatesCheckBox->isChecked()) {
         makeVersionRequest();
@@ -61,6 +64,7 @@ void JetbrainsRunnerConfig::save() {
     config.writeEntry("LaunchByProjectName", m_ui->projectNameSearch->isChecked());
     config.writeEntry("NotifyUpdates", m_ui->updatesCheckBox->isChecked());
     config.writeEntry("FormatString", m_ui->formatStringLineEdit->text());
+    config.writeEntry("DisplayInCategories", m_ui->showCategoryCheckBox->isChecked());
 
     const int itemCount = m_ui->manualMappingVBox->count();
     // Reset config by deleting group
@@ -84,6 +88,7 @@ void JetbrainsRunnerConfig::defaults() {
     m_ui->appNameSearch->setChecked(true);
     m_ui->projectNameSearch->setChecked(true);
     m_ui->formatStringLineEdit->setText("%APPNAME launch %PROJECT");
+    m_ui->showCategoryCheckBox->setChecked(false);
     emit changed(true);
 }
 

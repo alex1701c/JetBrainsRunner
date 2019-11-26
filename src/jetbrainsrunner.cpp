@@ -32,7 +32,6 @@ void JetbrainsRunner::init() {
 
 
 void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
-    qInfo() << "JBR Reload Config";
     KConfigGroup config = KSharedConfig::openConfig(QDir::homePath() + "/.config/krunnerplugins/jetbrainsrunnerrc")
             ->group("Config");
     // Force sync from file
@@ -51,6 +50,7 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     if (!formatString.contains("%PROJECT")) formatString = "%APPNAME launch %PROJECT";
     launchByAppName = config.readEntry("LaunchByAppName", "true") == "true";
     launchByProjectName = config.readEntry("LaunchByProjectName", "true") == "true";
+    displayInCategories = config.readEntry("DisplayInCategories") == "true";
     installed.clear();
     appNameRegex = QRegExp(R"(^(\w+)(?: (.+))?$)");
 
@@ -145,6 +145,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                     match.setIconName(app->iconPath);
                     match.setData(QString(app->executablePath).replace("%f", dir));
                     match.setRelevance((float) 1 / (float) (i + 1));
+                    if(displayInCategories) match.setMatchCategory(app->name);
                     matches.append(match);
                 }
             }
@@ -177,6 +178,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
                 );
                 match.setIconName(app->iconPath);
                 match.setData(QString(app->executablePath).replace("%f", dir));
+                if(displayInCategories) match.setMatchCategory(app->name);
                 matches.append(match);
             }
         }

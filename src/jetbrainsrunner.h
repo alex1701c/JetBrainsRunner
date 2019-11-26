@@ -14,7 +14,7 @@ public:
     ~JetbrainsRunner() override;
 
     QFileSystemWatcher watcher;
-    bool launchByAppName, launchByProjectName;
+    bool launchByAppName, launchByProjectName, displayInCategories;
     QString formatString;
     QRegExp appNameRegex;
 

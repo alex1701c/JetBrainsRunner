@@ -90,6 +90,16 @@
              </widget>
             </item>
             <item>
+             <widget class="QCheckBox" name="showCategoryCheckBox">
+              <property name="toolTip">
+               <string>This is useful if you have the sameprojects in multiple applications</string>
+              </property>
+              <property name="text">
+               <string>Show use application name as category for projects</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QLabel" name="formattingRulesLabel">
               <property name="text">
                <string>Formatting Rules:
