@@ -157,7 +157,7 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > "1.3.0") {
+                    if (githubRelease.value("tag_name").toString() > "1.3.1") {
                         displayText.append(githubRelease.value("tag_name").toString() + ": " +
                                            githubRelease.value("name").toString() + "\n");
                     }
