@@ -12,7 +12,7 @@ fi
 mkdir -p build
 mkdir -p ~/.local/lib/qt/plugins
 mkdir -p ~/.local/share/kservices5
-mkdir -p ~/.local/share/icons/
+mkdir -p ~/.local/share/pixmaps/
 
 cd build
 

@@ -143,7 +143,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                                           .replace("%APP", app->shortName)
                     );
                     match.setIconName(app->iconPath);
-                    match.setData(QString(app->executablePath).replace("%f", dir));
+                    match.setData(QString(app->executablePath).replace("%u", dir).replace("%f", dir));
                     match.setRelevance((float) 1 / (float) (i + 1));
                     if(displayInCategories) match.setMatchCategory(app->name);
                     matches.append(match);
@@ -177,7 +177,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
                                       .replace("%APP", app->shortName)
                 );
                 match.setIconName(app->iconPath);
-                match.setData(QString(app->executablePath).replace("%f", dir));
+                match.setData(QString(app->executablePath).replace("%u", dir).replace("%f", dir));
                 if(displayInCategories) match.setMatchCategory(app->name);
                 matches.append(match);
             }
