@@ -23,6 +23,8 @@ public:
 
     static QString filterApplicationName(const QString &name);
 
+    QString formatOptionText(const QString &formatText, const QString &dir);
+
 
     QList<QString> recentlyUsed;
     QString desktopFilePath;

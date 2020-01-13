@@ -1,11 +1,12 @@
 #include "jetbrainsrunner.h"
 #include "JetbrainsApplication.h"
 #include "SettingsDirectory.h"
-// KF
+#include "ConfigKeys.h"
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <QtGui/QtGui>
 #include <QDate>
+#include <QStringBuilder>
 
 JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
         : Plasma::AbstractRunner(parent, args) {
@@ -15,25 +16,26 @@ JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
 JetbrainsRunner::~JetbrainsRunner() = default;
 
 void JetbrainsRunner::init() {
-    const QString configFolder = QDir::homePath() + "/.config/krunnerplugins/";
+    const QString configFolder = QDir::homePath() + QStringLiteral("/.config/krunnerplugins/");
     const QDir configDir(configFolder);
     if (!configDir.exists()) configDir.mkpath(configFolder);
     // Create file
-    QFile configFile(configFolder + "jetbrainsrunnerrc");
+    QFile configFile(configFolder + QStringLiteral("jetbrainsrunnerrc"));
     if (!configFile.exists()) {
         configFile.open(QIODevice::WriteOnly);
         configFile.close();
     }
     // Add file watcher for config
-    watcher.addPath(configFolder + "jetbrainsrunnerrc");
-    connect(&watcher, SIGNAL(fileChanged(QString)), this, SLOT(reloadPluginConfiguration(QString)));
+    watcher.addPath(configFile.fileName());
+    connect(&watcher, &QFileSystemWatcher::fileChanged, this, &JetbrainsRunner::reloadPluginConfiguration);
     reloadPluginConfiguration();
 }
 
 
 void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
-    KConfigGroup config = KSharedConfig::openConfig(QDir::homePath() + "/.config/krunnerplugins/jetbrainsrunnerrc")
-            ->group("Config");
+    KConfigGroup config = KSharedConfig::openConfig(
+            QDir::homePath() % QStringLiteral("/.config/krunnerplugins/jetbrainsrunnerrc"))
+            ->group(QStringLiteral("Config"));
     // Force sync from file
     if (!configFile.isEmpty()) config.config()->reparseConfiguration();
 
@@ -46,19 +48,21 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     }
 
     // General settings
-    formatString = config.readEntry("FormatString");
-    if (!formatString.contains("%PROJECT")) formatString = "%APPNAME launch %PROJECT";
-    launchByAppName = config.readEntry("LaunchByAppName", "true") == "true";
-    launchByProjectName = config.readEntry("LaunchByProjectName", "true") == "true";
-    displayInCategories = config.readEntry("DisplayInCategories") == "true";
+    formatString = config.readEntry(Config::formatString);
+    // Replace invalid string with default
+    if (!formatString.contains(QLatin1String(FormatString::PROJECT))) formatString = Config::formatStringDefault;
+    launchByAppName = config.readEntry(Config::launchByAppName, true);
+    launchByProjectName = config.readEntry(Config::launchByProjectName, true);
+    displayInCategories = config.readEntry(Config::displayInCategories, false);
+    qDeleteAll(installed);
     installed.clear();
-    appNameRegex = QRegExp(R"(^(\w+)(?: (.+))?$)");
+    if (launchByAppName) appNameRegex = QRegularExpression(R"(^(\w+)(?: (.+))?$)");
 
     // Initialize/read settings for JetbrainsApplications
-    const auto mappingMap = config.group("CustomMapping").entryMap();
+    const auto mappingMap = config.group(Config::customMappingGroup).entryMap();
     QList<JetbrainsApplication *> appList;
     QList<JetbrainsApplication *> automaticAppList;
-    const auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"));
+    const auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group(Config::customMappingGroup));
 
     // Split manually configured and automatically found apps
     for (const auto &p:desktopPaths.toStdMap()) {
@@ -88,15 +92,15 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     installed = appList;
 
     // Version update notification
-    QDate lastUpdateCheckDate = QDate::fromString(config.readEntry("checkedUpdateDate"));
-    if (config.readEntry("NotifyUpdates", "true") == "true" && (
+    QDate lastUpdateCheckDate = QDate::fromString(config.readEntry(Config::checkedUpdateDate));
+    if (config.readEntry(Config::notifyUpdates, true) && (
             !lastUpdateCheckDate.isValid() ||
             lastUpdateCheckDate.addDays(7) <= QDate::currentDate())) {
         auto manager = new QNetworkAccessManager(this);
-        QNetworkRequest request(QUrl("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases"));
+        QNetworkRequest request(QUrl(QStringLiteral("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases")));
         manager->get(request);
-        connect(manager, SIGNAL(finished(QNetworkReply * )), this, SLOT(displayUpdateNotification(QNetworkReply * )));
-        config.writeEntry("checkedUpdateDate", QDate::currentDate().toString());
+        connect(manager, &QNetworkAccessManager::finished, this, &JetbrainsRunner::displayUpdateNotification);
+        config.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
     }
 }
 
@@ -122,10 +126,11 @@ void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::Qu
 QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
 
-    appNameRegex.indexIn(term);
-    QString termName = appNameRegex.capturedTexts().at(1);
+    const auto regexMatch = appNameRegex.match(term);
+    const QString termName = regexMatch.captured(1);
     if (termName.isEmpty()) return matches;
-    const QString termProject = appNameRegex.capturedTexts().at(2);
+    const QString termProject = regexMatch.captured(2);
+    const QString sep = QDir::separator();
 
     for (auto const &app:installed) {
         if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
@@ -134,18 +139,14 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
             const int recentProjectsCount = app->recentlyUsed.size();
             for (int i = 0; i < recentProjectsCount; ++i) {
                 const auto &dir = app->recentlyUsed.at(i);
-                const QString dirName = dir.split('/').last();
+                const QString dirName = dir.split(sep).last();
                 if (termProject.isEmpty() || dirName.startsWith(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
-                    match.setText(QString(formatString)
-                                          .replace("%PROJECT", dirName)
-                                          .replace("%APPNAME", app->name)
-                                          .replace("%APP", app->shortName)
-                    );
+                    match.setText(app->formatOptionText(formatString, dirName));
                     match.setIconName(app->iconPath);
-                    match.setData(QString(app->executablePath).replace("%u", dir).replace("%f", dir));
+                    match.setData(QString(app->executablePath + dir));
                     match.setRelevance((float) 1 / (float) (i + 1));
-                    if(displayInCategories) match.setMatchCategory(app->name);
+                    if (displayInCategories) match.setMatchCategory(app->name);
                     matches.append(match);
                 }
             }
@@ -171,14 +172,10 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
             const QString dirName = dir.split('/').last();
             if (dirName.startsWith(term, Qt::CaseInsensitive)) {
                 Plasma::QueryMatch match(this);
-                match.setText(QString(formatString)
-                                      .replace("%PROJECT", dirName)
-                                      .replace("%APPNAME", app->name)
-                                      .replace("%APP", app->shortName)
-                );
+                match.setText(app->formatOptionText(formatString, dirName));
                 match.setIconName(app->iconPath);
-                match.setData(QString(app->executablePath).replace("%u", dir).replace("%f", dir));
-                if(displayInCategories) match.setMatchCategory(app->name);
+                match.setData(QString(app->executablePath + dir));
+                if (displayInCategories) match.setMatchCategory(app->name);
                 matches.append(match);
             }
         }
@@ -194,9 +191,9 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > "1.3.1") {
-                        displayText.append(githubRelease.value("tag_name").toString() + ": " +
-                                           githubRelease.value("name").toString() + "\n");
+                    if (githubRelease.value(QLatin1String("tag_name")).toString() > "1.3.1") {
+                        displayText.append(githubRelease.value(QLatin1String("tag_name")).toString() + ": " +
+                                           githubRelease.value(QLatin1String("name")).toString() + "\n");
                     }
                 }
             }

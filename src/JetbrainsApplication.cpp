@@ -1,4 +1,5 @@
 #include "JetbrainsApplication.h"
+#include "ConfigKeys.h"
 #include <KSharedConfig>
 #include <KConfigCore/KConfigGroup>
 #include <QtGui/QtGui>
@@ -7,7 +8,7 @@ JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) :
         QFileSystemWatcher(nullptr), desktopFilePath(desktopFilePath) {
     KConfigGroup config = KSharedConfig::openConfig(desktopFilePath)->group("Desktop Entry");
     iconPath = config.readEntry("Icon");
-    executablePath = config.readEntry("Exec");
+    executablePath = config.readEntry("Exec").remove("%u").remove("%f");
     name = config.readEntry("Name");
     shortName = QString(name)
             .remove(" Edition")
@@ -32,7 +33,7 @@ JetbrainsApplication::JetbrainsApplication(const QString &desktopFilePath) :
         }
 
     }
-    connect(this, SIGNAL(fileChanged(QString)), this, SLOT(configChanged(QString)));
+    connect(this, &QFileSystemWatcher::fileChanged, this, &JetbrainsApplication::configChanged);
 }
 
 
@@ -137,25 +138,25 @@ QList<JetbrainsApplication *> JetbrainsApplication::filterApps(QList<JetbrainsAp
 QStringList JetbrainsApplication::getAdditionalDesktopFileLocations() {
     const QStringList additionalDesktopFileLocations = {
             // AUR applications
-            "/usr/share/applications/rubymine.desktop",
-            "/usr/share/applications/pycharm-professional.desktop",
-            "/usr/share/applications/pycharm-eap.desktop",
-            "/usr/share/applications/charm.desktop",
-            "/usr/share/applications/rider.desktop",
+            QStringLiteral("/usr/share/applications/rubymine.desktop"),
+            QStringLiteral("/usr/share/applications/pycharm-professional.desktop"),
+            QStringLiteral("/usr/share/applications/pycharm-eap.desktop"),
+            QStringLiteral("/usr/share/applications/charm.desktop"),
+            QStringLiteral("/usr/share/applications/rider.desktop"),
             // Snap applications
-            "/var/lib/snapd/desktop/applications/clion_clion.desktop",
-            "/var/lib/snapd/desktop/applications/datagrip_datagrip.desktop",
-            "/var/lib/snapd/desktop/applications/goland_goland.desktop",
-            "/var/lib/snapd/desktop/applications/pycharm-community_pycharm-community.desktop",
-            "/var/lib/snapd/desktop/applications/pycharm-educational_pycharm-educational.desktop",
-            "/var/lib/snapd/desktop/applications/pycharm-professional_pycharm-professional.desktop",
-            "/var/lib/snapd/desktop/applications/rubymine_rubymine.desktop",
-            "/var/lib/snapd/desktop/applications/webstorm_webstorm.desktop",
-            "/var/lib/snapd/desktop/applications/intellij-idea-community_intellij-idea-community.desktop",
-            "/var/lib/snapd/desktop/applications/intellij-idea-educational_intellij-idea-educational.desktop",
-            "/var/lib/snapd/desktop/applications/intellij-idea-ultimate_intellij-idea-ultimate.desktop",
-            "/var/lib/snapd/desktop/applications/phpstorm_phpstorm.desktop",
-            "/var/lib/snapd/desktop/applications/rider_rider.desktop",
+            QStringLiteral("/var/lib/snapd/desktop/applications/clion_clion.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/datagrip_datagrip.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/goland_goland.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/pycharm-community_pycharm-community.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/pycharm-educational_pycharm-educational.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/pycharm-professional_pycharm-professional.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/rubymine_rubymine.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/webstorm_webstorm.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/intellij-idea-community_intellij-idea-community.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/intellij-idea-educational_intellij-idea-educational.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/intellij-idea-ultimate_intellij-idea-ultimate.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/phpstorm_phpstorm.desktop"),
+            QStringLiteral("/var/lib/snapd/desktop/applications/rider_rider.desktop"),
     };
     QStringList validFiles;
     for (const auto &additionalFile:additionalDesktopFileLocations) {
@@ -168,12 +169,10 @@ QStringList JetbrainsApplication::getAdditionalDesktopFileLocations() {
 QMap<QString, QString>
 JetbrainsApplication::getInstalledApplicationPaths(const KConfigGroup &customMappingConfig, QString *debugMessage) {
     QMap<QString, QString> applicationPaths;
-    const QString home = QDir::homePath();
-
 
     // Manually, locally or with Toolbox installed
-    const QString localPath = home + "/.local/share/applications/";
-    const QDir localJetbrainsApplications(localPath,{"jetbrains-*"});
+    const QString localPath = QDir::homePath() + "/.local/share/applications/";
+    const QDir localJetbrainsApplications(localPath, {"jetbrains-*"});
     if (debugMessage != nullptr) {
         debugMessage->append("========== Locally Installed Jetbrains Applications ==========\n");
     }
@@ -188,7 +187,7 @@ JetbrainsApplication::getInstalledApplicationPaths(const KConfigGroup &customMap
     }
     // Globally installed
     const QString globalPath = "/usr/share/applications/";
-    const QDir globalJetbrainsApplications(globalPath,{"jetbrains-*"});
+    const QDir globalJetbrainsApplications(globalPath, {"jetbrains-*"});
     if (debugMessage != nullptr) {
         debugMessage->append("========== Globally Installed Jetbrains Applications ==========\n");
     }
@@ -236,4 +235,10 @@ JetbrainsApplication::getInstalledApplicationPaths(const KConfigGroup &customMap
 
 QString JetbrainsApplication::filterApplicationName(const QString &name) {
     return QString(name).remove(" Release").remove(" Edition").remove(" + JBR11").remove(" RC").remove(" EAP");
+}
+
+QString JetbrainsApplication::formatOptionText(const QString &formatText, const QString &dir) {
+    return QString(formatText).replace(FormatString::PROJECT, dir)
+            .replace(FormatString::APPNAME, this->name)
+            .replace(FormatString::APP, this->shortName);
 }

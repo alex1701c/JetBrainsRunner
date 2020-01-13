@@ -20,9 +20,10 @@ public:
     explicit JetbrainsRunnerConfig(QWidget *parent = nullptr, const QVariantList &args = QVariantList());
 
     KConfigGroup config;
-
     KConfigGroup customMappingGroup;
+
 public Q_SLOTS:
+
     void exportDebugFile();
 
     void makeVersionRequest();
@@ -47,7 +48,6 @@ public Q_SLOTS:
 
 private:
     JetbrainsRunnerConfigForm *m_ui;
-
 };
 
 #endif

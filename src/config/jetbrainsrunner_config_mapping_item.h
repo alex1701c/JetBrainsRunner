@@ -10,7 +10,7 @@ class JetbrainsRunnerConfigMappingItem : public QWidget, public Ui::JetbrainsRun
 Q_OBJECT
 
 public:
-    explicit JetbrainsRunnerConfigMappingItem(QWidget *parent, const QString& desktopFilePath = "", const QString& configFilePath = "")
+    explicit JetbrainsRunnerConfigMappingItem(QWidget *parent, const QString &desktopFilePath = "", const QString &configFilePath = "")
             : QWidget(parent) {
         setupUi(this);
 
@@ -19,12 +19,13 @@ public:
             this->configXMLFilePushButton->setText(configFilePath);
         }
 
-        connect(this->deletePushButton, SIGNAL(clicked(bool)), parent, SLOT(changed()));
-        connect(this->deletePushButton, SIGNAL(clicked(bool)), parent, SLOT(deleteMappingItem()));
-        connect(this->configDesktoFilePushButton, SIGNAL(clicked(bool)), parent, SLOT(changed()));
-        connect(this->configDesktoFilePushButton, SIGNAL(clicked(bool)), this, SLOT(openDesktopFileChooser()));
-        connect(this->configXMLFilePushButton, SIGNAL(clicked(bool)), parent, SLOT(changed()));
-        connect(this->configXMLFilePushButton, SIGNAL(clicked(bool)), this, SLOT(openConfigFileChooser()));
+        connect(this->deletePushButton, &QPushButton::clicked, this, &JetbrainsRunnerConfigMappingItem::changed);
+        connect(this->deletePushButton, &QPushButton::clicked, this, &JetbrainsRunnerConfigMappingItem::deleteMappingItem);
+        connect(this->configDesktoFilePushButton, &QPushButton::clicked, this, &JetbrainsRunnerConfigMappingItem::changed);
+        connect(this->configDesktoFilePushButton, &QPushButton::clicked, this,
+                &JetbrainsRunnerConfigMappingItem::openDesktopFileChooser);
+        connect(this->configXMLFilePushButton, &QPushButton::clicked, this, &JetbrainsRunnerConfigMappingItem::changed);
+        connect(this->configXMLFilePushButton, &QPushButton::clicked, this, &JetbrainsRunnerConfigMappingItem::openConfigFileChooser);
 
         validateInfoWidget();
     }
@@ -33,7 +34,7 @@ public Q_SLOTS:
 
     void openDesktopFileChooser() {
         const QString desktopFile = QFileDialog::getOpenFileName(this, tr("Select Desktop File"), "",
-                                                           tr("Desktop File (*.desktop)"));
+                                                                 tr("Desktop File (*.desktop)"));
         if (!desktopFile.isEmpty()) {
             this->configDesktoFilePushButton->setText(desktopFile);
         }
@@ -82,6 +83,12 @@ public Q_SLOTS:
             this->configReadWidget->setHidden(true);
         }
     }
+
+Q_SIGNALS:
+
+    void changed();
+
+    void deleteMappingItem();
 };
 
 #endif //JETBRAINSRUNNER_JETBRAINSRUNNER_CONFIG_MAPPING_ITEM_H

@@ -16,7 +16,7 @@ public:
     QFileSystemWatcher watcher;
     bool launchByAppName, launchByProjectName, displayInCategories;
     QString formatString;
-    QRegExp appNameRegex;
+    QRegularExpression appNameRegex;
 
     QList<JetbrainsApplication *> installed;
 
@@ -30,7 +30,7 @@ protected Q_SLOTS:
 
     void reloadPluginConfiguration(const QString &configFile = "");
 
-    void displayUpdateNotification(QNetworkReply *reply);
+    static void displayUpdateNotification(QNetworkReply *reply);
 
 public: // Plasma::AbstractRunner API
     void match(Plasma::RunnerContext &context) override;

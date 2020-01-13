@@ -34,3 +34,6 @@ install(FILES plasma-runner-jetbrainsrunner.desktop config/plasma-runner-jetbrai
 set(ICON_INSTALL_DIR "/usr/share/pixmaps/" CACHE STRING "Default icon directory")
 install(FILES jetbrains.png DESTINATION ${ICON_INSTALL_DIR})
 #Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
+
+# Optimizes concatenation of QStrings
+add_definitions(-DQT_USE_QSTRINGBUILDER)
