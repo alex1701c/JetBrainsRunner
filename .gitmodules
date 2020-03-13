@@ -1,0 +1,3 @@
+[submodule "jetbrains-api"]
+	path = src/jetbrains-api
+	url = https://github.com/alex1701c/jetbrains-api

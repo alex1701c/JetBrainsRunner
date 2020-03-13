@@ -28,7 +28,7 @@ Or you can install it without admin privileges:
 
 Or you can do it manually (with admin privileges):
 ```
-git clone https://github.com/alex1701c/JetBrainsRunner  
+git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules  
 cd JetBrainsRunner/
 mkdir build  
 cd build

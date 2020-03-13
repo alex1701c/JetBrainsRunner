@@ -4,7 +4,7 @@
 set -e
 
 if [[ $(basename "$PWD") !=  "JetBrainsRunner"* ]];then
-    git clone https://github.com/alex1701c/JetBrainsRunner
+    git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules
     cd JetBrainsRunner/
 fi
 
