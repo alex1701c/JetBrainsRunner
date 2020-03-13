@@ -6,8 +6,10 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QtWidgets/QLabel>
-#include <SettingsDirectory.h>
-#include <ConfigKeys.h>
+
+#include "jetbrains-api/SettingsDirectory.h"
+#include "jetbrains-api/ConfigKeys.h"
+#include "kcmutils_version.h"
 
 K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory, registerPlugin<JetbrainsRunnerConfig>("kcm_krunner_jetbrainsrunner");)
 
@@ -25,7 +27,11 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
             ->group("Config");
     customMappingGroup = config.group(QStringLiteral("CustomMapping"));
 
+#if KCMUTILS_VERSION >= QT_VERSION_CHECK(5, 64, 0)
+    const auto changedSlotPointer = &JetbrainsRunnerConfig::markAsChanged;
+#else
     const auto changedSlotPointer = static_cast<void (JetbrainsRunnerConfig::*)()>(&JetbrainsRunnerConfig::changed);
+#endif
     connect(m_ui->appNameSearch, &QCheckBox::clicked, this, changedSlotPointer);
     connect(m_ui->appNameSearch, &QCheckBox::clicked, this, &JetbrainsRunnerConfig::validateOptions);
     connect(m_ui->projectNameSearch, &QCheckBox::clicked, this, changedSlotPointer);
@@ -58,7 +64,11 @@ void JetbrainsRunnerConfig::load() {
 
     for (const auto &entry: customMappingGroup.entryMap().toStdMap()) {
         const auto item = new JetbrainsRunnerConfigMappingItem(this, entry.first, entry.second);
+#if KCMUTILS_VERSION >= QT_VERSION_CHECK(5, 64, 0)
+        const auto changedSlotPointer = &JetbrainsRunnerConfig::markAsChanged;
+#else
         const auto changedSlotPointer = static_cast<void (JetbrainsRunnerConfig::*)()>(&JetbrainsRunnerConfig::changed);
+#endif
         connect(item, &JetbrainsRunnerConfigMappingItem::changed, this, changedSlotPointer);
         connect(item, &JetbrainsRunnerConfigMappingItem::deleteMappingItem, this, &JetbrainsRunnerConfig::deleteMappingItem);
         m_ui->manualMappingVBox->addWidget(item);
@@ -87,7 +97,7 @@ void JetbrainsRunnerConfig::save() {
 
     config.config()->sync();
 
-    emit changed();
+    emit changed(true);
 }
 
 void JetbrainsRunnerConfig::defaults() {

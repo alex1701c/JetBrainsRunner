@@ -3,7 +3,7 @@
 
 #include <QtWidgets/QFileDialog>
 #include <QBitmap>
-#include <JetbrainsApplication.h>
+#include "jetbrains-api/JetbrainsApplication.h"
 #include "ui_jetbrainsrunner_config_mapping_item.h"
 
 class JetbrainsRunnerConfigMappingItem : public QWidget, public Ui::JetbrainsRunnerConfigItemUi {

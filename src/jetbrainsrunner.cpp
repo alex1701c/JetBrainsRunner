@@ -1,12 +1,14 @@
 #include "jetbrainsrunner.h"
-#include "JetbrainsApplication.h"
-#include "SettingsDirectory.h"
-#include "ConfigKeys.h"
+#include "jetbrains-api/JetbrainsApplication.h"
+#include "jetbrains-api/SettingsDirectory.h"
+#include "jetbrains-api/ConfigKeys.h"
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <QtGui/QtGui>
 #include <QDate>
 #include <QStringBuilder>
+
+#include "jetbrains-api/export.h"
 
 JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
         : Plasma::AbstractRunner(parent, args) {
@@ -35,7 +37,7 @@ void JetbrainsRunner::init() {
 void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     KConfigGroup config = KSharedConfig::openConfig(
             QDir::homePath() % QStringLiteral("/.config/krunnerplugins/jetbrainsrunnerrc"))
-            ->group(QStringLiteral("Config"));
+                    ->group("Config");
     // Force sync from file
     if (!configFile.isEmpty()) config.config()->reparseConfiguration();
 
@@ -56,40 +58,12 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     displayInCategories = config.readEntry(Config::displayInCategories, false);
     qDeleteAll(installed);
     installed.clear();
-    if (launchByAppName) appNameRegex = QRegularExpression(R"(^(\w+)(?: (.+))?$)");
-
-    // Initialize/read settings for JetbrainsApplications
-    const auto mappingMap = config.group(Config::customMappingGroup).entryMap();
-    QList<JetbrainsApplication *> appList;
-    QList<JetbrainsApplication *> automaticAppList;
-    const auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group(Config::customMappingGroup));
-
-    // Split manually configured and automatically found apps
-    for (const auto &p:desktopPaths.toStdMap()) {
-        // Desktop file is manually specified
-        if (mappingMap.contains(p.second)) {
-            auto customMappedApp = new JetbrainsApplication(p.second);
-            QFile xmlConfigFile(mappingMap.value(p.second));
-            if (xmlConfigFile.open(QFile::ReadOnly)) {
-                customMappedApp->parseXMLFile(xmlConfigFile.readAll());
-                // Add path for filewatcher
-                customMappedApp->addPath(mappingMap.value(p.second));
-                if (!customMappedApp->recentlyUsed.isEmpty()) {
-                    appList.append(customMappedApp);
-                }
-            }
-            xmlConfigFile.close();
-        } else {
-            automaticAppList.append(new JetbrainsApplication(p.second));
-        }
+    if (launchByAppName) {
+        appNameRegex = QRegularExpression(R"(^(\w+)(?: (.+))?$)");
+        appNameRegex.optimize();
     }
 
-    // Find automatically config directory, read config file and filter apps
-    SettingsDirectory::findCorrespondingDirectories(SettingsDirectory::getSettingsDirectories(), automaticAppList);
-    JetbrainsApplication::parseXMLFiles(automaticAppList);
-    automaticAppList = JetbrainsApplication::filterApps(automaticAppList);
-    appList.append(automaticAppList);
-    installed = appList;
+    installed = JetbrainsAPI::fetchApplications(config);
 
     // Version update notification
     QDate lastUpdateCheckDate = QDate::fromString(config.readEntry(Config::checkedUpdateDate));
@@ -132,12 +106,10 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
     const QString termProject = regexMatch.captured(2);
     const QString sep = QDir::separator();
 
-    for (auto const &app:installed) {
+    for (auto const &app: qAsConst(installed)) {
         if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
-            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))
-                ) {
-            const int recentProjectsCount = app->recentlyUsed.size();
-            for (int i = 0; i < recentProjectsCount; ++i) {
+            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
+            for (int i = 0; i < app->recentlyUsed.size(); ++i) {
                 const auto &dir = app->recentlyUsed.at(i);
                 const QString dirName = dir.split(sep).last();
                 if (termProject.isEmpty() || dirName.startsWith(termProject, Qt::CaseInsensitive)) {
@@ -158,17 +130,16 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
-    for (auto const &app:installed) {
+    for (auto const &app: qAsConst(installed)) {
         // If the plugin displays search suggestions by appname and the application name matches the search
         // term the options have already been created in the addAppNameMatches method
         // => this app should be skipped to avoid duplicates
         if ((launchByAppName &&
              app->nameArray[0].startsWith(term, Qt::CaseInsensitive)) ||
-            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(term, Qt::CaseInsensitive))
-                ) {
+            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(term, Qt::CaseInsensitive))) {
             continue;
         }
-        for (const auto &dir:app->recentlyUsed) {
+        for (const auto &dir: qAsConst(app->recentlyUsed)) {
             const QString dirName = dir.split('/').last();
             if (dirName.startsWith(term, Qt::CaseInsensitive)) {
                 Plasma::QueryMatch match(this);
