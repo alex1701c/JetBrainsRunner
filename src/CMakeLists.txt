@@ -32,7 +32,7 @@ install(TARGETS krunner_jetbrainsrunner kcm_krunner_jetbrainsrunner DESTINATION 
 install(FILES plasma-runner-jetbrainsrunner.desktop config/plasma-runner-jetbrainsrunner_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 set(JETBRAINS_ICON_INSTALL_DIR "/usr/share/pixmaps/" CACHE STRING "Default icon directory")
-install(FILES jetbrains.png DESTINATION ${JETBRAINS_ICON_INSTALL_DIR})
+install(FILES jetbrainsrunner.png DESTINATION ${JETBRAINS_ICON_INSTALL_DIR})
 #Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
 
 # Optimizes concatenation of QStrings

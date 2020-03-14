@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=JetbrainsRunner
 Comment=Runner to open your recent JetBrains projects
-Icon=jetbrains
+Icon=jetbrainsrunner
 
 X-KDE-ServiceTypes=Plasma/Runner
 Type=Service
