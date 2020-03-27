@@ -210,8 +210,9 @@ void JetbrainsRunnerConfig::validateFormattingString() {
         m_ui->formatStringValidationLabel->setText(QStringLiteral("The formatting string can not be empty"));
         m_ui->formatStringValidationLabel->setHidden(false);
         m_ui->defaultFormattingPushButton->setHidden(false);
-    } else if (!text.contains(QLatin1String(Config::formatStringDefault))) {
-        m_ui->formatStringValidationLabel->setText(QStringLiteral("The formatting string must contain %PROJECT"));
+    } else if (!text.contains(QLatin1String(FormatString::DIR)) && !text.contains(QLatin1String(FormatString::PROJECT))) {
+        m_ui->formatStringValidationLabel->setText(QStringLiteral("The formatting string must contain %1 or %2")
+        .arg(FormatString::DIR, FormatString::PROJECT));
         m_ui->formatStringValidationLabel->setHidden(false);
         m_ui->defaultFormattingPushButton->setHidden(true);
     } else {

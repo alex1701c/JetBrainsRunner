@@ -106,7 +106,8 @@
 %APPNAME is the application name
 %APP is the short application name where words are removed/shortened
 for example &quot;Community&quot; gets replaced by &quot; CE&quot; and &quot;Edition&quot; gets removed
-%PROJECT is the directory name</string>
+%PROJECT is the directory name
+%DIR is the full directory path</string>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>

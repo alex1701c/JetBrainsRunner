@@ -52,7 +52,9 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     // General settings
     formatString = config.readEntry(Config::formatString);
     // Replace invalid string with default
-    if (!formatString.contains(QLatin1String(FormatString::PROJECT))) formatString = Config::formatStringDefault;
+    if (!formatString.contains(QLatin1String(FormatString::DIR)) && !formatString.contains(QLatin1String(FormatString::PROJECT))) {
+        formatString = Config::formatStringDefault;
+    }
     launchByAppName = config.readEntry(Config::launchByAppName, true);
     launchByProjectName = config.readEntry(Config::launchByProjectName, true);
     displayInCategories = config.readEntry(Config::displayInCategories, false);
@@ -114,7 +116,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                 const QString dirName = dir.split(sep).last();
                 if (termProject.isEmpty() || dirName.startsWith(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
-                    match.setText(app->formatOptionText(formatString, dirName));
+                    match.setText(app->formatOptionText(formatString, dirName, dir));
                     match.setIconName(app->iconPath);
                     match.setData(QString(app->executablePath + dir));
                     match.setRelevance((float) 1 / (float) (i + 1));
@@ -143,7 +145,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
             const QString dirName = dir.split('/').last();
             if (dirName.startsWith(term, Qt::CaseInsensitive)) {
                 Plasma::QueryMatch match(this);
-                match.setText(app->formatOptionText(formatString, dirName));
+                match.setText(app->formatOptionText(formatString, dirName, dir));
                 match.setIconName(app->iconPath);
                 match.setData(QString(app->executablePath + dir));
                 if (displayInCategories) match.setMatchCategory(app->name);
