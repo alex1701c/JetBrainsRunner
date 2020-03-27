@@ -114,7 +114,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
             for (int i = 0; i < app->recentlyUsed.size(); ++i) {
                 const auto &dir = app->recentlyUsed.at(i);
                 const QString dirName = dir.split(sep).last();
-                if (termProject.isEmpty() || dirName.startsWith(termProject, Qt::CaseInsensitive)) {
+                if (termProject.isEmpty() || dir.contains(termProject, Qt::CaseInsensitive)) {
                     Plasma::QueryMatch match(this);
                     match.setText(app->formatOptionText(formatString, dirName, dir));
                     match.setIconName(app->iconPath);
@@ -143,7 +143,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
         }
         for (const auto &dir: qAsConst(app->recentlyUsed)) {
             const QString dirName = dir.split('/').last();
-            if (dirName.startsWith(term, Qt::CaseInsensitive)) {
+            if (dir.contains(term, Qt::CaseInsensitive)) {
                 Plasma::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, dirName, dir));
                 match.setIconName(app->iconPath);
