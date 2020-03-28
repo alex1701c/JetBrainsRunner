@@ -1,14 +1,12 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"plasma_runner_org.kde.jetbrainsrunner\")
 
-set(jetbrainsrunner_SRCS jetbrainsrunner.cpp jetbrains-api/JetbrainsApplication.cpp jetbrains-api/SettingsDirectory.cpp)
+add_subdirectory(jetbrains-api)
 
-add_library(krunner_jetbrainsrunner MODULE ${jetbrainsrunner_SRCS})
+add_library(krunner_jetbrainsrunner MODULE jetbrainsrunner.cpp)
 target_link_libraries(krunner_jetbrainsrunner KF5::Runner KF5::I18n Qt5::Network)
 
 set(kcm_krunner_jetbrainsrunner_SRCS
         config/jetbrainsrunner_config.cpp
-        jetbrains-api/JetbrainsApplication.cpp
-        jetbrains-api/SettingsDirectory.cpp
         config/jetbrainsrunner_config_mapping_item.h)
 
 ki18n_wrap_ui(kcm_krunner_jetbrainsrunner_SRCS config/jetbrainsrunner_config.ui)
@@ -25,7 +23,8 @@ target_link_libraries(kcm_krunner_jetbrainsrunner
         KF5::Runner
         )
 
-add_dependencies(krunner_jetbrainsrunner kcm_krunner_jetbrainsrunner)
+target_link_libraries(krunner_jetbrainsrunner jetbrains_api_static)
+target_link_libraries(kcm_krunner_jetbrainsrunner jetbrains_api_static)
 
 
 install(TARGETS krunner_jetbrainsrunner kcm_krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR})

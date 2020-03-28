@@ -15,7 +15,9 @@ JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
     setObjectName(QStringLiteral("JetbrainsRunner"));
 }
 
-JetbrainsRunner::~JetbrainsRunner() = default;
+JetbrainsRunner::~JetbrainsRunner() {
+    qDeleteAll(installed);
+}
 
 void JetbrainsRunner::init() {
     const QString configFolder = QDir::homePath() + QStringLiteral("/.config/krunnerplugins/");
@@ -106,7 +108,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
     const QString termName = regexMatch.captured(1);
     if (termName.isEmpty()) return matches;
     const QString termProject = regexMatch.captured(2);
-    const QString sep = QDir::separator();
+    const QChar sep = QDir::separator();
 
     for (auto const &app: qAsConst(installed)) {
         if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
