@@ -212,7 +212,7 @@ void JetbrainsRunnerConfig::validateFormattingString() {
         m_ui->defaultFormattingPushButton->setHidden(false);
     } else if (!text.contains(QLatin1String(FormatString::DIR)) && !text.contains(QLatin1String(FormatString::PROJECT))) {
         m_ui->formatStringValidationLabel->setText(QStringLiteral("The formatting string must contain %1 or %2")
-        .arg(FormatString::DIR, FormatString::PROJECT));
+        .arg(QLatin1String(FormatString::DIR), QLatin1String(FormatString::PROJECT)));
         m_ui->formatStringValidationLabel->setHidden(false);
         m_ui->defaultFormattingPushButton->setHidden(true);
     } else {

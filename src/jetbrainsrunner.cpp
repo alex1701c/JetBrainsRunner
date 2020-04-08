@@ -108,7 +108,6 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
     const QString termName = regexMatch.captured(1);
     if (termName.isEmpty()) return matches;
     const QString termProject = regexMatch.captured(2);
-    const QChar sep = QDir::separator();
 
     for (auto const &app: qAsConst(installed)) {
         if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
@@ -181,6 +180,46 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             });
         }
     }
+}
+
+QMimeData *JetbrainsRunner::mimeDataForMatch(const Plasma::QueryMatch &match)
+{
+    auto *data = new QMimeData();
+    static const QString folderPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
+        + sep
+        + QStringLiteral("JetbrainsRunner")
+        + sep;
+    const QString desktopFileName =  folderPath
+        + QString::fromLocal8Bit(QUrl::toPercentEncoding(match.text()))
+        + QStringLiteral(".desktop");
+    QDir folder(folderPath);
+    if (!folder.exists()) {
+        folder.mkpath(QStringLiteral("."));
+    }
+    if (!QFile::exists(desktopFileName)) {
+        writeDesktopFile(match, desktopFileName);
+    } else {
+        KConfigGroup grp = KSharedConfig::openConfig(desktopFileName)->group("Desktop Entry");
+         if (grp.readEntry("Exec") != match.data().toString()) {
+             writeDesktopFile(match, desktopFileName);
+         }
+    }
+
+    data->setUrls({QUrl::fromLocalFile(desktopFileName)});
+    return data;
+}
+void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QString &filePath)
+{
+    QFile f(filePath);
+    f.open(QFile::WriteOnly);
+    f.write(QStringLiteral("[Desktop Entry]\n"
+                           "Categories=Utility;Development;\n"
+                           "Exec=%1\n"
+                           "Icon=%2\n"
+                           "Name=%3\n"
+                           "Terminal=false\n"
+                           "Type=Application\n")
+                .arg(match.data().toString(), match.iconName(), match.text()).toLocal8Bit());
 }
 
 K_EXPORT_PLASMA_RUNNER(jetbrainsrunner, JetbrainsRunner)
