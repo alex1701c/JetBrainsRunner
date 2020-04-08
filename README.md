@@ -5,6 +5,15 @@ Furthermore the search suggestions and the application -> config file mapping ca
 Additionally it has file watchers implemented, these reload the configuration when
 new projects get added/removed.  
 
+New Feature:
+Now you can pin your projects by dragging the KRunner results to the taskbar or desktop.
+
+To install the plugin you can visit out the release page(https://github.com/alex1701c/JetBrainsRunner/releases)
+or build from source as explained below.
+
+If you like this plugin you can check out the dolphin version https://github.com/alex1701c/JetBrainsDolphinPlugin and 
+leave a rating in the KDE Store https://www.pling.com/p/1311630/.
+
 Required Dependencies
 ----------------------
 
