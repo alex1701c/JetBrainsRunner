@@ -3,6 +3,8 @@
 
 #include <KRunner/AbstractRunner>
 #include <QtNetwork/QNetworkReply>
+#include <QDir>
+#include <QRegularExpression>
 #include "jetbrains-api/JetbrainsApplication.h"
 
 class JetbrainsRunner : public Plasma::AbstractRunner {

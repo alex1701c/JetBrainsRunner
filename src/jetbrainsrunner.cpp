@@ -22,7 +22,9 @@ JetbrainsRunner::~JetbrainsRunner() {
 void JetbrainsRunner::init() {
     const QString configFolder = QDir::homePath() + QStringLiteral("/.config/krunnerplugins/");
     const QDir configDir(configFolder);
-    if (!configDir.exists()) configDir.mkpath(configFolder);
+    if (!configDir.exists()) {
+        configDir.mkpath(configFolder);
+    }
     // Create file
     QFile configFile(configFolder + QStringLiteral("jetbrainsrunnerrc"));
     if (!configFile.exists()) {
@@ -37,11 +39,11 @@ void JetbrainsRunner::init() {
 
 
 void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
-    KConfigGroup config = KSharedConfig::openConfig(
-            QDir::homePath() % QStringLiteral("/.config/krunnerplugins/jetbrainsrunnerrc"))
-                    ->group("Config");
-    // Force sync from file
-    if (!configFile.isEmpty()) config.config()->reparseConfiguration();
+    KConfigGroup config = KSharedConfig::openConfig(QStringLiteral("krunnerplugins/jetbrainsrunnerrc"))
+        ->group("Config");
+    if (!configFile.isEmpty()) {
+        config.config()->reparseConfiguration();
+    }
 
     // If the file gets edited with a text editor, it often gets replaced by the edited version
     // https://stackoverflow.com/a/30076119/9342842
@@ -208,6 +210,7 @@ QMimeData *JetbrainsRunner::mimeDataForMatch(const Plasma::QueryMatch &match)
     data->setUrls({QUrl::fromLocalFile(desktopFileName)});
     return data;
 }
+
 void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QString &filePath)
 {
     QFile f(filePath);
