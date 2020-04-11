@@ -23,27 +23,20 @@ public:
     KConfigGroup customMappingGroup;
 
 public Q_SLOTS:
-
     void exportDebugFile();
 
     void makeVersionRequest();
-
     void displayUpdateNotification(QNetworkReply *reply);
 
     void addNewMappingItem();
-
     void deleteMappingItem();
 
     void validateOptions();
-
     void validateFormattingString();
-
     void setDefaultFormatting();
 
     void load() override;
-
     void save() override;
-
     void defaults() override;
 
 private:

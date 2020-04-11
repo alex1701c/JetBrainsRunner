@@ -46,8 +46,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>572</width>
-           <height>472</height>
+           <width>551</width>
+           <height>492</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout">
@@ -98,6 +98,36 @@
                <string>Show use application name as category for projects</string>
               </property>
              </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Filter search results</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="filterSearchResultsComboBox">
+                <item>
+                 <property name="text">
+                  <string>Project Startswith (default)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Project Contains</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Path Contains</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <widget class="QLabel" name="formattingRulesLabel">

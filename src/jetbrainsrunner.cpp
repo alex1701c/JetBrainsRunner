@@ -11,7 +11,7 @@
 #include "jetbrains-api/export.h"
 
 JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
-        : Plasma::AbstractRunner(parent, args) {
+    : Plasma::AbstractRunner(parent, args) {
     setObjectName(QStringLiteral("JetbrainsRunner"));
 }
 
@@ -56,12 +56,15 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     // General settings
     formatString = config.readEntry(Config::formatString);
     // Replace invalid string with default
-    if (!formatString.contains(QLatin1String(FormatString::DIR)) && !formatString.contains(QLatin1String(FormatString::PROJECT))) {
+    if (!formatString.contains(QLatin1String(FormatString::DIR)) &&
+        !formatString.contains(QLatin1String(FormatString::PROJECT))) {
         formatString = Config::formatStringDefault;
     }
     launchByAppName = config.readEntry(Config::launchByAppName, true);
     launchByProjectName = config.readEntry(Config::launchByProjectName, true);
     displayInCategories = config.readEntry(Config::displayInCategories, false);
+    searchResultChoice = config.readEntry(Config::filterSearchResults);
+
     qDeleteAll(installed);
     installed.clear();
     if (launchByAppName) {
@@ -74,10 +77,11 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     // Version update notification
     QDate lastUpdateCheckDate = QDate::fromString(config.readEntry(Config::checkedUpdateDate));
     if (config.readEntry(Config::notifyUpdates, true) && (
-            !lastUpdateCheckDate.isValid() ||
-            lastUpdateCheckDate.addDays(7) <= QDate::currentDate())) {
+        !lastUpdateCheckDate.isValid() ||
+        lastUpdateCheckDate.addDays(7) <= QDate::currentDate())) {
         auto manager = new QNetworkAccessManager(this);
-        QNetworkRequest request(QUrl(QStringLiteral("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases")));
+        QNetworkRequest request(
+            QUrl(QStringLiteral("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases")));
         manager->get(request);
         connect(manager, &QNetworkAccessManager::finished, this, &JetbrainsRunner::displayUpdateNotification);
         config.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
@@ -117,7 +121,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
             for (int i = 0; i < app->recentlyUsed.size(); ++i) {
                 const auto &dir = app->recentlyUsed.at(i);
                 const QString dirName = dir.split(sep).last();
-                if (termProject.isEmpty() || dirName.startsWith(termProject, Qt::CaseInsensitive)) {
+                if (termProject.isEmpty() || projectMatchesQuery(term, dir, dirName)) {
                     Plasma::QueryMatch match(this);
                     match.setText(app->formatOptionText(formatString, dirName, dir));
                     match.setIconName(app->iconPath);
@@ -146,7 +150,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
         }
         for (const auto &dir: qAsConst(app->recentlyUsed)) {
             const QString dirName = dir.split('/').last();
-            if (dirName.startsWith(term, Qt::CaseInsensitive)) {
+            if (projectMatchesQuery(term, dir, dirName)) {
                 Plasma::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, dirName, dir));
                 match.setIconName(app->iconPath);
@@ -157,6 +161,16 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
         }
     }
     return matches;
+}
+
+bool JetbrainsRunner::projectMatchesQuery(const QString &term, const QString &path, const QString &project) {
+    if (searchResultChoice == QLatin1String("Project Contains")) {
+        return project.contains(term, Qt::CaseInsensitive);
+    } else if (searchResultChoice == QLatin1String("Path Contains")) {
+        return path.contains(term, Qt::CaseInsensitive);
+    } else {
+        return project.startsWith(term, Qt::CaseInsensitive);
+    }
 }
 
 void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
@@ -178,22 +192,21 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             displayText.prepend("New Versions Available:\n");
             displayText.append("Please go to https://github.com/alex1701c/JetBrainsRunner</a>");
             QProcess::startDetached("notify-send", QStringList{
-                    "JetBrains Runner Updates!", displayText, "--icon", "jetbrains", "--expire-time", "5000"
+                "JetBrains Runner Updates!", displayText, "--icon", "jetbrains", "--expire-time", "5000"
             });
         }
     }
 }
 
-QMimeData *JetbrainsRunner::mimeDataForMatch(const Plasma::QueryMatch &match)
-{
+QMimeData *JetbrainsRunner::mimeDataForMatch(const Plasma::QueryMatch &match) {
     auto *data = new QMimeData();
     static const QString folderPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
-        + sep
-        + QStringLiteral("JetbrainsRunner")
-        + sep;
-    const QString desktopFileName =  folderPath
-        + QString::fromLocal8Bit(QUrl::toPercentEncoding(match.text()))
-        + QStringLiteral(".desktop");
+                                      + sep
+                                      + QStringLiteral("JetbrainsRunner")
+                                      + sep;
+    const QString desktopFileName = folderPath
+                                    + QString::fromLocal8Bit(QUrl::toPercentEncoding(match.text()))
+                                    + QStringLiteral(".desktop");
     QDir folder(folderPath);
     if (!folder.exists()) {
         folder.mkpath(QStringLiteral("."));
@@ -202,17 +215,16 @@ QMimeData *JetbrainsRunner::mimeDataForMatch(const Plasma::QueryMatch &match)
         writeDesktopFile(match, desktopFileName);
     } else {
         KConfigGroup grp = KSharedConfig::openConfig(desktopFileName)->group("Desktop Entry");
-         if (grp.readEntry("Exec") != match.data().toString()) {
-             writeDesktopFile(match, desktopFileName);
-         }
+        if (grp.readEntry("Exec") != match.data().toString()) {
+            writeDesktopFile(match, desktopFileName);
+        }
     }
 
     data->setUrls({QUrl::fromLocalFile(desktopFileName)});
     return data;
 }
 
-void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QString &filePath)
-{
+void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QString &filePath) {
     QFile f(filePath);
     f.open(QFile::WriteOnly);
     f.write(QStringLiteral("[Desktop Entry]\n"

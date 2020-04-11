@@ -37,6 +37,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     connect(m_ui->projectNameSearch, &QCheckBox::clicked, this, changedSlotPointer);
     connect(m_ui->projectNameSearch, &QCheckBox::clicked, this, &JetbrainsRunnerConfig::validateOptions);
     connect(m_ui->updatesCheckBox, &QCheckBox::clicked, this, changedSlotPointer);
+    connect(m_ui->filterSearchResultsComboBox, &QComboBox::currentTextChanged, this, changedSlotPointer);
     connect(m_ui->newManualMappingPushButton, &QPushButton::clicked, this, &JetbrainsRunnerConfig::addNewMappingItem);
     connect(m_ui->newManualMappingPushButton, &QPushButton::clicked, this, changedSlotPointer);
     connect(m_ui->formatStringLineEdit, &QLineEdit::textChanged, this, changedSlotPointer);
@@ -58,6 +59,8 @@ void JetbrainsRunnerConfig::load() {
     m_ui->updatesCheckBox->setChecked(config.readEntry(Config::notifyUpdates, true));
     m_ui->showCategoryCheckBox->setChecked(config.readEntry(Config::displayInCategories, false));
     m_ui->formatStringLineEdit->setText(config.readEntry(Config::formatString, Config::formatStringDefault));
+    const int idx = m_ui->filterSearchResultsComboBox->findText(config.readEntry(Config::filterSearchResults));
+    m_ui->filterSearchResultsComboBox->setCurrentIndex(idx != -1 ? idx : 0);
     if (m_ui->updatesCheckBox->isChecked()) {
         makeVersionRequest();
     }
@@ -81,6 +84,7 @@ void JetbrainsRunnerConfig::save() {
     config.writeEntry(Config::notifyUpdates, m_ui->updatesCheckBox->isChecked());
     config.writeEntry(Config::formatString, m_ui->formatStringLineEdit->text());
     config.writeEntry(Config::displayInCategories, m_ui->showCategoryCheckBox->isChecked());
+    config.writeEntry(Config::filterSearchResults, m_ui->filterSearchResultsComboBox->currentText());
 
     const int itemCount = m_ui->manualMappingVBox->count();
     // Reset config by deleting group
@@ -105,6 +109,7 @@ void JetbrainsRunnerConfig::defaults() {
     m_ui->projectNameSearch->setChecked(true);
     m_ui->formatStringLineEdit->setText(Config::formatStringDefault);
     m_ui->showCategoryCheckBox->setChecked(false);
+    m_ui->filterSearchResultsComboBox->setCurrentIndex(0);
     emit changed(true);
 }
 
@@ -124,7 +129,6 @@ void JetbrainsRunnerConfig::exportDebugFile() {
     const QString filename = QFileDialog::getSaveFileName(
             this, QStringLiteral("Save file"), "", QStringLiteral(".txt"));
     if (!filename.isEmpty()) {
-
         auto debugString = new QString();
         const auto mappingMap = config.group(QStringLiteral("CustomMapping")).entryMap();
         QList<JetbrainsApplication *> appList;

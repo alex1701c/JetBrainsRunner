@@ -17,9 +17,12 @@ public:
     QFileSystemWatcher watcher;
     bool launchByAppName, launchByProjectName, displayInCategories;
     QString formatString;
+    QString searchResultChoice;
     QRegularExpression appNameRegex;
     QList<JetbrainsApplication *> installed;
     const QChar sep = QDir::separator();
+
+    inline bool projectMatchesQuery(const QString &term, const QString &path, const QString &project);
 
     QList<Plasma::QueryMatch> addAppNameMatches(const QString &term);
     QList<Plasma::QueryMatch> addProjectNameMatches(const QString &term);
