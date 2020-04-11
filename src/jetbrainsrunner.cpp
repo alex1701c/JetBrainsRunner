@@ -121,7 +121,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
             for (int i = 0; i < app->recentlyUsed.size(); ++i) {
                 const auto &dir = app->recentlyUsed.at(i);
                 const QString dirName = dir.split(sep).last();
-                if (termProject.isEmpty() || projectMatchesQuery(term, dir, dirName)) {
+                if (termProject.isEmpty() || projectMatchesQuery(termProject, dir, dirName)) {
                     Plasma::QueryMatch match(this);
                     match.setText(app->formatOptionText(formatString, dirName, dir));
                     match.setIconName(app->iconPath);
