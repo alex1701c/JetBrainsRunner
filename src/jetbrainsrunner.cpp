@@ -9,7 +9,6 @@
 #include <QStringBuilder>
 
 #include "jetbrains-api/export.h"
-#include "version.h"
 
 JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
     : Plasma::AbstractRunner(parent, args) {
@@ -87,7 +86,6 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
         connect(manager, &QNetworkAccessManager::finished, this, &JetbrainsRunner::displayUpdateNotification);
         config.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
     }
-    qWarning() << QLatin1String(PluginVersion);
 }
 
 void JetbrainsRunner::match(Plasma::RunnerContext &context) {
@@ -183,7 +181,7 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value(QLatin1String("tag_name")).toString() > PluginVersion) {
+                    if (githubRelease.value(QLatin1String("tag_name")).toString() > JBRPluginVersion) {
                         displayText.append(githubRelease.value(QLatin1String("tag_name")).toString() + ": " +
                                            githubRelease.value(QLatin1String("name")).toString() + "\n");
                     }

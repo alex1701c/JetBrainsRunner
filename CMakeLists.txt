@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(jetbrainsrunner)
+set(JBRPluginVersion "1.4.1")
+add_definitions(-DJBRPluginVersion="${JBRPluginVersion}")
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_MODULE_PATH})
@@ -20,7 +22,7 @@ feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAG
 # CPack configuration
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A Krunner Plugin which allows you to open your recent projects")
 set(CPACK_PACKAGE_NAME krunner-${CMAKE_PROJECT_NAME})
-set(CPACK_PACKAGE_VERSION 1.4.1)
+set(CPACK_PACKAGE_VERSION "${JBRPluginVersion}")
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "alex1701c")
 set(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
