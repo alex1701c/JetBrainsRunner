@@ -181,7 +181,7 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value(QLatin1String("tag_name")).toString() > JBRPluginVersion) {
+                    if (githubRelease.value(QLatin1String("tag_name")).toString() > CMAKE_PROJECT_VERSION) {
                         displayText.append(githubRelease.value(QLatin1String("tag_name")).toString() + ": " +
                                            githubRelease.value(QLatin1String("name")).toString() + "\n");
                     }

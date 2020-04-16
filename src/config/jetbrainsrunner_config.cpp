@@ -178,7 +178,7 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonObject.array()) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > JBRPluginVersion) {
+                    if (githubRelease.value("tag_name").toString() > CMAKE_PROJECT_VERSION) {
                         displayText.append(githubRelease.value("tag_name").toString() + ": " +
                                            githubRelease.value("name").toString() + "\n");
                     }
@@ -186,7 +186,7 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
             }
         }
         if (!displayText.isEmpty()) {
-            displayText.prepend("Current Version: 1.2.2\n");
+            displayText.prepend(QStringLiteral("Current Version: %1\n").arg(CMAKE_PROJECT_VERSION));
             displayText.prepend("<pre>Updates Available !\n");
             displayText.append("Please go to <a href=\"https://github.com/alex1701c/JetBrainsRunner\">"\
                                "https://github.com/alex1701c/JetBrainsRunner</a>\nand get the latest version</pre>");
