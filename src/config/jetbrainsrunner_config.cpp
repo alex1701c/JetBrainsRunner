@@ -201,7 +201,9 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
 
 
 void JetbrainsRunnerConfig::addNewMappingItem() {
-    m_ui->manualMappingVBox->addWidget(new JetbrainsRunnerConfigMappingItem(this));
+    auto *item = new JetbrainsRunnerConfigMappingItem(this);
+    m_ui->manualMappingVBox->addWidget(item);
+    connect(item, &JetbrainsRunnerConfigMappingItem::deleteMappingItem, this, &JetbrainsRunnerConfig::deleteMappingItem);
 }
 
 void JetbrainsRunnerConfig::deleteMappingItem() {
