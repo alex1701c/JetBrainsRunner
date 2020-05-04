@@ -133,7 +133,7 @@ void JetbrainsRunnerConfig::exportDebugFile() {
         const auto mappingMap = config.group(QStringLiteral("CustomMapping")).entryMap();
         QList<JetbrainsApplication *> appList;
         QList<JetbrainsApplication *> automaticAppList;
-        auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"));
+        auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"), debugString);
 
         // Split manually configured and automatically found apps
         if (!mappingMap.isEmpty()) {
@@ -158,7 +158,8 @@ void JetbrainsRunnerConfig::exportDebugFile() {
             }
         }
 
-        SettingsDirectory::findCorrespondingDirectories(SettingsDirectory::getSettingsDirectories(debugString), automaticAppList);
+        SettingsDirectory::findCorrespondingDirectories(SettingsDirectory::getSettingsDirectories(debugString),
+                automaticAppList, debugString);
         JetbrainsApplication::parseXMLFiles(automaticAppList, debugString);
         automaticAppList = JetbrainsApplication::filterApps(automaticAppList, debugString);
 
