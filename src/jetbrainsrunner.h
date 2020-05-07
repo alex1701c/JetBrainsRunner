@@ -22,7 +22,7 @@ public:
     QList<JetbrainsApplication *> installed;
     const QChar sep = QDir::separator();
 
-    inline bool projectMatchesQuery(const QString &term, const QString &path, const QString &project);
+    inline bool projectMatchesQuery(const QString &term, const Project &project);
 
     QList<Plasma::QueryMatch> addAppNameMatches(const QString &term);
     QList<Plasma::QueryMatch> addProjectNameMatches(const QString &term);

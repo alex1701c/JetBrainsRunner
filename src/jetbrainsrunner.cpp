@@ -119,13 +119,12 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
         if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
             (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
             for (int i = 0; i < app->recentlyUsed.size(); ++i) {
-                const auto &dir = app->recentlyUsed.at(i);
-                const QString dirName = dir.split(sep).last();
-                if (termProject.isEmpty() || projectMatchesQuery(termProject, dir, dirName)) {
+                const auto &project = app->recentlyUsed.at(i);
+                if (termProject.isEmpty() || projectMatchesQuery(termProject, project)) {
                     Plasma::QueryMatch match(this);
-                    match.setText(app->formatOptionText(formatString, dirName, dir));
+                    match.setText(app->formatOptionText(formatString, project));
                     match.setIconName(app->iconPath);
-                    match.setData(QString(app->executablePath + dir));
+                    match.setData(QString(app->executablePath + project.path));
                     match.setRelevance((float) 1 / (float) (i + 1));
                     if (displayInCategories) match.setMatchCategory(app->name);
                     matches.append(match);
@@ -148,13 +147,12 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
             (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(term, Qt::CaseInsensitive))) {
             continue;
         }
-        for (const auto &dir: qAsConst(app->recentlyUsed)) {
-            const QString dirName = dir.split('/').last();
-            if (projectMatchesQuery(term, dir, dirName)) {
+        for (const auto &project: qAsConst(app->recentlyUsed)) {
+            if (projectMatchesQuery(term, project)) {
                 Plasma::QueryMatch match(this);
-                match.setText(app->formatOptionText(formatString, dirName, dir));
+                match.setText(app->formatOptionText(formatString, project));
                 match.setIconName(app->iconPath);
-                match.setData(QString(app->executablePath + dir));
+                match.setData(QString(app->executablePath + project.path));
                 if (displayInCategories) match.setMatchCategory(app->name);
                 matches.append(match);
             }
@@ -163,13 +161,13 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
     return matches;
 }
 
-bool JetbrainsRunner::projectMatchesQuery(const QString &term, const QString &path, const QString &project) {
+bool JetbrainsRunner::projectMatchesQuery(const QString &term, const Project &project) {
     if (searchResultChoice == QLatin1String("Project Contains")) {
-        return project.contains(term, Qt::CaseInsensitive);
+        return project.name.contains(term, Qt::CaseInsensitive);
     } else if (searchResultChoice == QLatin1String("Path Contains")) {
-        return path.contains(term, Qt::CaseInsensitive);
+        return project.path.contains(term, Qt::CaseInsensitive);
     } else {
-        return project.startsWith(term, Qt::CaseInsensitive);
+        return project.name.startsWith(term, Qt::CaseInsensitive);
     }
 }
 

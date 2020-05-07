@@ -75,7 +75,7 @@ public Q_SLOTS:
 
                 QString recentApplicationsText;
                 for (const auto &recentProject: newApp.recentlyUsed) {
-                    recentApplicationsText.append(recentProject + "\n");
+                    recentApplicationsText.append(recentProject.path + "\n");
                 }
                 this->recentProjectsLabel->setText(recentApplicationsText);
             }
