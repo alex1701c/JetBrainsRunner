@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 # Set project variables
 project(jetbrainsrunner)
-set(CMAKE_PROJECT_VERSION  "1.5.0")
+set(CMAKE_PROJECT_VERSION  "1.6.1")
 add_definitions(-DCMAKE_PROJECT_VERSION="${CMAKE_PROJECT_VERSION}")
 set(CMAKE_PROJECT_HOMEPAGE_URL "https://github.com/alex1701c/JetBrainsRunner")
 set(CMAKE_PROJECT_AUTHOR "alex1701c")
@@ -19,6 +19,7 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 
+add_definitions(-DQT_NO_FOREACH -DQT_NO_EMIT)
 add_subdirectory(src)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

@@ -10,7 +10,7 @@ class JetbrainsRunnerConfigMappingItem : public QWidget, public Ui::JetbrainsRun
 Q_OBJECT
 
 public:
-    explicit JetbrainsRunnerConfigMappingItem(QWidget *parent, const QString &desktopFilePath = "", const QString &configFilePath = "")
+    explicit JetbrainsRunnerConfigMappingItem(QWidget *parent, const QString &desktopFilePath = QString(), const QString &configFilePath = QString())
             : QWidget(parent) {
         setupUi(this);
 
@@ -31,9 +31,8 @@ public:
     }
 
 public Q_SLOTS:
-
     void openDesktopFileChooser() {
-        const QString desktopFile = QFileDialog::getOpenFileName(this, tr("Select Desktop File"), "",
+        const QString desktopFile = QFileDialog::getOpenFileName(this, tr("Select Desktop File"), QString(),
                                                                  tr("Desktop File (*.desktop)"));
         if (!desktopFile.isEmpty()) {
             this->configDesktoFilePushButton->setText(desktopFile);
@@ -43,7 +42,7 @@ public Q_SLOTS:
 
     void openConfigFileChooser() {
         const QString configLocation =
-                QFileDialog::getOpenFileName(this, tr("Select Config File"), "",
+                QFileDialog::getOpenFileName(this, tr("Select Config File"), QString(),
                                              tr("XML File (*.xml)"));
         if (!configLocation.isEmpty()) {
             this->configXMLFilePushButton->setText(configLocation);
@@ -52,21 +51,19 @@ public Q_SLOTS:
     }
 
     void validateInfoWidget() {
-        const QString desktopFile = this->configDesktoFilePushButton->text().remove("&");
-        const QString configFile = this->configXMLFilePushButton->text().remove("&");
-        if (QFile::exists(desktopFile)) {
+        const QString desktopFile = this->configDesktoFilePushButton->text().remove('&');
+        const QString configFile = this->configXMLFilePushButton->text().remove('&');
+        if (QFileInfo::exists(desktopFile)) {
             this->configTitleWidget->setHidden(false);
             JetbrainsApplication newApp(desktopFile);
-            this->appNameLabel->setText(newApp.name
-                                                .remove(" Release").remove(" Edition")
-                                                .remove(" + JBR11").remove(" RC").remove(" EAP"));
+            this->appNameLabel->setText(newApp.name);
             const QPixmap pixmap(newApp.iconPath);
             this->applicationIconLabel->setPixmap(pixmap);
             this->applicationIconLabel->setMask(pixmap.mask());
         } else {
             this->configTitleWidget->setHidden(true);
         }
-        if (QFile::exists(configFile)) {
+        if (QFileInfo::exists(configFile)) {
             QFile file(configFile);
             if (file.open(QFile::ReadOnly)) {
                 this->configReadWidget->setHidden(false);
@@ -74,7 +71,7 @@ public Q_SLOTS:
                 newApp.parseXMLFile(file.readAll());
 
                 QString recentApplicationsText;
-                for (const auto &recentProject: newApp.recentlyUsed) {
+                for (const auto &recentProject: qAsConst(newApp.recentlyUsed)) {
                     recentApplicationsText.append(recentProject.path + "\n");
                 }
                 this->recentProjectsLabel->setText(recentApplicationsText);
@@ -85,9 +82,7 @@ public Q_SLOTS:
     }
 
 Q_SIGNALS:
-
     void changed();
-
     void deleteMappingItem();
 };
 

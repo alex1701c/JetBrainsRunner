@@ -105,7 +105,7 @@ void JetbrainsRunnerConfig::save() {
 
     config.config()->sync();
 
-    emit changed(true);
+    Q_EMIT changed(true);
 }
 
 void JetbrainsRunnerConfig::defaults() {
@@ -114,7 +114,7 @@ void JetbrainsRunnerConfig::defaults() {
     m_ui->formatStringLineEdit->setText(Config::formatStringDefault);
     m_ui->showCategoryCheckBox->setChecked(false);
     m_ui->filterSearchResultsComboBox->setCurrentIndex(0);
-    emit changed(true);
+    Q_EMIT changed(true);
 }
 
 void JetbrainsRunnerConfig::validateOptions() {
