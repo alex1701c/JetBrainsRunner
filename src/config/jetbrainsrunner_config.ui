@@ -109,23 +109,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="filterSearchResultsComboBox">
-                <item>
-                 <property name="text">
-                  <string>Project Startswith (default)</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Project Contains</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Path Contains</string>
-                 </property>
-                </item>
-               </widget>
+               <widget class="QComboBox" name="filterSearchResultsComboBox"/>
               </item>
              </layout>
             </item>

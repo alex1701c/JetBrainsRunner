@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QRegularExpression>
 #include "jetbrains-api/JetbrainsApplication.h"
+#include "jetbrains-api/ConfigKeys.h"
 
 class JetbrainsRunner : public Plasma::AbstractRunner {
 Q_OBJECT
@@ -17,12 +18,12 @@ public:
     QFileSystemWatcher watcher;
     bool launchByAppName, launchByProjectName, displayInCategories;
     QString formatString;
-    QString searchResultChoice;
+    SearchResultChoice searchResultChoice;
     QRegularExpression appNameRegex;
     QList<JetbrainsApplication *> installed;
     const QChar sep = QDir::separator();
 
-    inline bool projectMatchesQuery(const QString &term, const Project &project);
+    inline bool projectMatchesQuery(const QString &term, const Project &project) const;
 
     QList<Plasma::QueryMatch> addAppNameMatches(const QString &term);
     QList<Plasma::QueryMatch> addProjectNameMatches(const QString &term);

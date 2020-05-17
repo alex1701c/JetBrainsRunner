@@ -51,6 +51,9 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
 
 
 void JetbrainsRunnerConfig::load() {
+    m_ui->filterSearchResultsComboBox->insertItem(0, QStringLiteral("Path Contains"), (int) SearchResultChoice::PathContains);
+    m_ui->filterSearchResultsComboBox->insertItem(0, QStringLiteral("Project Contains"), (int) SearchResultChoice::ProjectNameContains);
+    m_ui->filterSearchResultsComboBox->insertItem(0, QStringLiteral("Project Startswith (default)"), (int) SearchResultChoice::ProjectNameStartsWith);
     m_ui->formatStringValidationLabel->setHidden(true);
     m_ui->formatStringValidationLabel->setStyleSheet(QStringLiteral("QLabel { color : red }"));
     m_ui->defaultFormattingPushButton->setHidden(true);
@@ -59,7 +62,8 @@ void JetbrainsRunnerConfig::load() {
     m_ui->updatesCheckBox->setChecked(config.readEntry(Config::notifyUpdates, true));
     m_ui->showCategoryCheckBox->setChecked(config.readEntry(Config::displayInCategories, false));
     m_ui->formatStringLineEdit->setText(config.readEntry(Config::formatString, Config::formatStringDefault));
-    const int idx = m_ui->filterSearchResultsComboBox->findText(config.readEntry(Config::filterSearchResults));
+    int enumValue = config.readEntry(Config::filterSearchResults, (int) SearchResultChoice::ProjectNameStartsWith);
+    const int idx = m_ui->filterSearchResultsComboBox->findData(enumValue);
     m_ui->filterSearchResultsComboBox->setCurrentIndex(idx != -1 ? idx : 0);
     if (m_ui->updatesCheckBox->isChecked()) {
         makeVersionRequest();
@@ -84,7 +88,7 @@ void JetbrainsRunnerConfig::save() {
     config.writeEntry(Config::notifyUpdates, m_ui->updatesCheckBox->isChecked());
     config.writeEntry(Config::formatString, m_ui->formatStringLineEdit->text());
     config.writeEntry(Config::displayInCategories, m_ui->showCategoryCheckBox->isChecked());
-    config.writeEntry(Config::filterSearchResults, m_ui->filterSearchResultsComboBox->currentText());
+    config.writeEntry(Config::filterSearchResults, m_ui->filterSearchResultsComboBox->currentData());
 
     const int itemCount = m_ui->manualMappingVBox->count();
     // Reset config by deleting group
@@ -127,10 +131,10 @@ void JetbrainsRunnerConfig::makeVersionRequest() {
 
 void JetbrainsRunnerConfig::exportDebugFile() {
     const QString filename = QFileDialog::getSaveFileName(
-            this, QStringLiteral("Save file"), "", QStringLiteral(".txt"));
+            this, QStringLiteral("Save file"), QString(), QStringLiteral(".txt"));
     if (!filename.isEmpty()) {
         auto debugString = new QString();
-        const auto mappingMap = config.group(QStringLiteral("CustomMapping")).entryMap();
+        const auto mappingMap = config.group("CustomMapping").entryMap();
         QList<JetbrainsApplication *> appList;
         QList<JetbrainsApplication *> automaticAppList;
         auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"), debugString);

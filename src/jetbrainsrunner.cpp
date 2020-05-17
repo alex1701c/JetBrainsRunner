@@ -63,7 +63,7 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     launchByAppName = config.readEntry(Config::launchByAppName, true);
     launchByProjectName = config.readEntry(Config::launchByProjectName, true);
     displayInCategories = config.readEntry(Config::displayInCategories, false);
-    searchResultChoice = config.readEntry(Config::filterSearchResults);
+    searchResultChoice = (SearchResultChoice) config.readEntry(Config::filterSearchResults, (int) SearchResultChoice::ProjectNameStartsWith);
 
     qDeleteAll(installed);
     installed.clear();
@@ -161,14 +161,16 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
     return matches;
 }
 
-bool JetbrainsRunner::projectMatchesQuery(const QString &term, const Project &project) {
-    if (searchResultChoice == QLatin1String("Project Contains")) {
+bool JetbrainsRunner::projectMatchesQuery(const QString &term, const Project &project) const {
+    if (searchResultChoice == SearchResultChoice::ProjectNameContains) {
         return project.name.contains(term, Qt::CaseInsensitive);
-    } else if (searchResultChoice == QLatin1String("Path Contains")) {
+    } else if (searchResultChoice == SearchResultChoice::PathContains) {
         return project.path.contains(term, Qt::CaseInsensitive);
-    } else {
+    } else if (searchResultChoice == SearchResultChoice::ProjectNameStartsWith){
         return project.name.startsWith(term, Qt::CaseInsensitive);
     }
+    qCritical() << "Found no value for" << searchResultChoice;
+    return project.name.startsWith(term, Qt::CaseInsensitive);
 }
 
 void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
