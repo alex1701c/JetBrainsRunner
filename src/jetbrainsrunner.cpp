@@ -110,6 +110,9 @@ void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::Qu
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
+    if (term.size() < 2) {
+        return matches;
+    }
 
     const auto regexMatch = appNameRegex.match(term);
     const QString termName = regexMatch.captured(1);
@@ -139,6 +142,9 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term) {
     QList<Plasma::QueryMatch> matches;
+    if (term.size() < 3) {
+        return matches;
+    }
     for (auto const &app: qAsConst(installed)) {
         // If the plugin displays search suggestions by appname and the application name matches the search
         // term the options have already been created in the addAppNameMatches method
