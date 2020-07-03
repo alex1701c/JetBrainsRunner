@@ -28,8 +28,13 @@ target_link_libraries(kcm_krunner_jetbrainsrunner jetbrains_api_static)
 
 configure_file(plasma-runner-jetbrainsrunner.desktop.in plasma-runner-jetbrainsrunner.desktop)
 
-install(TARGETS krunner_jetbrainsrunner kcm_krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR})
-install(FILES ${CMAKE_BINARY_DIR}/src/plasma-runner-jetbrainsrunner.desktop config/plasma-runner-jetbrainsrunner_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+if(KF5Runner_VERSION VERSION_LESS 5.72.0)
+    install(FILES ${CMAKE_BINARY_DIR}/src/plasma-runner-jetbrainsrunner.desktop config/plasma-runner-jetbrainsrunner_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+else()
+    kcoreaddons_desktop_to_json(krunner_jetbrainsrunner ${CMAKE_BINARY_DIR}/src/plasma-runner-jetbrainsrunner.desktop)
+endif()
+install(TARGETS krunner_jetbrainsrunner kcm_krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/kf5/krunner/)
+install(FILES config/plasma-runner-jetbrainsrunner_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 set(JETBRAINS_ICON_INSTALL_DIR "/usr/share/pixmaps/" CACHE STRING "Default icon directory")
 install(FILES jetbrainsrunner.png DESTINATION ${JETBRAINS_ICON_INSTALL_DIR})

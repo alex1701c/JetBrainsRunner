@@ -7,6 +7,7 @@
 #include <QtGui/QtGui>
 #include <QDate>
 #include <QStringBuilder>
+#include <krunner_version.h>
 
 #include "jetbrains-api/export.h"
 
@@ -237,7 +238,11 @@ void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QS
                 .arg(match.data().toString(), match.iconName(), match.text()).toLocal8Bit());
 }
 
+#if KRUNNER_VERSION >= QT_VERSION_CHECK(5, 72, 0)
+K_EXPORT_PLASMA_RUNNER_WITH_JSON(JetbrainsRunner, "plasma-runner-jetbrainsrunner.json")
+#else
 K_EXPORT_PLASMA_RUNNER(jetbrainsrunner, JetbrainsRunner)
+#endif
 
 // needed for the QObject subclass declared as part of K_EXPORT_PLASMA_RUNNER
 #include "jetbrainsrunner.moc"
