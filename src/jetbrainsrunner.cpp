@@ -243,6 +243,17 @@ void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QS
                 .arg(match.data().toString(), match.iconName(), match.text()).toLocal8Bit());
 }
 
+QStringList JetbrainsRunner::categories() const {
+    if (displayInCategories) {
+       QStringList list;
+       for (const auto *app:qAsConst(installed)) {
+           list << app->name;
+       }
+       return list;
+    }
+    return AbstractRunner::categories();
+}
+
 #if KRUNNER_VERSION >= QT_VERSION_CHECK(5, 72, 0)
 K_EXPORT_PLASMA_RUNNER_WITH_JSON(JetbrainsRunner, "plasma-runner-jetbrainsrunner.json")
 #else
