@@ -69,7 +69,8 @@ void JetbrainsRunnerConfig::load() {
         makeVersionRequest();
     }
 
-    for (const auto &entry: customMappingGroup.entryMap().toStdMap()) {
+    const auto entries = customMappingGroup.entryMap().toStdMap();
+    for (const auto &entry: entries) {
         const auto item = new JetbrainsRunnerConfigMappingItem(this, entry.first, entry.second);
 #if KCMUTILS_VERSION >= QT_VERSION_CHECK(5, 64, 0)
         const auto changedSlotPointer = &JetbrainsRunnerConfig::markAsChanged;
@@ -98,7 +99,7 @@ void JetbrainsRunnerConfig::save() {
         auto *item = reinterpret_cast<JetbrainsRunnerConfigMappingItem *>(m_ui->manualMappingVBox->itemAt(i)->widget());
         const QString desktopFilePath = item->configDesktoFilePushButton->text().remove('&');
         const QString configFilePath = item->configXMLFilePushButton->text().remove('&');
-        if (QFile::exists(desktopFilePath) && QFile::exists(configFilePath)) {
+        if (QFileInfo::exists(desktopFilePath) && QFileInfo::exists(configFilePath)) {
             customMappingGroup.writeEntry(desktopFilePath, configFilePath);
         }
     }
@@ -132,47 +133,48 @@ void JetbrainsRunnerConfig::makeVersionRequest() {
 void JetbrainsRunnerConfig::exportDebugFile() {
     const QString filename = QFileDialog::getSaveFileName(
             this, QStringLiteral("Save file"), QString(), QStringLiteral(".txt"));
-    if (!filename.isEmpty()) {
-        auto debugString = new QString();
-        const auto mappingMap = config.group("CustomMapping").entryMap();
-        QList<JetbrainsApplication *> appList;
-        QList<JetbrainsApplication *> automaticAppList;
-        auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"), debugString);
-
-        // Split manually configured and automatically found apps
-        if (!mappingMap.isEmpty()) {
-            debugString->append("========== Custom Configured Applications ==========\n");
-        }
-        for (const auto &p:desktopPaths.toStdMap()) {
-            // Desktop file is manually specified
-            if (mappingMap.contains(p.second)) {
-                auto customMappedApp = new JetbrainsApplication(p.second);
-                QFile xmlConfigFile(mappingMap.value(p.second));
-                if (xmlConfigFile.open(QFile::ReadOnly)) {
-                    customMappedApp->parseXMLFile(xmlConfigFile.readAll(), debugString);
-                    // Add path for filewatcher
-                    customMappedApp->addPath(mappingMap.value(p.second));
-                    if (!customMappedApp->recentlyUsed.isEmpty()) {
-                        appList.append(customMappedApp);
-                    }
-                }
-                xmlConfigFile.close();
-            } else {
-                automaticAppList.append(new JetbrainsApplication(p.second));
-            }
-        }
-
-        SettingsDirectory::findCorrespondingDirectories(SettingsDirectory::getSettingsDirectories(debugString),
-                automaticAppList, debugString);
-        JetbrainsApplication::parseXMLFiles(automaticAppList, debugString);
-        automaticAppList = JetbrainsApplication::filterApps(automaticAppList, debugString);
-
-        auto *f = new QFile(filename);
-        f->open(QIODevice::WriteOnly | QIODevice::Text);
-        f->write(debugString->toLocal8Bit());
-        f->flush();
-        f->close();
+    if (filename.isEmpty()) {
+        return;
     }
+    auto debugString = new QString();
+    const auto mappingMap = config.group("CustomMapping").entryMap();
+    QList<JetbrainsApplication *> appList;
+    QList<JetbrainsApplication *> automaticAppList;
+    auto desktopPaths = JetbrainsApplication::getInstalledApplicationPaths(config.group("CustomMapping"), debugString);
+
+    // Split manually configured and automatically found apps
+    if (!mappingMap.isEmpty()) {
+        debugString->append("========== Custom Configured Applications ==========\n");
+    }
+    for (const auto &p:desktopPaths.toStdMap()) {
+        // Desktop file is manually specified
+        if (mappingMap.contains(p.second)) {
+            auto customMappedApp = new JetbrainsApplication(p.second);
+            QFile xmlConfigFile(mappingMap.value(p.second));
+            if (xmlConfigFile.open(QFile::ReadOnly)) {
+                customMappedApp->parseXMLFile(xmlConfigFile.readAll(), debugString);
+                // Add path for filewatcher
+                customMappedApp->addPath(mappingMap.value(p.second));
+                if (!customMappedApp->recentlyUsed.isEmpty()) {
+                    appList.append(customMappedApp);
+                }
+            }
+            xmlConfigFile.close();
+        } else {
+            automaticAppList.append(new JetbrainsApplication(p.second));
+        }
+    }
+
+    SettingsDirectory::findCorrespondingDirectories(SettingsDirectory::getSettingsDirectories(debugString),
+            automaticAppList, debugString);
+    JetbrainsApplication::parseXMLFiles(automaticAppList, debugString);
+    automaticAppList = JetbrainsApplication::filterApps(automaticAppList, debugString);
+
+    auto *f = new QFile(filename);
+    f->open(QIODevice::WriteOnly | QIODevice::Text);
+    f->write(debugString->toLocal8Bit());
+    f->flush();
+    f->close();
 }
 
 void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
@@ -180,7 +182,8 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
         QString displayText;
         const auto jsonObject = QJsonDocument::fromJson(reply->readAll());
         if (jsonObject.isArray()) {
-            for (const auto &githubReleaseObj:jsonObject.array()) {
+            const auto jsonArray = jsonObject.array();
+            for (const auto &githubReleaseObj:jsonArray) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
                     if (githubRelease.value("tag_name").toString() > CMAKE_PROJECT_VERSION) {

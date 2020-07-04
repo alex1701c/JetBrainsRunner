@@ -38,7 +38,6 @@ void JetbrainsRunner::init() {
     reloadPluginConfiguration();
 }
 
-
 void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     KConfigGroup config = KSharedConfig::openConfig(QStringLiteral("krunnerplugins/jetbrainsrunnerrc"))
         ->group("Config");

@@ -31,7 +31,7 @@ public:
 protected Q_SLOTS:
 
     void init() override;
-    void reloadPluginConfiguration(const QString &configFile = "");
+    void reloadPluginConfiguration(const QString &configFile = QString());
     static void displayUpdateNotification(QNetworkReply *reply);
     static void writeDesktopFile(const Plasma::QueryMatch &match, const QString &filePath);
 
