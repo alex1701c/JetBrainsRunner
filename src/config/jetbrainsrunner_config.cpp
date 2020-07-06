@@ -4,14 +4,14 @@
 #include <KPluginFactory>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include <QJsonObject>
 #include <QtWidgets/QLabel>
 
 #include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
 #include "kcmutils_version.h"
 
-K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory, registerPlugin<JetbrainsRunnerConfig>("kcm_krunner_jetbrainsrunner");)
+K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory,
+        registerPlugin<JetbrainsRunnerConfig>(QStringLiteral("kcm_krunner_jetbrainsrunner"));)
 
 JetbrainsRunnerConfigForm::JetbrainsRunnerConfigForm(QWidget *parent) : QWidget(parent) {
     setupUi(this);
@@ -23,8 +23,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     auto *layout = new QGridLayout(this);
     layout->addWidget(m_ui, 0, 0);
 
-    config = KSharedConfig::openConfig(QDir::homePath() % "/.config/krunnerplugins/jetbrainsrunnerrc")
-            ->group("Config");
+    config = KSharedConfig::openConfig(QStringLiteral("krunnerplugins/jetbrainsrunnerrc"))->group("Config");
     customMappingGroup = config.group(QStringLiteral("CustomMapping"));
 
 #if KCMUTILS_VERSION >= QT_VERSION_CHECK(5, 64, 0)
@@ -186,15 +185,16 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
             for (const auto &githubReleaseObj:jsonArray) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value("tag_name").toString() > CMAKE_PROJECT_VERSION) {
-                        displayText.append(githubRelease.value("tag_name").toString() + ": " +
-                                           githubRelease.value("name").toString() + "\n");
+                    const QString tagName= githubRelease.value(QLatin1String("tag_name")).toString();
+                    if (tagName > QLatin1String(CMAKE_PROJECT_VERSION)) {
+                        const QString name = githubRelease.value(QLatin1String("name")).toString();
+                        displayText.append(tagName + ": " + name + "\n");
                     }
                 }
             }
         }
         if (!displayText.isEmpty()) {
-            displayText.prepend(QStringLiteral("Current Version: %1\n").arg(CMAKE_PROJECT_VERSION));
+            displayText.prepend(QStringLiteral("Current Version: %1\n").arg(QLatin1String(CMAKE_PROJECT_VERSION)));
             displayText.prepend("<pre>Updates Available !\n");
             displayText.append("Please go to <a href=\"https://github.com/alex1701c/JetBrainsRunner\">"\
                                "https://github.com/alex1701c/JetBrainsRunner</a>\nand get the latest version</pre>");

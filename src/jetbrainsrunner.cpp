@@ -68,7 +68,7 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     qDeleteAll(installed);
     installed.clear();
     if (launchByAppName) {
-        appNameRegex = QRegularExpression(R"(^(\w+)(?: (.+))?$)");
+        appNameRegex = QRegularExpression(QStringLiteral(R"(^(\w+)(?: (.+))?$)"));
         appNameRegex.optimize();
     }
 
@@ -184,12 +184,14 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
         QString displayText;
         const auto jsonObject = QJsonDocument::fromJson(reply->readAll());
         if (jsonObject.isArray()) {
-            for (const auto &githubReleaseObj:jsonObject.array()) {
+            const auto array = jsonObject.array();
+            for (const auto &githubReleaseObj:array) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
-                    if (githubRelease.value(QLatin1String("tag_name")).toString() > CMAKE_PROJECT_VERSION) {
-                        displayText.append(githubRelease.value(QLatin1String("tag_name")).toString() + ": " +
-                                           githubRelease.value(QLatin1String("name")).toString() + "\n");
+                    const QString tagName = githubRelease.value(QLatin1String("tag_name")).toString();
+                    if (tagName > QLatin1String(CMAKE_PROJECT_VERSION)) {
+                        const QString name = githubRelease.value(QLatin1String("name")).toString();
+                        displayText.append(tagName+ ": " + name + "\n");
                     }
                 }
             }
@@ -197,7 +199,7 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
         if (!displayText.isEmpty()) {
             displayText.prepend("New Versions Available:\n");
             displayText.append("Please go to https://github.com/alex1701c/JetBrainsRunner</a>");
-            QProcess::startDetached("notify-send", QStringList{
+            QProcess::startDetached(QStringLiteral("notify-send"), {
                 "JetBrains Runner Updates!", displayText, "--icon", "jetbrains", "--expire-time", "5000"
             });
         }
