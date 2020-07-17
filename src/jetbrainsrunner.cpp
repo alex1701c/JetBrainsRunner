@@ -90,15 +90,13 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
 
 void JetbrainsRunner::match(Plasma::RunnerContext &context) {
     const QString term = context.query().toLower();
-    QList<Plasma::QueryMatch> matches;
-
     if (launchByAppName) {
-        matches.append(addAppNameMatches(term));
+        context.addMatches(addAppNameMatches(term));
     }
     if (launchByProjectName) {
-        matches.append(addProjectNameMatches(term));
+        context.addMatches(addProjectNameMatches(term));
     }
-    context.addMatches(matches);
+    context.addMatches(addPathNameMatches(term));
 }
 
 void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) {
@@ -254,6 +252,29 @@ QStringList JetbrainsRunner::categories() const {
        return list;
     }
     return AbstractRunner::categories();
+}
+
+QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term) {
+    const auto regexMatch = appNameRegex.match(term);
+    if (!regexMatch.hasMatch()) {
+        return {};
+    }
+    const QString termName = regexMatch.captured(1);
+    const QString termProject = regexMatch.captured(2).replace('~', QDir::homePath());
+    QList<Plasma::QueryMatch> matches;
+    if (!termProject.isEmpty() && QFileInfo(termProject).isDir()) {
+        for (auto const &app: qAsConst(installed)) {
+            if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
+                (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
+                Plasma::QueryMatch match(this);
+                match.setText(QStringLiteral("Open %1 in %2").arg(regexMatch.captured(2), app->name));
+                match.setIconName(app->iconPath);
+                match.setData(QString(app->executablePath + termProject));
+                matches.append(match);
+            }
+        }
+    }
+    return matches;
 }
 
 #if KRUNNER_VERSION >= QT_VERSION_CHECK(5, 72, 0)

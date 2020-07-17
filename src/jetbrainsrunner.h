@@ -27,6 +27,7 @@ public:
 
     QList<Plasma::QueryMatch> addAppNameMatches(const QString &term);
     QList<Plasma::QueryMatch> addProjectNameMatches(const QString &term);
+    QList<Plasma::QueryMatch> addPathNameMatches(const QString &term);
 
 protected Q_SLOTS:
 
