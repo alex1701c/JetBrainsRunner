@@ -96,7 +96,7 @@ void JetbrainsRunner::match(Plasma::RunnerContext &context) {
     if (launchByProjectName) {
         context.addMatches(addProjectNameMatches(term));
     }
-    context.addMatches(addPathNameMatches(term));
+    context.addMatches(addPathNameMatches(context.query()));
 }
 
 void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) {
@@ -256,6 +256,7 @@ QStringList JetbrainsRunner::categories() const {
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term) {
     const auto regexMatch = appNameRegex.match(term);
+    qWarning()<< term << regexMatch.hasMatch();
     if (!regexMatch.hasMatch()) {
         return {};
     }
