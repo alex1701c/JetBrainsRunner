@@ -256,7 +256,6 @@ QStringList JetbrainsRunner::categories() const {
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term) {
     const auto regexMatch = appNameRegex.match(term);
-    qWarning()<< term << regexMatch.hasMatch();
     if (!regexMatch.hasMatch()) {
         return {};
     }

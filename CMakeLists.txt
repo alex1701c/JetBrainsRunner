@@ -19,7 +19,6 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 
-add_definitions(-DQT_NO_FOREACH -DQT_NO_EMIT -DQT_USE_QSTRINGBUILDER)
 add_subdirectory(src)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
