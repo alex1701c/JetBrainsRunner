@@ -3,6 +3,12 @@
 #include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
 #include <KLocalizedString>
+
+#include <kio_version.h>
+#if KIO_VERSION >= QT_VERSION_CHECK(5, 69, 0)
+#include <KIO/CommandLauncherJob>
+#endif
+
 #include <KSharedConfig>
 #include <QtGui/QtGui>
 #include <QDate>
@@ -101,8 +107,12 @@ void JetbrainsRunner::match(Plasma::RunnerContext &context) {
 
 void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) {
     Q_UNUSED(context)
-
+#if KIO_VERSION >= QT_VERSION_CHECK(5, 69, 0)
+    auto *job = new KIO::CommandLauncherJob(match.data().toString());
+    job->start();
+#else
     QProcess::startDetached(match.data().toString());
+#endif
 }
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
