@@ -253,17 +253,6 @@ void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QS
                 .arg(match.data().toString(), match.iconName(), match.text()).toLocal8Bit());
 }
 
-QStringList JetbrainsRunner::categories() const {
-    if (displayInCategories) {
-       QStringList list;
-       for (const auto *app:qAsConst(installed)) {
-           list << app->name;
-       }
-       return list;
-    }
-    return AbstractRunner::categories();
-}
-
 QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term) {
     const auto regexMatch = appNameRegex.match(term);
     if (!regexMatch.hasMatch()) {

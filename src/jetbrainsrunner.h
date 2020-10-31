@@ -39,7 +39,6 @@ protected Q_SLOTS:
 public: // Plasma::AbstractRunner API
     void match(Plasma::RunnerContext &context) override;
     QMimeData *mimeDataForMatch(const Plasma::QueryMatch &match) override;
-    QStringList categories() const override;
     void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) override;
 };
 
