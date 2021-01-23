@@ -17,11 +17,6 @@
 
 #include "jetbrains-api/export.h"
 
-JetbrainsRunner::JetbrainsRunner(QObject *parent, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, args) {
-    setObjectName(QStringLiteral("JetbrainsRunner"));
-}
-
 JetbrainsRunner::~JetbrainsRunner() {
     qDeleteAll(installed);
 }
