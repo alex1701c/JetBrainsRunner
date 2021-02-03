@@ -64,18 +64,15 @@ public Q_SLOTS:
             this->configTitleWidget->setHidden(true);
         }
         if (QFileInfo::exists(configFile)) {
-            QFile file(configFile);
-            if (file.open(QFile::ReadOnly)) {
-                this->configReadWidget->setHidden(false);
-                JetbrainsApplication newApp(desktopFile);
-                newApp.parseXMLFile(file.readAll());
+            this->configReadWidget->setHidden(false);
+            JetbrainsApplication newApp(desktopFile);
+            newApp.parseXMLFile(configFile);
 
-                QString recentApplicationsText;
-                for (const auto &recentProject: qAsConst(newApp.recentlyUsed)) {
-                    recentApplicationsText.append(recentProject.path + "\n");
-                }
-                this->recentProjectsLabel->setText(recentApplicationsText);
+            QString recentApplicationsText;
+            for (const auto &recentProject: qAsConst(newApp.recentlyUsed)) {
+                recentApplicationsText.append(recentProject.path + "\n");
             }
+            this->recentProjectsLabel->setText(recentApplicationsText);
         } else {
             this->configReadWidget->setHidden(true);
         }
