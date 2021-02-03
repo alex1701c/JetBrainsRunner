@@ -40,7 +40,7 @@ if (CPACK_DEBIAN) # -DCPACK_DEBIAN=true -DKDE_INSTALL_QTPLUGINDIR=/usr/lib/x86_6
 elseif(CPACK_FEDORA) # -DCPACK_FEDORA=true -DKDE_INSTALL_QTPLUGINDIR=/usr/lib64/qt5/plugins
 	set(CPACK_RPM_PACKAGE_REQUIRES "kf5-krunner >= ${KF5Runner_VERSION}")
 	set(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-Fedora.rpm")
-	set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/lib64/qt5;/usr/lib64/qt5/plugins;/usr/lib64/qt5/plugins/kf5;/usr/lib64/qt5/plugins/kf5/krunner;/usr/share/kservices5;/usr/share/icons")
+	set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/lib64/qt5;/usr/lib64/qt5/plugins;/usr/lib64/qt5/plugins/kf5;/usr/lib64/qt5/plugins/kf5/krunner;/usr/share/kservices5;/usr/share/icons;/usr/share/pixmaps")
 	set(CPACK_GENERATOR "RPM")
 elseif(CPACK_OPENSUSE) # -DCPACK_OPENSUSE=true -DKDE_INSTALL_QTPLUGINDIR=/usr/lib64/qt5/plugins
 	set(CPACK_RPM_PACKAGE_REQUIRES "libKF5Runner5 >= ${KF5Runner_VERSION}")
