@@ -1,0 +1,19 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "@CMAKE_PROJECT_AUTHOR_EMAIL@",
+                "Name": "@CMAKE_PROJECT_AUTHOR@"
+            }
+        ],
+        "Description": "Runner to open your recent JetBrains projects",
+        "EnabledByDefault": true,
+        "Icon": "jetbrainsrunner",
+        "Id": "@CMAKE_PROJECT_NAME@",
+        "License": "LGPL 3",
+        "Name": "JetbrainsRunner",
+        "Version": "@CMAKE_PROJECT_VERSION@",
+        "Website": "@CMAKE_PROJECT_HOMEPAGE_URL@"
+    },
+    "X-Plasma-Runner-Min-Letter-Count": 2
+}

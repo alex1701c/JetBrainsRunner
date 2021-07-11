@@ -26,13 +26,8 @@ target_link_libraries(kcm_krunner_jetbrainsrunner
 target_link_libraries(krunner_jetbrainsrunner jetbrains_api_static)
 target_link_libraries(kcm_krunner_jetbrainsrunner jetbrains_api_static)
 
-configure_file(plasma-runner-jetbrainsrunner.desktop.in plasma-runner-jetbrainsrunner.desktop)
+configure_file(jetbrainsrunner.json.in jetbrainsrunner.json)
 
-if(KF5Runner_VERSION VERSION_LESS 5.72.0)
-    install(FILES ${CMAKE_BINARY_DIR}/src/plasma-runner-jetbrainsrunner.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-else()
-    kcoreaddons_desktop_to_json(krunner_jetbrainsrunner ${CMAKE_BINARY_DIR}/src/plasma-runner-jetbrainsrunner.desktop)
-endif()
 install(TARGETS kcm_krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR})
 install(TARGETS krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/kf5/krunner/)
 install(FILES config/plasma-runner-jetbrainsrunner_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})

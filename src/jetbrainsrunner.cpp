@@ -2,18 +2,13 @@
 #include "jetbrains-api/JetbrainsApplication.h"
 #include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
+
 #include <KLocalizedString>
-
-#include <kio_version.h>
-#if KIO_VERSION >= QT_VERSION_CHECK(5, 69, 0)
 #include <KIO/CommandLauncherJob>
-#endif
-
 #include <KSharedConfig>
 #include <QtGui/QtGui>
 #include <QDate>
 #include <QStringBuilder>
-#include <krunner_version.h>
 
 #include "jetbrains-api/export.h"
 
@@ -102,12 +97,8 @@ void JetbrainsRunner::match(Plasma::RunnerContext &context) {
 
 void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) {
     Q_UNUSED(context)
-#if KIO_VERSION >= QT_VERSION_CHECK(5, 69, 0)
     auto *job = new KIO::CommandLauncherJob(match.data().toString());
     job->start();
-#else
-    QProcess::startDetached(match.data().toString());
-#endif
 }
 
 QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
@@ -271,11 +262,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &ter
     return matches;
 }
 
-#if KRUNNER_VERSION >= QT_VERSION_CHECK(5, 72, 0)
-K_EXPORT_PLASMA_RUNNER_WITH_JSON(JetbrainsRunner, "plasma-runner-jetbrainsrunner.json")
-#else
-K_EXPORT_PLASMA_RUNNER(jetbrainsrunner, JetbrainsRunner)
-#endif
+K_EXPORT_PLASMA_RUNNER_WITH_JSON(JetbrainsRunner, "jetbrainsrunner.json")
 
 // needed for the QObject subclass declared as part of K_EXPORT_PLASMA_RUNNER
 #include "jetbrainsrunner.moc"
