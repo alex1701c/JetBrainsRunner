@@ -1,10 +1,10 @@
 src/config/ui_jetbrainsrunner_config.h
 /.idea
-/cmake-build-debug
+/cmake-build*
 /build
 changescommit
 *.swp
 /src/*.swp
 /.vscode
 */.vscode
-src/config/ui_jetbrainsrunner_config_mapping_item.h
+compile_commands.json
