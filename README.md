@@ -25,7 +25,7 @@ This plugin allows you to launch your recent JetBrains projects from Krunner.
 If you like this plugin you can check out [the dolphin version](https://github.com/alex1701c/JetBrainsDolphinPlugin) and leave a rating in the [KDE Store](https://www.pling.com/p/1311630/).
 
 ## Installation
-### Required Dependencies
+### 1 Required Dependencies
 
 <details>
 <summary>Debian/Ubuntu:</summary>
@@ -64,8 +64,8 @@ sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio
   
 </details>
 
-### KRunner Plugin
-#### 1. Get Files
+### 2 KRunner Plugin
+#### 2.1 Get Files
 
 <details>
 <summary>Easy oneliner method</summary>
@@ -91,12 +91,12 @@ sudo make install
   
 </details> 
 
-#### 2. Restart KRunner
+#### 2.2 Restart KRunner
 ```
 kquitapp5 krunner;kstart5 krunner
 ```
 
-#### 3. (Optional) Configure Plugin
+#### 2.3 (Optional) Configure Plugin
 1. Go to system settings (`systemsettings5`)
 2. Search for `krunner`
 3. Search for `JetBrains` in KRunner plugin list
