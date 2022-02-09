@@ -110,12 +110,14 @@ kquitapp5 krunner;kstart5 krunner
 1. Search By Application: Enables search suggestions based on the Application name (like in the [first](#available-clion-projects) and [third](#search-projects-of-app) screenshot).  
 2. Search By Project: Enables suggestions based on the Project name, this is shown in the [second](#search-for-project-by-name) screenshot.  
 3. Update Notifications: Enables notifications you when a new version of this plugin has been released. It checks for a new version weekly or when the config is opened. By unchecking it you turn the check permanently off.
+4. Show use application name as catagory for projects.
 
 #### Result Formatting
 You can change the displayed text for the run options using the following rules.
 - *%APPNAME*: application name
 - *%APP*: shortened application name
 - *%PROJECT*: project name
+- *%DIR*: full directory path
 
 #### Manually Adding IDE's
 If the plugin has issues finding the installed applications or finding the correct config file you can specify them manually, you are welcome to create a pull request and add it to the [default configuration](https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L137).
