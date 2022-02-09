@@ -1,18 +1,28 @@
+![JetBrains Toolbox Logo](https://cdn.icon-icons.com/icons2/1381/PNG/64/jetbrainstoolbox_93803.png)
+<sub> [Icon from icon-icons.com](https://icon-icons.com/icon/jetbrains-toolbox/93803#64) </sub>
+
 # JetBrainsRunner
+This plugin allows you to launch your recent JetBrains projects from Krunner.
 
-This plugin allows you to launch your recent JetBrains projects from Krunner.  
-Furthermore the search suggestions and the application -> config file mapping can be customized.  
-Additionally it has file watchers implemented, these reload the configuration when
-new projects get added/removed.  
+- The search suggestions and the application ⇒ config file mapping can be customized.
+- File watchers are implemented, these reload the configuration when new projects get added/removed.
+- You can pin your projects by dragging the KRunner results to the taskbar or desktop.
 
-New Feature:
-Now you can pin your projects by dragging the KRunner results to the taskbar or desktop.
+<details>
+<summary><b>Screenshots</b></summary>
+  
+#### Available CLion projects  
+![Available CLion projects](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/multible_projects.png)
 
-To install the plugin you can visit out the [release page](https://github.com/alex1701c/JetBrainsRunner/releases)
-or build from source as explained below.
+#### Search for project by name  
+![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)
 
-If you like this plugin you can check out [the dolphin version](https://github.com/alex1701c/JetBrainsDolphinPlugin) and 
-leave a rating in the [KDE Store](https://www.pling.com/p/1311630/).
+#### Search projects of app  
+![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/search_projects_of_app.png)
+  
+</details>
+
+If you like this plugin you can check out [the dolphin version](https://github.com/alex1701c/JetBrainsDolphinPlugin) and leave a rating in the [KDE Store](https://www.pling.com/p/1311630/).
 
 ## Installation
 ### Required Dependencies
@@ -91,18 +101,6 @@ kquitapp5 krunner;kstart5 krunner
 2. Search for `krunner`
 3. Search for `JetBrains` in KRunner plugin list
 4. Configure plugin
-
-Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
-
-### Screenshots:
-#### Available CLion projects  
-![Available CLion projects](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/multible_projects.png)
-
-#### Search for project by name  
-![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)
-
-#### Search projects of app  
-![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/search_projects_of_app.png)
 
 #### Config Dialog  
 The first checkbox enables search suggestions based on the application name (like in the first and third screenshot).  
