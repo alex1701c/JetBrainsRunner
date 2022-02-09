@@ -50,7 +50,7 @@ kservice-devel krunner-devel gettext-tools kconfigwidgets-devel libnotify-tools 
 <summary>Fedora:</summary>
   
 ```
-sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel
+sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel qt5-qtquickcontrols2-devel
 ```
   
 </details>
