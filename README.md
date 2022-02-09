@@ -14,35 +14,61 @@ or build from source as explained below.
 If you like this plugin you can check out [the dolphin version](https://github.com/alex1701c/JetBrainsDolphinPlugin) and 
 leave a rating in the [KDE Store](https://www.pling.com/p/1311630/).
 
-## Required Dependencies
+## Installation
+### Required Dependencies
 
-Debian/Ubuntu:  
+<details>
+<summary>Debian/Ubuntu:</summary>
+  
 ```
 sudo apt install cmake extra-cmake-modules build-essential libkf5runner-dev libkf5textwidgets-dev qtdeclarative5-dev gettext libnotify-bin libkf5kcmutils-dev libkf5kio-dev
 ```
+  
+</details>
 
-openSUSE:  
+<details>
+<summary>openSUSE:</summary>
+  
 ```
 sudo zypper install cmake extra-cmake-modules libQt5Widgets5 libQt5Core5 libqt5-qtlocation-devel ki18n-devel ktextwidgets-devel 
 kservice-devel krunner-devel gettext-tools kconfigwidgets-devel libnotify-tools kcmutils-devel kio-devel
 ```
+  
+</details>
 
-Fedora:  
+<details>
+<summary>Fedora:</summary>
+  
 ```
 sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel
 ```
+  
+</details>
 
-Archlinux(Manjaro):  
+<details>
+<summary>Archlinux(Manjaro):</summary>
+
 ```
 sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio
 ```
+  
+</details>
 
-The easiest way to install is:  
+### KRunner Plugin
+#### 1. Get Files
+
+<details>
+<summary>Easy oneliner method</summary>
+
 ```
 curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
 ```  
+  
+</details> 
 
-Or you can do it manually (with admin privileges):
+<details>
+<summary>Manual method (with admin privileges)</summary>
+
 ```
 git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules  
 cd JetBrainsRunner/
@@ -51,15 +77,21 @@ cd build
 cmake -DKDE_INSTALL_QTPLUGINDIR=`kf5-config --qt-plugins` ..
 make
 sudo make install
+``` 
+  
+</details> 
+
+#### 2. Restart KRunner
+```
+kquitapp5 krunner;kstart5 krunner
 ```
 
-Restart krunner to load the runner (in a terminal type: kquitapp5 krunner;kstart5 krunner )
+#### 3. (Optional) Configure Plugin
+1. Go to system settings (`systemsettings5`)
+2. Search for `krunner`
+3. Search for `JetBrains` in KRunner plugin list
+4. Configure plugin
 
-After this you should see your runner in the system settings:
-
-systemsettings5 (Head to "Search")
-
-You can also launch KRunner via Alt-F2 and you will find your runner.  
 Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
 
 ### Screenshots:
