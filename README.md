@@ -15,10 +15,13 @@ This plugin allows you to launch your recent JetBrains projects from Krunner.
 ![Available CLion projects](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/multible_projects.png)
 
 #### Search for project by name  
-![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)
+![Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)
 
 #### Search projects of app  
-![ Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/search_projects_of_app.png)
+![Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/search_projects_of_app.png)
+  
+#### Config Dialog
+![Config Dialog](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/config_dialog.png)
   
 </details>
 
@@ -68,7 +71,7 @@ sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio
 #### 2.1 Get Files
 
 <details>
-<summary>Easy oneliner method</summary>
+<summary>Option A: Easy oneliner method</summary>
 
 ```
 curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
@@ -77,7 +80,7 @@ curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.
 </details> 
 
 <details>
-<summary>Manual method (with admin privileges)</summary>
+<summary>Option B: Manual method (with admin privileges)</summary>
 
 ```
 git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules  
@@ -102,21 +105,25 @@ kquitapp5 krunner;kstart5 krunner
 3. Search for `JetBrains` in KRunner plugin list
 4. Configure plugin
 
-#### Config Dialog  
-The first checkbox enables search suggestions based on the application name (like in the first and third screenshot).  
-The second checkbox enables suggestions based on the project name, this is shown in the second screenshot.  
-The last checkbox enables notifications you when a new version of this plugin has been released.
-It checks for a new version weekly or when the config is opened. By unchecking it you turn the check permanently off.  
-After this you can change the displayed text for the run options using the displayed rules.  
-If the plugin has issues finding the installed applications or finding the correct config file you can specify them manually.
-Once the files have been selected the icon, name and recent project get displayed.  
-If you have to do manual you are welcome to create a pull request and add the application path to the [default configuration](https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L137):
-![Config Dialog](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/config_dialog.png)
+#### Config Dialog
+#### Checkbox Options
+1. Search By Application: Enables search suggestions based on the Application name (like in the [first](#available-clion-projects) and [third](#search-projects-of-app) screenshot).  
+2. Search By Project: Enables suggestions based on the Project name, this is shown in the [second](#search-for-project-by-name) screenshot.  
+3. Update Notifications: Enables notifications you when a new version of this plugin has been released. It checks for a new version weekly or when the config is opened. By unchecking it you turn the check permanently off.
+
+#### Result Formatting
+You can change the displayed text for the run options using the following rules.
+- *%APPNAME*: application name
+- *%APP*: shortened application name
+- *%PROJECT*: project name
+
+#### Manually Adding IDE's
+If the plugin has issues finding the installed applications or finding the correct config file you can specify them manually, you are welcome to create a pull request and add it to the [default configuration](https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L137).
+Once the files have been selected the icon, name and recent project should get displayed.
 
 ### Issues:  
 If you have any problems with this plugin please open an issue on Github and provide some information:  
-- Which JetBrains application is not working
-- How is it installed (snap/toolbox/downloaded from website)
-- Do you have/had other editions (community, educational etc.) of this application installed
-- The content of the log file, you can generate this by clicking the "Generate Log File" button in the config dialog.
-*Please check the content of the file before uploading it.*  
+- Which JetBrains IDE isn't working.
+- How it is installed (Snap/Toolbox/Downloaded from website).
+- If you have/had other editions (Community, Educational or Ultimate) of this application installed.
+- The content of the log file, you can generate this by clicking the "Generate Log File" button in the config dialog, **please read it before uploading**.
