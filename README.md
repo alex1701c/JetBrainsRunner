@@ -25,7 +25,7 @@ openSUSE:
 kservice-devel krunner-devel gettext-tools kconfigwidgets-devel libnotify-tools kcmutils-devel kio-devel`
 
 Fedora:  
-`sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel`
+`sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel qt5-qtquickcontrols2-devel`
 
 Archlinux(Manjaro):  
 `sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio`
