@@ -110,8 +110,7 @@ It checks for a new version weekly or when the config is opened. By unchecking i
 After this you can change the displayed text for the run options using the displayed rules.  
 If the plugin has issues finding the installed applications or finding the correct config file you can specify them manually.
 Once the files have been selected the icon, name and recent project get displayed.  
-If you have to do manual you are welcome to create a pull request and add the application path to the default configuration:
-https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L137
+If you have to do manual you are welcome to create a pull request and add the application path to the [default configuration](https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L137):
 ![Config Dialog](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/config_dialog.png)
 
 ### Issues:  
