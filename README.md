@@ -8,14 +8,13 @@ new projects get added/removed.
 New Feature:
 Now you can pin your projects by dragging the KRunner results to the taskbar or desktop.
 
-To install the plugin you can visit out the release page(https://github.com/alex1701c/JetBrainsRunner/releases)
+To install the plugin you can visit out the [release page](https://github.com/alex1701c/JetBrainsRunner/releases)
 or build from source as explained below.
 
-If you like this plugin you can check out the dolphin version https://github.com/alex1701c/JetBrainsDolphinPlugin and 
-leave a rating in the KDE Store https://www.pling.com/p/1311630/.
+If you like this plugin you can check out [the dolphin version](https://github.com/alex1701c/JetBrainsDolphinPlugin) and 
+leave a rating in the [KDE Store](https://www.pling.com/p/1311630/).
 
-Required Dependencies
-----------------------
+## Required Dependencies
 
 Debian/Ubuntu:  
 `sudo apt install cmake extra-cmake-modules build-essential libkf5runner-dev libkf5textwidgets-dev qtdeclarative5-dev gettext libnotify-bin libkf5kcmutils-dev libkf5kio-dev`
