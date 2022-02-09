@@ -1,4 +1,4 @@
-## JetBrainsRunner
+# JetBrainsRunner
 
 This plugin allows you to launch your recent JetBrains projects from Krunner.  
 Furthermore the search suggestions and the application -> config file mapping can be customized.  
