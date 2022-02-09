@@ -17,20 +17,30 @@ leave a rating in the [KDE Store](https://www.pling.com/p/1311630/).
 ## Required Dependencies
 
 Debian/Ubuntu:  
-`sudo apt install cmake extra-cmake-modules build-essential libkf5runner-dev libkf5textwidgets-dev qtdeclarative5-dev gettext libnotify-bin libkf5kcmutils-dev libkf5kio-dev`
+```
+sudo apt install cmake extra-cmake-modules build-essential libkf5runner-dev libkf5textwidgets-dev qtdeclarative5-dev gettext libnotify-bin libkf5kcmutils-dev libkf5kio-dev
+```
 
 openSUSE:  
-`sudo zypper install cmake extra-cmake-modules libQt5Widgets5 libQt5Core5 libqt5-qtlocation-devel ki18n-devel ktextwidgets-devel 
-kservice-devel krunner-devel gettext-tools kconfigwidgets-devel libnotify-tools kcmutils-devel kio-devel`
+```
+sudo zypper install cmake extra-cmake-modules libQt5Widgets5 libQt5Core5 libqt5-qtlocation-devel ki18n-devel ktextwidgets-devel 
+kservice-devel krunner-devel gettext-tools kconfigwidgets-devel libnotify-tools kcmutils-devel kio-devel
+```
 
 Fedora:  
-`sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel`
+```
+sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel
+```
 
 Archlinux(Manjaro):  
-`sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio`
+```
+sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio
+```
 
 The easiest way to install is:  
-`curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash`  
+```
+curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
+```  
 
 Or you can do it manually (with admin privileges):
 ```
