@@ -120,7 +120,7 @@ You can change the displayed text for the run options using the following rules.
 - *%DIR*: full directory path
 
 #### Manually Adding IDE's
-If the plugin has issues finding the installed applications or finding the correct config file you can specify them manually, you are welcome to create a pull request and add it to the [default configuration](https://github.com/alex1701c/JetBrainsRunner/blob/master/src/JetbrainsApplication.cpp#L137).
+If the plugin fails to find the installed applications or the correct config file you can specify them manually, please open an issue on Github so it can be fixed.
 Once the files have been selected the icon, name and recent project should get displayed.
 
 ### Issues:  
