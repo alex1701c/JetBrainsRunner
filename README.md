@@ -74,13 +74,13 @@ sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio
 <summary>Option A: Easy oneliner method</summary>
 
 ```
-curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
+sudo curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
 ```  
   
 </details> 
 
 <details>
-<summary>Option B: Manual method (with admin privileges)</summary>
+<summary>Option B: Manual method</summary>
 
 ```
 git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules  
