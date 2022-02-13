@@ -4,6 +4,12 @@
 # JetBrainsRunner
 This plugin allows you to launch your recent JetBrains projects from Krunner.
 
+<p align="center">
+
+  <img src="https://user-images.githubusercontent.com/51381523/153750644-dac591f8-c17f-4b49-9fe4-c63712b95ec3.png" alt="Example">
+
+</p>
+
 - The search suggestions and the application ⇒ config file mapping can be customized.
 - File watchers are implemented, these reload the configuration when new projects get added/removed.
 - You can pin your projects by dragging the KRunner results to the taskbar or desktop.
