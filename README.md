@@ -80,7 +80,7 @@ sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio
 <summary>Option A: Easy oneliner method</summary>
 
 ```
-sudo curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
+curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
 ```  
   
 </details> 
@@ -95,7 +95,7 @@ mkdir build
 cd build
 cmake -DKDE_INSTALL_QTPLUGINDIR=`kf5-config --qt-plugins` ..
 make
-sudo make install
+make install
 ``` 
   
 </details> 
