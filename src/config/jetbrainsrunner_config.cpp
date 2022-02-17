@@ -10,7 +10,7 @@
 #include "jetbrains-api/ConfigKeys.h"
 
 K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory,
-        registerPlugin<JetbrainsRunnerConfig>(QStringLiteral("kcm_krunner_jetbrainsrunner"));)
+        registerPlugin<JetbrainsRunnerConfig>();)
 
 JetbrainsRunnerConfigForm::JetbrainsRunnerConfigForm(QWidget *parent) : QWidget(parent) {
     setupUi(this);

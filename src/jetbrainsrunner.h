@@ -7,23 +7,15 @@
 #include <QRegularExpression>
 #include "jetbrains-api/JetbrainsApplication.h"
 #include "jetbrains-api/ConfigKeys.h"
-#include "krunner_version.h"
 
 class JetbrainsRunner : public Plasma::AbstractRunner {
 Q_OBJECT
 
 public:
-#if KRUNNER_VERSION >= QT_VERSION_CHECK(5, 77, 0)
     JetbrainsRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
         : Plasma::AbstractRunner(parent, pluginMetaData, args) {
         setObjectName(QStringLiteral("JetbrainsRunner"));
     }
-#else
-    JetbrainsRunner(QObject *parent, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, args) {
-        setObjectName(QStringLiteral("JetbrainsRunner"));
-    }
-#endif
     ~JetbrainsRunner() override;
 
     QFileSystemWatcher watcher;
