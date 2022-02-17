@@ -8,7 +8,6 @@
 
 #include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
-#include "kcmutils_version.h"
 
 K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory,
         registerPlugin<JetbrainsRunnerConfig>(QStringLiteral("kcm_krunner_jetbrainsrunner"));)
@@ -26,11 +25,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList
     config = KSharedConfig::openConfig(QStringLiteral("krunnerplugins/jetbrainsrunnerrc"))->group("Config");
     customMappingGroup = config.group(QStringLiteral("CustomMapping"));
 
-#if KCMUTILS_VERSION >= QT_VERSION_CHECK(5, 64, 0)
     const auto changedSlotPointer = &JetbrainsRunnerConfig::markAsChanged;
-#else
-    const auto changedSlotPointer = static_cast<void (JetbrainsRunnerConfig::*)()>(&JetbrainsRunnerConfig::changed);
-#endif
     connect(m_ui->appNameSearch, &QCheckBox::clicked, this, changedSlotPointer);
     connect(m_ui->appNameSearch, &QCheckBox::clicked, this, &JetbrainsRunnerConfig::validateOptions);
     connect(m_ui->projectNameSearch, &QCheckBox::clicked, this, changedSlotPointer);
@@ -71,11 +66,7 @@ void JetbrainsRunnerConfig::load() {
     const auto entries = customMappingGroup.entryMap().toStdMap();
     for (const auto &entry: entries) {
         const auto item = new JetbrainsRunnerConfigMappingItem(this, entry.first, entry.second);
-#if KCMUTILS_VERSION >= QT_VERSION_CHECK(5, 64, 0)
         const auto changedSlotPointer = &JetbrainsRunnerConfig::markAsChanged;
-#else
-        const auto changedSlotPointer = static_cast<void (JetbrainsRunnerConfig::*)()>(&JetbrainsRunnerConfig::changed);
-#endif
         connect(item, &JetbrainsRunnerConfigMappingItem::changed, this, changedSlotPointer);
         connect(item, &JetbrainsRunnerConfigMappingItem::deleteMappingItem, this, &JetbrainsRunnerConfig::deleteMappingItem);
         m_ui->manualMappingVBox->addWidget(item);
