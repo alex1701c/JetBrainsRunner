@@ -96,16 +96,12 @@ cd build
 cmake -DKDE_INSTALL_QTPLUGINDIR=`kf5-config --qt-plugins` ..
 make
 make install
+kquitapp5 krunner;kstart5 krunner
 ``` 
   
 </details> 
 
-#### 2.2 Restart KRunner
-```
-kquitapp5 krunner;kstart5 krunner
-```
-
-#### 2.3 (Optional) Configure Plugin
+#### 2.2 (Optional) Configure Plugin
 1. Go to system settings (`systemsettings5`)
 2. Search for `krunner`
 3. Search for `JetBrains` in KRunner plugin list
