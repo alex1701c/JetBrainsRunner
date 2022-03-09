@@ -3,6 +3,13 @@
 # Exit if something fails
 set -e
 
+# Delete the old install if it exists
+INSTALL_DIR=${HOME}/JetBrainsRunner
+if [ -d "$INSTALL_DIR" ]; then
+    rm -rf "$INSTALL_DIR"
+    echo "The old ${INSTALL_DIR} directory is removed."
+fi
+
 if [[ $(basename "$PWD") !=  "JetBrainsRunner"* ]];then
     git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules
     cd JetBrainsRunner/
