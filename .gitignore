@@ -8,3 +8,4 @@ changescommit
 /.vscode
 */.vscode
 compile_commands.json
+.cache
