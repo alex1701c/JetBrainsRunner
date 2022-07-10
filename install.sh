@@ -3,8 +3,9 @@
 # Exit if something fails
 set -e
 
-if [ -d "$PWD" ]; then
+if [ -d "$PWD/JetBrainsRunner" ]; then
     # Update existing install
+    cd JetBrainsRunner/
     git pull --recurse-submodules -f
     echo "Files have been updated."
 elif [[ $(basename "$PWD") !=  "JetBrainsRunner"* ]]; then
