@@ -3,10 +3,8 @@
 # Exit if something fails
 set -e
 
-# Delete the old install if it exists
-INSTALL_DIR=~${HOME}/JetBrainsRunner
-if [ -d "$INSTALL_DIR" ]; then
-    echo "JetBrainsRunner already installed in ${INSTALL_DIR}."
+if [ -d "$PWD" ]; then
+    # Update existing install
     git pull --recurse-submodules -f
     echo "Files have been updated."
 elif [[ $(basename "$PWD") !=  "JetBrainsRunner"* ]]; then
