@@ -3,7 +3,12 @@
 # Exit if something fails
 set -e
 
-if [[ $(basename "$PWD") !=  "JetBrainsRunner"* ]];then
+if [ -d "$PWD/JetBrainsRunner" ]; then
+    # Update existing install
+    cd JetBrainsRunner/
+    git pull --recurse-submodules -f
+    echo "Files have been updated."
+elif [[ $(basename "$PWD") !=  "JetBrainsRunner"* ]]; then
     git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules
     cd JetBrainsRunner/
 fi
