@@ -262,7 +262,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &ter
     return matches;
 }
 
-K_EXPORT_PLASMA_RUNNER_WITH_JSON(JetbrainsRunner, "jetbrainsrunner.json")
+K_PLUGIN_CLASS_WITH_JSON(JetbrainsRunner, "jetbrainsrunner.json")
 
 // needed for the QObject subclass declared as part of K_EXPORT_PLASMA_RUNNER
 #include "jetbrainsrunner.moc"
