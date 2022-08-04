@@ -82,6 +82,21 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
         connect(manager, &QNetworkAccessManager::finished, this, &JetbrainsRunner::displayUpdateNotification);
         config.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
     }
+
+    QList<Plasma::RunnerSyntax> syntaxes;
+    const QLatin1String projectPlaceholder("<project name>");
+    if (launchByAppName) {
+        Plasma::RunnerSyntax appNameSyntax{QLatin1String("<app name> ") + projectPlaceholder,
+                                           QStringLiteral("Searches the projects of the given jetbrains app")};
+        for (const auto app : std::as_const(installed)) {
+            appNameSyntax.addExampleQuery(app->name.split(QLatin1Char(' ')).constFirst().toLower() + QLatin1Char(' ') + projectPlaceholder);
+        }
+        syntaxes.append(appNameSyntax);
+    }
+    if (launchByAppName) {
+        syntaxes.append(Plasma::RunnerSyntax{projectPlaceholder, QStringLiteral("Search for projects directly without typing the app name")});
+    }
+    setSyntaxes(syntaxes);
 }
 
 void JetbrainsRunner::match(Plasma::RunnerContext &context) {
