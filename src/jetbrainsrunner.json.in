@@ -15,5 +15,6 @@
         "Version": "@CMAKE_PROJECT_VERSION@",
         "Website": "@CMAKE_PROJECT_HOMEPAGE_URL@"
     },
-    "X-Plasma-Runner-Min-Letter-Count": 2
+    "X-Plasma-Runner-Min-Letter-Count": 2,
+    "X-KDE-ConfigModule": "kcm_krunner_jetbrainsrunner"
 }
