@@ -1,7 +1,7 @@
 src/config/ui_jetbrainsrunner_config.h
 /.idea
 /cmake-build*
-/build
+/build*
 changescommit
 *.swp
 /src/*.swp
@@ -9,3 +9,4 @@ changescommit
 */.vscode
 compile_commands.json
 .cache
+.clang-format
