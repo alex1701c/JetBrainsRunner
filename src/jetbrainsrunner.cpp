@@ -9,6 +9,7 @@
 #include <QtGui/QtGui>
 #include <QDate>
 #include <QStringBuilder>
+#include <KShell>
 
 #include "jetbrains-api/export.h"
 
@@ -110,7 +111,8 @@ void JetbrainsRunner::match(Plasma::RunnerContext &context) {
     context.addMatches(addPathNameMatches(context.query()));
 }
 
-void JetbrainsRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) {
+void JetbrainsRunner::run(const Plasma::RunnerContext & context, const Plasma::QueryMatch &match)
+{
     Q_UNUSED(context)
     auto *job = new KIO::CommandLauncherJob(match.data().toString());
     job->start();
@@ -136,7 +138,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                     Plasma::QueryMatch match(this);
                     match.setText(app->formatOptionText(formatString, project));
                     match.setIconName(app->iconPath);
-                    match.setData(QString(app->executablePath + QLatin1Char(' ') + project.path));
+                    match.setData(KShell::joinArgs({app->executablePath, project.path}));
                     match.setRelevance((float) 1 / (float) (i + 1));
                     if (displayInCategories) match.setMatchCategory(app->name);
                     matches.append(match);
@@ -167,7 +169,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
                 Plasma::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, project));
                 match.setIconName(app->iconPath);
-                match.setData(QString(app->executablePath + QLatin1Char(' ') + project.path));
+                match.setData(KShell::joinArgs({app->executablePath, project.path}));
                 if (displayInCategories) match.setMatchCategory(app->name);
                 matches.append(match);
             }
@@ -269,7 +271,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &ter
                 Plasma::QueryMatch match(this);
                 match.setText(QStringLiteral("Open %1 in %2").arg(regexMatch.captured(2), app->name));
                 match.setIconName(app->iconPath);
-                match.setData(QString(app->executablePath + termProject));
+                match.setData(KShell::joinArgs({app->executablePath, termProject}));
                 matches.append(match);
             }
         }
