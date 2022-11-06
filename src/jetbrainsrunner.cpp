@@ -139,6 +139,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                     match.setText(app->formatOptionText(formatString, project));
                     match.setIconName(app->iconPath);
                     match.setData(KShell::joinArgs({app->executablePath, project.path}));
+                    match.setData(app->executablePath + QLatin1Char(' ') + KShell::quoteArg(project.path));
                     match.setRelevance((float) 1 / (float) (i + 1));
                     if (displayInCategories) match.setMatchCategory(app->name);
                     matches.append(match);
@@ -169,7 +170,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
                 Plasma::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, project));
                 match.setIconName(app->iconPath);
-                match.setData(KShell::joinArgs({app->executablePath, project.path}));
+                match.setData(app->executablePath + QLatin1Char(' ') + KShell::quoteArg(project.path));
                 if (displayInCategories) match.setMatchCategory(app->name);
                 matches.append(match);
             }
@@ -271,7 +272,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &ter
                 Plasma::QueryMatch match(this);
                 match.setText(QStringLiteral("Open %1 in %2").arg(regexMatch.captured(2), app->name));
                 match.setIconName(app->iconPath);
-                match.setData(KShell::joinArgs({app->executablePath, termProject}));
+                match.setData(app->executablePath + QLatin1Char(' ') + KShell::quoteArg(termProject));
                 matches.append(match);
             }
         }
