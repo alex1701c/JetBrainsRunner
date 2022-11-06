@@ -15,7 +15,7 @@ fi
 
 mkdir -p build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DKDE_INSTALL_QTPLUGINDIR=`kf5-config --qt-plugins` -DCMAKE_BUILD_TYPE=Release  ..
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DKDE_INSTALL_QTPLUGINDIR=`kf5-config --qt-plugins` -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF ..
 make -j$(nproc)
 
 sudo make install
