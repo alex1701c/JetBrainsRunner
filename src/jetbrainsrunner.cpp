@@ -138,7 +138,6 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                     Plasma::QueryMatch match(this);
                     match.setText(app->formatOptionText(formatString, project));
                     match.setIconName(app->iconPath);
-                    match.setData(KShell::joinArgs({app->executablePath, project.path}));
                     match.setData(app->executablePath + QLatin1Char(' ') + KShell::quoteArg(project.path));
                     match.setRelevance((float) 1 / (float) (i + 1));
                     if (displayInCategories) match.setMatchCategory(app->name);
