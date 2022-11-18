@@ -9,7 +9,6 @@
         "Description": "Runner to open your recent JetBrains projects",
         "EnabledByDefault": true,
         "Icon": "jetbrainsrunner",
-        "Id": "@CMAKE_PROJECT_NAME@",
         "License": "LGPL 3",
         "Name": "JetbrainsRunner",
         "Version": "@CMAKE_PROJECT_VERSION@",
