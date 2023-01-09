@@ -3,15 +3,21 @@
 #include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
 
-#include <KLocalizedString>
 #include <KIO/CommandLauncherJob>
+#include <KIO/DesktopExecParser>
+#include <KLocalizedString>
+#include <KService>
 #include <KSharedConfig>
-#include <QtGui/QtGui>
+#include <KShell>
 #include <QDate>
 #include <QStringBuilder>
-#include <KShell>
+#include <QtGui/QtGui>
 
 #include "jetbrains-api/export.h"
+
+// Generated in static lib
+Q_DECLARE_LOGGING_CATEGORY(JETBRAINS)
+
 
 JetbrainsRunner::~JetbrainsRunner() {
     qDeleteAll(installed);
@@ -111,10 +117,18 @@ void JetbrainsRunner::match(Plasma::RunnerContext &context) {
     context.addMatches(addPathNameMatches(context.query()));
 }
 
-void JetbrainsRunner::run(const Plasma::RunnerContext & context, const Plasma::QueryMatch &match)
+void JetbrainsRunner::run(const Plasma::RunnerContext & /*context*/, const Plasma::QueryMatch &match)
 {
-    Q_UNUSED(context)
-    auto *job = new KIO::CommandLauncherJob(match.data().toString());
+    const auto cmdAndProject = match.data().toStringList();
+    const QString command = cmdAndProject.at(0);
+    const QString project = cmdAndProject.at(1);
+
+    const KService service(match.matchCategory(), command, QString());
+    KIO::DesktopExecParser parser(service, QList{QUrl::fromLocalFile(project)});
+    QStringList args = parser.resultingArguments();
+
+    qDebug(JETBRAINS).noquote() << "starting IDE" << args;
+    auto *job = new KIO::CommandLauncherJob(args.takeFirst(), args);
     job->start();
 }
 
@@ -138,7 +152,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
                     Plasma::QueryMatch match(this);
                     match.setText(app->formatOptionText(formatString, project));
                     match.setIconName(app->iconPath);
-                    match.setData(app->executablePath + QLatin1Char(' ') + KShell::quoteArg(project.path));
+                    match.setData(QStringList{app->executablePath, project.path});
                     match.setRelevance((float) 1 / (float) (i + 1));
                     if (displayInCategories) match.setMatchCategory(app->name);
                     matches.append(match);
@@ -169,7 +183,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
                 Plasma::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, project));
                 match.setIconName(app->iconPath);
-                match.setData(app->executablePath + QLatin1Char(' ') + KShell::quoteArg(project.path));
+                match.setData(QStringList{app->executablePath, project.path});
                 if (displayInCategories) match.setMatchCategory(app->name);
                 matches.append(match);
             }
@@ -271,7 +285,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &ter
                 Plasma::QueryMatch match(this);
                 match.setText(QStringLiteral("Open %1 in %2").arg(regexMatch.captured(2), app->name));
                 match.setIconName(app->iconPath);
-                match.setData(app->executablePath + QLatin1Char(' ') + KShell::quoteArg(termProject));
+                match.setData(QStringList{app->executablePath, termProject});
                 matches.append(match);
             }
         }
