@@ -86,7 +86,8 @@ curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.
 </details> 
 
 <details>
-<summary>Option B: Manual method</summary>
+#### Option B: Get it from the [AUR](https://aur.archlinux.org/packages/plasma5-runners-jetbrains-runner-git/)
+<summary>Option C: Manual method</summary>
 
 ```
 git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules  
