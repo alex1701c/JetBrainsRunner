@@ -3,7 +3,7 @@
 
 #include "ui_jetbrainsrunner_config.h"
 #include <KCModule>
-#include <KConfigCore/KConfigGroup>
+#include <KConfigGroup>
 #include <QtNetwork/QNetworkReply>
 
 class JetbrainsRunnerConfigForm : public QWidget, public Ui::JetbrainsRunnerConfigUi {
