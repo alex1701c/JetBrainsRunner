@@ -3,6 +3,7 @@
 #include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
 
+#include <krunner_version.h>
 #include <KIO/CommandLauncherJob>
 #include <KIO/DesktopExecParser>
 #include <KLocalizedString>
@@ -93,12 +94,18 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
     QList<Plasma::RunnerSyntax> syntaxes;
     const QLatin1String projectPlaceholder("<project name>");
     if (launchByAppName) {
-        Plasma::RunnerSyntax appNameSyntax{QLatin1String("<app name> ") + projectPlaceholder,
-                                           QStringLiteral("Searches the projects of the given jetbrains app")};
+        QStringList exampleQueries{QLatin1String("<app name> ") + projectPlaceholder};
         for (const auto app : std::as_const(installed)) {
-            appNameSyntax.addExampleQuery(app->name.split(QLatin1Char(' ')).constFirst().toLower() + QLatin1Char(' ') + projectPlaceholder);
+            exampleQueries << app->name.split(QLatin1Char(' ')).constFirst().toLower() + QLatin1Char(' ') + projectPlaceholder;
         }
-        syntaxes.append(appNameSyntax);
+#if KRUNNER_VERSION < QT_VERSION_CHECK(5, 106, 0)
+        Plasma::RunnerSyntax syn(exampleQueries.takeFirst(), QStringLiteral("Searches the projects of the given jetbrains app"));
+        for (const QString &str: exampleQueries) {
+            syn.addExampleQuery(str);
+        }
+#else
+        syntaxes.append(Plasma::RunnerSyntax{exampleQueries, QStringLiteral("Searches the projects of the given jetbrains app")});
+#endif
     }
     if (launchByAppName) {
         syntaxes.append(Plasma::RunnerSyntax{projectPlaceholder, QStringLiteral("Search for projects directly without typing the app name")});
