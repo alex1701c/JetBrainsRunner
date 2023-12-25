@@ -94,7 +94,7 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
         config.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
     }
 
-    QList<Plasma::RunnerSyntax> syntaxes;
+    QList<KRunner::RunnerSyntax> syntaxes;
     const QLatin1String projectPlaceholder("<project name>");
     if (launchByAppName) {
         QStringList exampleQueries{QLatin1String("<app name> ") + projectPlaceholder};
@@ -102,21 +102,21 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
             exampleQueries << app->name.split(QLatin1Char(' ')).constFirst().toLower() + QLatin1Char(' ') + projectPlaceholder;
         }
 #if KRUNNER_VERSION < QT_VERSION_CHECK(5, 106, 0)
-        Plasma::RunnerSyntax syn(exampleQueries.takeFirst(), QStringLiteral("Searches the projects of the given jetbrains app"));
+        KRunner::RunnerSyntax syn(exampleQueries.takeFirst(), QStringLiteral("Searches the projects of the given jetbrains app"));
         for (const QString &str: exampleQueries) {
             syn.addExampleQuery(str);
         }
 #else
-        syntaxes.append(Plasma::RunnerSyntax{exampleQueries, QStringLiteral("Searches the projects of the given jetbrains app")});
+        syntaxes.append(KRunner::RunnerSyntax{exampleQueries, QStringLiteral("Searches the projects of the given jetbrains app")});
 #endif
     }
     if (launchByAppName) {
-        syntaxes.append(Plasma::RunnerSyntax{projectPlaceholder, QStringLiteral("Search for projects directly without typing the app name")});
+        syntaxes.append(KRunner::RunnerSyntax{projectPlaceholder, QStringLiteral("Search for projects directly without typing the app name")});
     }
     setSyntaxes(syntaxes);
 }
 
-void JetbrainsRunner::match(Plasma::RunnerContext &context) {
+void JetbrainsRunner::match(KRunner::RunnerContext &context) {
     const QString term = context.query().toLower();
     if (launchByAppName) {
         context.addMatches(addAppNameMatches(term));
@@ -127,7 +127,7 @@ void JetbrainsRunner::match(Plasma::RunnerContext &context) {
     context.addMatches(addPathNameMatches(context.query()));
 }
 
-void JetbrainsRunner::run(const Plasma::RunnerContext & /*context*/, const Plasma::QueryMatch &match)
+void JetbrainsRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::QueryMatch &match)
 {
     const auto cmdAndProject = match.data().toStringList();
     const QString command = cmdAndProject.at(0);
@@ -142,8 +142,8 @@ void JetbrainsRunner::run(const Plasma::RunnerContext & /*context*/, const Plasm
     job->start();
 }
 
-QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
-    QList<Plasma::QueryMatch> matches;
+QList<KRunner::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
+    QList<KRunner::QueryMatch> matches;
     if (term.size() < 2) {
         return matches;
     }
@@ -159,7 +159,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
             for (int i = 0; i < app->recentlyUsed.size(); ++i) {
                 const auto &project = app->recentlyUsed.at(i);
                 if (termProject.isEmpty() || projectMatchesQuery(termProject, project)) {
-                    Plasma::QueryMatch match(this);
+                    KRunner::QueryMatch match(this);
                     match.setText(app->formatOptionText(formatString, project));
                     match.setIconName(app->iconPath);
                     match.setData(QStringList{app->executablePath, project.path});
@@ -174,8 +174,8 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term
     return matches;
 }
 
-QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term) {
-    QList<Plasma::QueryMatch> matches;
+QList<KRunner::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term) {
+    QList<KRunner::QueryMatch> matches;
     if (term.size() < 3) {
         return matches;
     }
@@ -190,7 +190,7 @@ QList<Plasma::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &
         }
         for (const auto &project: qAsConst(app->recentlyUsed)) {
             if (projectMatchesQuery(term, project)) {
-                Plasma::QueryMatch match(this);
+                KRunner::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, project));
                 match.setIconName(app->iconPath);
                 match.setData(QStringList{app->executablePath, project.path});
@@ -241,7 +241,7 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
     }
 }
 
-QMimeData *JetbrainsRunner::mimeDataForMatch(const Plasma::QueryMatch &match) {
+QMimeData *JetbrainsRunner::mimeDataForMatch(const KRunner::QueryMatch &match) {
     auto *data = new QMimeData();
     static const QString folderPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
                                       + sep
@@ -267,7 +267,7 @@ QMimeData *JetbrainsRunner::mimeDataForMatch(const Plasma::QueryMatch &match) {
     return data;
 }
 
-void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QString &filePath) {
+void JetbrainsRunner::writeDesktopFile(const KRunner::QueryMatch &match, const QString &filePath) {
     QFile f(filePath);
     f.open(QFile::WriteOnly);
     f.write(QStringLiteral("[Desktop Entry]\n"
@@ -280,19 +280,19 @@ void JetbrainsRunner::writeDesktopFile(const Plasma::QueryMatch &match, const QS
                 .arg(match.data().toString(), match.iconName(), match.text()).toLocal8Bit());
 }
 
-QList<Plasma::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term) {
+QList<KRunner::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term) {
     const auto regexMatch = appNameRegex.match(term);
     if (!regexMatch.hasMatch()) {
         return {};
     }
     const QString termName = regexMatch.captured(1);
     const QString termProject = regexMatch.captured(2).replace('~', QDir::homePath());
-    QList<Plasma::QueryMatch> matches;
+    QList<KRunner::QueryMatch> matches;
     if (!termProject.isEmpty() && QFileInfo(termProject).isDir()) {
         for (auto const &app: qAsConst(installed)) {
             if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
                 (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
-                Plasma::QueryMatch match(this);
+                KRunner::QueryMatch match(this);
                 match.setText(QStringLiteral("Open %1 in %2").arg(regexMatch.captured(2), app->name));
                 match.setIconName(app->iconPath);
                 match.setData(QStringList{app->executablePath, termProject});

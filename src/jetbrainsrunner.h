@@ -8,12 +8,12 @@
 #include "jetbrains-api/JetbrainsApplication.h"
 #include "jetbrains-api/ConfigKeys.h"
 
-class JetbrainsRunner : public Plasma::AbstractRunner {
+class JetbrainsRunner : public KRunner::AbstractRunner {
 Q_OBJECT
 
 public:
     JetbrainsRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
-        : Plasma::AbstractRunner(parent, pluginMetaData, args) {
+        : KRunner::AbstractRunner(parent, pluginMetaData, args) {
         setObjectName(QStringLiteral("JetbrainsRunner"));
     }
     ~JetbrainsRunner() override;
@@ -28,21 +28,21 @@ public:
 
     inline bool projectMatchesQuery(const QString &term, const Project &project) const;
 
-    QList<Plasma::QueryMatch> addAppNameMatches(const QString &term);
-    QList<Plasma::QueryMatch> addProjectNameMatches(const QString &term);
-    QList<Plasma::QueryMatch> addPathNameMatches(const QString &term);
+    QList<KRunner::QueryMatch> addAppNameMatches(const QString &term);
+    QList<KRunner::QueryMatch> addProjectNameMatches(const QString &term);
+    QList<KRunner::QueryMatch> addPathNameMatches(const QString &term);
 
 protected Q_SLOTS:
 
     void init() override;
     void reloadPluginConfiguration(const QString &configFile = QString());
     static void displayUpdateNotification(QNetworkReply *reply);
-    static void writeDesktopFile(const Plasma::QueryMatch &match, const QString &filePath);
+    static void writeDesktopFile(const KRunner::QueryMatch &match, const QString &filePath);
 
-public: // Plasma::AbstractRunner API
-    void match(Plasma::RunnerContext &context) override;
-    QMimeData *mimeDataForMatch(const Plasma::QueryMatch &match) override;
-    void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) override;
+public: // KRunner::AbstractRunner API
+    void match(KRunner::RunnerContext &context) override;
+    QMimeData *mimeDataForMatch(const KRunner::QueryMatch &match) override;
+    void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match) override;
 };
 
 #endif
