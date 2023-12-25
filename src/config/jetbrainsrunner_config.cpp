@@ -232,3 +232,5 @@ void JetbrainsRunnerConfig::setDefaultFormatting() {
 
 
 #include "jetbrainsrunner_config.moc"
+#include "moc_jetbrainsrunner_config.cpp"
+#include "moc_jetbrainsrunner_config_mapping_item.cpp"
