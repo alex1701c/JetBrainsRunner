@@ -9,8 +9,7 @@
 #include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
 
-K_PLUGIN_FACTORY(JetbrainsRunnerConfigFactory,
-        registerPlugin<JetbrainsRunnerConfig>();)
+K_PLUGIN_CLASS(JetbrainsRunnerConfig)
 
 JetbrainsRunnerConfigForm::JetbrainsRunnerConfigForm(QWidget *parent) : QWidget(parent) {
     setupUi(this);

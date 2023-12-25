@@ -36,7 +36,6 @@ configure_file(jetbrainsrunner.json.in jetbrainsrunner.json)
 
 install(TARGETS kcm_krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR})
 install(TARGETS krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/kf5/krunner/)
-install(FILES config/plasma-runner-jetbrainsrunner_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 set(JETBRAINS_ICON_INSTALL_DIR )
 install(FILES jetbrainsrunner.png DESTINATION "${KDE_INSTALL_DATADIR}/pixmaps/")

@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Service
-X-KDE-ServiceTypes=KCModule
-X-KDE-Library=kcm_krunner_jetbrainsrunner
-X-KDE-ParentComponents=jetbrainsrunner
-
-Name=jetbrainsrunner
