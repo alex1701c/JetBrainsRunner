@@ -35,7 +35,7 @@ target_link_libraries(kcm_krunner_jetbrainsrunner jetbrains_api_static)
 configure_file(jetbrainsrunner.json.in jetbrainsrunner.json)
 
 install(TARGETS kcm_krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR})
-install(TARGETS krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/kf5/krunner/)
+install(TARGETS krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/kf${QT_MAJOR_VERSION}/krunner/)
 
 set(JETBRAINS_ICON_INSTALL_DIR )
 install(FILES jetbrainsrunner.png DESTINATION "${KDE_INSTALL_DATADIR}/pixmaps/")
