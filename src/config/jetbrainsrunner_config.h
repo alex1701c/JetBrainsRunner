@@ -3,6 +3,7 @@
 
 #include "ui_jetbrainsrunner_config.h"
 #include <KCModule>
+#include <kcmutils_version.h>
 #include <KConfigGroup>
 #include <QtNetwork/QNetworkReply>
 
@@ -17,7 +18,7 @@ class JetbrainsRunnerConfig : public KCModule {
 Q_OBJECT
 
 public:
-    explicit JetbrainsRunnerConfig(QWidget *parent = nullptr, const QVariantList &args = QVariantList());
+    explicit JetbrainsRunnerConfig(QObject *parent, const QVariantList &);
 
     KConfigGroup config;
     KConfigGroup customMappingGroup;
@@ -38,6 +39,12 @@ public Q_SLOTS:
     void load() override;
     void save() override;
     void defaults() override;
+#if KCMUTILS_VERSION < QT_VERSION_CHECK(5, 106, 0)
+    inline QWidget *widget()
+    {
+        return this;
+    }
+#endif
 
 private:
     JetbrainsRunnerConfigForm *m_ui;

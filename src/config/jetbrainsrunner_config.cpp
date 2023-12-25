@@ -15,10 +15,11 @@ JetbrainsRunnerConfigForm::JetbrainsRunnerConfigForm(QWidget *parent) : QWidget(
     setupUi(this);
 }
 
-JetbrainsRunnerConfig::JetbrainsRunnerConfig(QWidget *parent, const QVariantList &args) : KCModule(parent, args) {
-    m_ui = new JetbrainsRunnerConfigForm(this);
+JetbrainsRunnerConfig::JetbrainsRunnerConfig(QObject *parent, const QVariantList &)
+    : KCModule(qobject_cast<QWidget*>(parent)) {
+    m_ui = new JetbrainsRunnerConfigForm(widget());
     m_ui->setMinimumWidth(600);
-    auto *layout = new QGridLayout(this);
+    auto *layout = new QGridLayout(widget());
     layout->addWidget(m_ui, 0, 0);
 
     config = KSharedConfig::openConfig(QStringLiteral("krunnerplugins/jetbrainsrunnerrc"))->group("Config");
@@ -64,7 +65,7 @@ void JetbrainsRunnerConfig::load() {
 
     const auto entries = customMappingGroup.entryMap().toStdMap();
     for (const auto &entry: entries) {
-        const auto item = new JetbrainsRunnerConfigMappingItem(this, entry.first, entry.second);
+        const auto item = new JetbrainsRunnerConfigMappingItem(widget(), entry.first, entry.second);
         const auto changedSlotPointer = &JetbrainsRunnerConfig::markAsChanged;
         connect(item, &JetbrainsRunnerConfigMappingItem::changed, this, changedSlotPointer);
         connect(item, &JetbrainsRunnerConfigMappingItem::deleteMappingItem, this, &JetbrainsRunnerConfig::deleteMappingItem);
@@ -121,7 +122,7 @@ void JetbrainsRunnerConfig::makeVersionRequest() {
 
 void JetbrainsRunnerConfig::exportDebugFile() {
     const QString filename = QFileDialog::getSaveFileName(
-            this, QStringLiteral("Save file"), QString(), QStringLiteral(".txt"));
+            widget(), QStringLiteral("Save file"), QString(), QStringLiteral(".txt"));
     if (filename.isEmpty()) {
         return;
     }
@@ -199,7 +200,7 @@ void JetbrainsRunnerConfig::displayUpdateNotification(QNetworkReply *reply) {
 
 
 void JetbrainsRunnerConfig::addNewMappingItem() {
-    auto *item = new JetbrainsRunnerConfigMappingItem(this);
+    auto *item = new JetbrainsRunnerConfigMappingItem(widget());
     m_ui->manualMappingVBox->addWidget(item);
     connect(item, &JetbrainsRunnerConfigMappingItem::deleteMappingItem, this, &JetbrainsRunnerConfig::deleteMappingItem);
 }
