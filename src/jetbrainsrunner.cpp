@@ -1,6 +1,5 @@
 #include "jetbrainsrunner.h"
 #include "jetbrains-api/JetbrainsApplication.h"
-#include "jetbrains-api/SettingsDirectory.h"
 #include "jetbrains-api/ConfigKeys.h"
 
 #include <krunner_version.h>
@@ -12,7 +11,11 @@
 #include <KShell>
 #include <QDate>
 #include <QStringBuilder>
-#include <QtGui/QtGui>
+#include <QLoggingCategory>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QMimeData>
+#include <QProcess>
 
 #include "jetbrains-api/export.h"
 
