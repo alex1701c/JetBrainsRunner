@@ -25,7 +25,7 @@ target_link_libraries(kcm_krunner_jetbrainsrunner
     KF${QT_MAJOR_VERSION}::CoreAddons
     KF${QT_MAJOR_VERSION}::ConfigCore
     KF${QT_MAJOR_VERSION}::I18n
-    KF${QT_MAJOR_VERSION}::ConfigWidgets
+    KF${QT_MAJOR_VERSION}::KCMUtils
     KF${QT_MAJOR_VERSION}::Runner
 )
 
