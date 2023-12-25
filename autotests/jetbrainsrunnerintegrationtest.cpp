@@ -5,7 +5,7 @@
 #include <QStandardPaths>
 #include <QTest>
 
-using namespace Plasma;
+using namespace KRunner;
 
 class JetbrainsRunnerIntegrationTest : public AbstractRunnerTest
 {
