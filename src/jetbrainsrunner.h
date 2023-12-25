@@ -7,13 +7,19 @@
 #include <QRegularExpression>
 #include "jetbrains-api/JetbrainsApplication.h"
 #include "jetbrains-api/ConfigKeys.h"
+#include <krunner_version.h>
 
 class JetbrainsRunner : public KRunner::AbstractRunner {
 Q_OBJECT
 
 public:
     JetbrainsRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
+#if QT_VERSION_MAJOR == 6
+        : KRunner::AbstractRunner(parent, pluginMetaData) {
+        Q_UNUSED(args)
+#else
         : KRunner::AbstractRunner(parent, pluginMetaData, args) {
+#endif
         setObjectName(QStringLiteral("JetbrainsRunner"));
     }
     ~JetbrainsRunner() override;
