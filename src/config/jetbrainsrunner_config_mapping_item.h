@@ -5,6 +5,7 @@
 #include <QBitmap>
 #include "jetbrains-api/JetbrainsApplication.h"
 #include "ui_jetbrainsrunner_config_mapping_item.h"
+#include <utility>
 
 class JetbrainsRunnerConfigMappingItem : public QWidget, public Ui::JetbrainsRunnerConfigItemUi {
 Q_OBJECT
@@ -69,7 +70,7 @@ public Q_SLOTS:
             newApp.parseXMLFile(configFile);
 
             QString recentApplicationsText;
-            for (const auto &recentProject: qAsConst(newApp.recentlyUsed)) {
+            for (const auto &recentProject: std::as_const(newApp.recentlyUsed)) {
                 recentApplicationsText.append(recentProject.path + "\n");
             }
             this->recentProjectsLabel->setText(recentApplicationsText);

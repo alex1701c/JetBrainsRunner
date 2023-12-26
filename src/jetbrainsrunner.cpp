@@ -16,6 +16,7 @@
 #include <QJsonArray>
 #include <QMimeData>
 #include <QProcess>
+#include <utility>
 
 #include "jetbrains-api/export.h"
 
@@ -153,7 +154,7 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &ter
     if (termName.isEmpty()) return matches;
     const QString termProject = regexMatch.captured(2);
 
-    for (auto const &app: qAsConst(installed)) {
+    for (auto const &app: std::as_const(installed)) {
         if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
             (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
             for (int i = 0; i < app->recentlyUsed.size(); ++i) {
@@ -179,7 +180,7 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString 
     if (term.size() < 3) {
         return matches;
     }
-    for (auto const &app: qAsConst(installed)) {
+    for (auto const &app: std::as_const(installed)) {
         // If the plugin displays search suggestions by appname and the application name matches the search
         // term the options have already been created in the addAppNameMatches method
         // => this app should be skipped to avoid duplicates
@@ -188,7 +189,7 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString 
             (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(term, Qt::CaseInsensitive))) {
             continue;
         }
-        for (const auto &project: qAsConst(app->recentlyUsed)) {
+        for (const auto &project: std::as_const(app->recentlyUsed)) {
             if (projectMatchesQuery(term, project)) {
                 KRunner::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, project));
@@ -289,7 +290,7 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &te
     const QString termProject = regexMatch.captured(2).replace('~', QDir::homePath());
     QList<KRunner::QueryMatch> matches;
     if (!termProject.isEmpty() && QFileInfo(termProject).isDir()) {
-        for (auto const &app: qAsConst(installed)) {
+        for (auto const &app: std::as_const(installed)) {
             if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
                 (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
                 KRunner::QueryMatch match(this);

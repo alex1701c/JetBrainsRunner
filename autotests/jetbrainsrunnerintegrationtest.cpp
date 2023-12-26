@@ -39,13 +39,13 @@ private Q_SLOTS:
         QCOMPARE(matches.size(), 2);
 
         QCOMPARE(matches.at(0).text(), "PhpStorm launch dummy");
-        const QString expectedDummyExec =
-            "env XMODIFIERS=phpstorm.sh \"/home/user/apps/PhpStorm-222.4345.15/bin/phpstorm.sh\" " + QDir::homePath() + "/.qtest/PhpstormProjects/dummy";
-        QCOMPARE(matches.at(0).data().toString(), expectedDummyExec);
+        auto cmdAndArgs = matches.at(0).data().toStringList();
+        QCOMPARE(cmdAndArgs.at(0), "env XMODIFIERS=phpstorm.sh \"/home/user/apps/PhpStorm-222.4345.15/bin/phpstorm.sh\" %f");
+        QCOMPARE(cmdAndArgs.at(1), QDir::homePath() + "/.qtest/PhpstormProjects/dummy");
+
+        cmdAndArgs = matches.at(1).data().toStringList();
         QCOMPARE(matches.at(1).text(), "PhpStorm launch My Dummy Project");
-        const QString expectedExecForProjectWithSpaceInPath = "env XMODIFIERS=phpstorm.sh \"/home/user/apps/PhpStorm-222.4345.15/bin/phpstorm.sh\" "
-            + KShell::quoteArg(QDir::homePath() + "/.qtest/PhpstormProjects/My Dummy Project");
-        QCOMPARE(matches.at(1).data().toString(), expectedExecForProjectWithSpaceInPath);
+        QCOMPARE(cmdAndArgs.at(1), QDir::homePath() + "/.qtest/PhpstormProjects/My Dummy Project");
     }
 };
 
