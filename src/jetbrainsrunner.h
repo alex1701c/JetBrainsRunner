@@ -15,12 +15,12 @@ Q_OBJECT
 public:
     JetbrainsRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
 #if QT_VERSION_MAJOR == 6
-        : KRunner::AbstractRunner(parent, pluginMetaData) {
+    : KRunner::AbstractRunner(parent, pluginMetaData) {
         Q_UNUSED(args)
 #else
-        : KRunner::AbstractRunner(parent, pluginMetaData, args) {
-#endif
+    : KRunner::AbstractRunner(parent, pluginMetaData, args) {
         setObjectName(QStringLiteral("JetbrainsRunner"));
+#endif
     }
     ~JetbrainsRunner() override;
 
