@@ -85,7 +85,7 @@ curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.
   
 </details> 
 
-#### Option B: Get it from the [AUR](https://aur.archlinux.org/packages/plasma5-runners-jetbrains-runner-git/)
+#### Option B: Get it from the AUR for [Plasma5](https://aur.archlinux.org/packages/plasma5-runners-jetbrains-runner-git/) or [Plasma6](https://aur.archlinux.org/packages/plasma6-runners-jetbrains-runner-git)
 
 <details>
 <summary>Option C: Manual method</summary>
