@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Exit if something fails
+# Exit immediately if something fails
 set -e
 
 if [ -d "$PWD/JetBrainsRunner" ]; then
@@ -15,9 +15,17 @@ fi
 
 mkdir -p build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DKDE_INSTALL_USE_QT_SYS_PATHS=ON -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF ..
-make -j$(nproc)
+krunner_version=$(krunner --version | grep -oP "(?<=krunner )\d+")
+if [[ "$krunner_version" == "6" ]]; then
+    echo "Building for Plasma6"
+    BUILD_QT6_OPTION="-DBUILD_WITH_QT6=ON"
+else
+    echo "Building for Plasma5"
+    BUILD_QT6_OPTION=""
+fi
 
+cmake .. -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_USE_QT_SYS_PATHS=ON -DBUILD_TESTING=OFF $BUILD_QT6_OPTION
+make -j$(nproc)
 sudo make install
 
 # KRunner needs to be restarted for the changes to be applied
@@ -26,4 +34,4 @@ then
     kquitapp5 krunner
 fi
 
-echo "Installation finished !";
+echo "Installation finished!";
