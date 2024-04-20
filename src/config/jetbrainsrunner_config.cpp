@@ -22,7 +22,7 @@ JetbrainsRunnerConfig::JetbrainsRunnerConfig(QObject *parent, const QVariantList
     auto *layout = new QGridLayout(widget());
     layout->addWidget(m_ui, 0, 0);
 
-    config = KSharedConfig::openConfig(QStringLiteral("krunnerplugins/jetbrainsrunnerrc"))->group("Config");
+    config = KSharedConfig::openConfig(QStringLiteral("krunnerrc"))->group("Runners").group("krunner_jetbrainsrunner");
     customMappingGroup = config.group(QStringLiteral("CustomMapping"));
 
     const auto changedSlotPointer = &JetbrainsRunnerConfig::markAsChanged;

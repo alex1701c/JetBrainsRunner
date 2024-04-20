@@ -24,7 +24,6 @@ public:
     }
     ~JetbrainsRunner() override;
 
-    QFileSystemWatcher watcher;
     bool launchByAppName, launchByProjectName, displayInCategories;
     QString formatString;
     SearchResultChoice searchResultChoice;
@@ -39,13 +38,11 @@ public:
     QList<KRunner::QueryMatch> addPathNameMatches(const QString &term);
 
 protected Q_SLOTS:
-
-    void init() override;
-    void reloadPluginConfiguration(const QString &configFile = QString());
     static void displayUpdateNotification(QNetworkReply *reply);
     static void writeDesktopFile(const KRunner::QueryMatch &match, const QString &filePath);
 
 public: // KRunner::AbstractRunner API
+    void reloadConfiguration() override;
     void match(KRunner::RunnerContext &context) override;
     QMimeData *mimeDataForMatch(const KRunner::QueryMatch &match) override;
     void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match) override;

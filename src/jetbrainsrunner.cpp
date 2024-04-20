@@ -28,50 +28,19 @@ JetbrainsRunner::~JetbrainsRunner() {
     qDeleteAll(installed);
 }
 
-void JetbrainsRunner::init() {
-    const QString configFolder = QDir::homePath() + QStringLiteral("/.config/krunnerplugins/");
-    const QDir configDir(configFolder);
-    if (!configDir.exists()) {
-        configDir.mkpath(configFolder);
-    }
-    // Create file
-    QFile configFile(configFolder + QStringLiteral("jetbrainsrunnerrc"));
-    if (!configFile.exists()) {
-        configFile.open(QIODevice::WriteOnly);
-        configFile.close();
-    }
-    // Add file watcher for config
-    watcher.addPath(configFile.fileName());
-    connect(&watcher, &QFileSystemWatcher::fileChanged, this, &JetbrainsRunner::reloadPluginConfiguration);
-    reloadPluginConfiguration();
-}
-
-void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
-    KConfigGroup config = KSharedConfig::openConfig(QStringLiteral("krunnerplugins/jetbrainsrunnerrc"))
-        ->group("Config");
-    if (!configFile.isEmpty()) {
-        config.config()->reparseConfiguration();
-    }
-
-    // If the file gets edited with a text editor, it often gets replaced by the edited version
-    // https://stackoverflow.com/a/30076119/9342842
-    if (!configFile.isEmpty()) {
-        if (QFile::exists(configFile)) {
-            watcher.addPath(configFile);
-        }
-    }
-
+void JetbrainsRunner::reloadConfiguration() {
+    KConfigGroup grp = config();
     // General settings
-    formatString = config.readEntry(Config::formatString);
+    formatString = grp.readEntry(Config::formatString);
     // Replace invalid string with default
     if (!formatString.contains(QLatin1String(FormatString::DIR)) &&
         !formatString.contains(QLatin1String(FormatString::PROJECT))) {
         formatString = Config::formatStringDefault;
     }
-    launchByAppName = config.readEntry(Config::launchByAppName, true);
-    launchByProjectName = config.readEntry(Config::launchByProjectName, true);
-    displayInCategories = config.readEntry(Config::displayInCategories, false);
-    searchResultChoice = (SearchResultChoice) config.readEntry(Config::filterSearchResults, (int) SearchResultChoice::ProjectNameStartsWith);
+    launchByAppName = grp.readEntry(Config::launchByAppName, true);
+    launchByProjectName = grp.readEntry(Config::launchByProjectName, true);
+    displayInCategories = grp.readEntry(Config::displayInCategories, false);
+    searchResultChoice = (SearchResultChoice) grp.readEntry(Config::filterSearchResults, (int) SearchResultChoice::ProjectNameStartsWith);
 
     qDeleteAll(installed);
     installed.clear();
@@ -80,11 +49,11 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
         appNameRegex.optimize();
     }
 
-    installed = JetbrainsAPI::fetchApplications(config);
+    installed = JetbrainsAPI::fetchApplications(grp);
 
     // Version update notification
-    QDate lastUpdateCheckDate = QDate::fromString(config.readEntry(Config::checkedUpdateDate));
-    if (config.readEntry(Config::notifyUpdates, true) && (
+    QDate lastUpdateCheckDate = QDate::fromString(grp.readEntry(Config::checkedUpdateDate));
+    if (grp.readEntry(Config::notifyUpdates, true) && (
         !lastUpdateCheckDate.isValid() ||
         lastUpdateCheckDate.addDays(7) <= QDate::currentDate())) {
         auto manager = new QNetworkAccessManager(this);
@@ -92,7 +61,7 @@ void JetbrainsRunner::reloadPluginConfiguration(const QString &configFile) {
             QUrl(QStringLiteral("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases")));
         manager->get(request);
         connect(manager, &QNetworkAccessManager::finished, this, &JetbrainsRunner::displayUpdateNotification);
-        config.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
+        grp.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
     }
 
     QList<KRunner::RunnerSyntax> syntaxes;

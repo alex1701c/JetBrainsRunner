@@ -15,9 +15,9 @@ set(kcm_krunner_jetbrainsrunner_SRCS
         config/jetbrainsrunner_config.cpp
         config/jetbrainsrunner_config_mapping_item.h)
 
-ki18n_wrap_ui(kcm_krunner_jetbrainsrunner_SRCS config/jetbrainsrunner_config.ui)
-ki18n_wrap_ui(kcm_krunner_jetbrainsrunner_SRCS config/jetbrainsrunner_config_mapping_item.ui)
 add_library(kcm_krunner_jetbrainsrunner MODULE ${kcm_krunner_jetbrainsrunner_SRCS})
+ki18n_wrap_ui(kcm_krunner_jetbrainsrunner config/jetbrainsrunner_config.ui)
+ki18n_wrap_ui(kcm_krunner_jetbrainsrunner config/jetbrainsrunner_config_mapping_item.ui)
 target_link_libraries(kcm_krunner_jetbrainsrunner
     Qt::Core
     Qt::Gui
@@ -37,7 +37,6 @@ configure_file(jetbrainsrunner.json.in jetbrainsrunner.json)
 install(TARGETS kcm_krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR})
 install(TARGETS krunner_jetbrainsrunner DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/kf${QT_MAJOR_VERSION}/krunner/)
 
-set(JETBRAINS_ICON_INSTALL_DIR )
-install(FILES jetbrainsrunner.png DESTINATION "${KDE_INSTALL_DATADIR}/pixmaps/")
 #Icon downloaded from https://icon-icons.com/icon/jetbrains-toolbox/93803#64
+install(FILES jetbrainsrunner.png DESTINATION "${KDE_INSTALL_DATADIR}/pixmaps/")
 
