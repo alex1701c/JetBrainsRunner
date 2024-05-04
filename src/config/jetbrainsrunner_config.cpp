@@ -95,8 +95,11 @@ void JetbrainsRunnerConfig::save() {
     }
 
     config.config()->sync();
-
-    markAsChanged();
+#if QT_VERSION_MAJOR == 5
+    Q_EMIT changed(false);
+#else
+    setNeedsSave(false);
+#endif
 }
 
 void JetbrainsRunnerConfig::defaults() {
