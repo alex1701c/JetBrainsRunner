@@ -36,42 +36,49 @@ If you like this plugin you can check out [the dolphin version](https://github.c
 ## Installation
 ### 1 Required Dependencies
 
+
 <details>
-<summary>Debian/Ubuntu:</summary>
-  
+<summary><b>Debian/Ubuntu</b></summary>
+
+Plasma5:  
+```bash
+sudo apt install git cmake extra-cmake-modules build-essential libkf5runner-dev libkf5i18n-dev libkf5kio-dev libkf5service-dev libkf5kcmutils-dev qtdeclarative5-dev libkf5dbusaddons-bin
 ```
-sudo apt install cmake extra-cmake-modules build-essential libkf5runner-dev libkf5textwidgets-dev qtdeclarative5-dev gettext libnotify-bin libkf5kcmutils-dev libkf5kio-dev
+Plasma6:  
+```bash
+sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev libkf6i18n-dev libkf6kio-dev libkf6service-dev libkf6kcmutils-dev kf6-kdbusaddons
 ```
-  
+
 </details>
 
 <details>
-<summary>openSUSE:</summary>
-  
+<summary><b>OpenSUSE</b></summary>
+
+Plasma5:  
+```bash
+sudo zypper install git cmake extra-cmake-modules ki18n-devel krunner-devel kcmutils-devel kio-devel kservice-devel kdbusaddons-tools
 ```
-sudo zypper install cmake extra-cmake-modules libQt5Widgets5 libQt5Core5 libqt5-qtlocation-devel ki18n-devel ktextwidgets-devel 
-kservice-devel krunner-devel gettext-tools kconfigwidgets-devel libnotify-tools kcmutils-devel kio-devel
+Plasma6:  
+```bash
+sudo zypper install git cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kio-devel kf6-kservice-devel kf6-kdbusaddons-tools
 ```
-  
+
 </details>
 
 <details>
-<summary>Fedora:</summary>
-  
+<summary><b>Fedora</b></summary>
+
+Plasma5:  
+```bash
+sudo dnf install git cmake extra-cmake-modules kf5-ki18n-devel kf5-krunner-devel kf5-kcmutils-devel kf5-kio-devel kf5-kservice-devel
 ```
-sudo dnf install cmake extra-cmake-modules kf5-ki18n-devel kf5-kservice-devel kf5-krunner-devel kf5-ktextwidgets-devel gettext libnotify kf5-kcmutils-devel kf5-kio-devel qt5-qtquickcontrols2-devel
+Plasma6:  
+```bash
+sudo dnf install git cmake extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel 
 ```
-  
+
 </details>
 
-<details>
-<summary>Archlinux(Manjaro):</summary>
-
-```
-sudo pacman -S cmake extra-cmake-modules libnotify kcmutils kio
-```
-  
-</details>
 
 ### 2 KRunner Plugin
 #### 2.1 Get Files
