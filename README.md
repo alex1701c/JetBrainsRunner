@@ -56,7 +56,7 @@ sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev 
 
 Plasma5:  
 ```bash install-opensuse-plasma5
-sudo zypper install git cmake extra-cmake-modules ki18n-devel krunner-devel kcmutils-devel kio-devel kservice-devel kdbusaddons-tools
+sudo zypper install git cmake extra-cmake-modules ki18n-devel krunner-devel kcmutils-devel kio-devel kservice-devel kdbusaddons-tools libQt5Test-devel
 ```
 Plasma6:  
 ```bash install-opensuse-plasma6
