@@ -18,7 +18,6 @@ private Q_SLOTS:
         QSP::setTestModeEnabled(true);
 #if KSERVICE_VERSION_MAJOR == 6
         KSycoca::self()->setupTestMenu();
-        qWarning() << "Set up test menu";
 #endif
 
         const QString dataLocation = QSP::writableLocation(QStandardPaths::ApplicationsLocation);
