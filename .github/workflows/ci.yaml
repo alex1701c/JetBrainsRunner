@@ -77,9 +77,9 @@ jobs:
         run: |
           cd build
           if [[ "${{ matrix.plasma_version }}" == "plasma6" ]]; then
-            cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_QT6=ON
+            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_WITH_QT6=ON
           else
-            cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_QT6=OFF
+            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_WITH_QT6=OFF
           fi
           cmake --build .
           cmake --install .

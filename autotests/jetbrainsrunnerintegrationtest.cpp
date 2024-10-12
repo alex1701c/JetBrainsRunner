@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QTest>
+#include <kservice_version.h>
 
 using namespace KRunner;
 
@@ -15,6 +16,11 @@ private Q_SLOTS:
     {
         using QSP = QStandardPaths;
         QSP::setTestModeEnabled(true);
+#if KSERVICE_VERSION_MAJOR == 6
+        KSycoca::self()->setupTestMenu();
+        qWarning() << "Set up test menu";
+#endif
+
         const QString dataLocation = QSP::writableLocation(QStandardPaths::ApplicationsLocation);
         QDir(dataLocation).removeRecursively();
         const QString configLocation = QSP::writableLocation(QStandardPaths::GenericConfigLocation) + "/JetBrains/PhpStorm2022.2/options/";
