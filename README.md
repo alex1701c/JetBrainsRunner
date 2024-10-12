@@ -41,11 +41,11 @@ If you like this plugin you can check out [the dolphin version](https://github.c
 <summary><b>Debian/Ubuntu</b></summary>
 
 Plasma5:  
-```bash
+```bash install-ubuntu-plasma5
 sudo apt install git cmake extra-cmake-modules build-essential libkf5runner-dev libkf5i18n-dev libkf5kio-dev libkf5service-dev libkf5kcmutils-dev qtdeclarative5-dev libkf5dbusaddons-bin
 ```
 Plasma6:  
-```bash
+```bash install-ubuntu-plasma6
 sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev libkf6i18n-dev libkf6kio-dev libkf6service-dev libkf6kcmutils-dev kf6-kdbusaddons
 ```
 
@@ -55,11 +55,11 @@ sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev 
 <summary><b>OpenSUSE</b></summary>
 
 Plasma5:  
-```bash
+```bash install-opensuse-plasma5
 sudo zypper install git cmake extra-cmake-modules ki18n-devel krunner-devel kcmutils-devel kio-devel kservice-devel kdbusaddons-tools
 ```
 Plasma6:  
-```bash
+```bash install-opensuse-plasma6
 sudo zypper install git cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel kf6-kdbusaddons-tools
 ```
 
@@ -69,11 +69,11 @@ sudo zypper install git cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-krunne
 <summary><b>Fedora</b></summary>
 
 Plasma5:  
-```bash
+```bash install-fedora-plasma5
 sudo dnf install git cmake extra-cmake-modules kf5-ki18n-devel kf5-krunner-devel kf5-kcmutils-devel kf5-kio-devel kf5-kservice-devel
 ```
 Plasma6:  
-```bash
+```bash install-fedora-plasma6
 sudo dnf install git cmake extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel 
 ```
 
