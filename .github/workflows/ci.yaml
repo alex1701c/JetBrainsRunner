@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse: |
+          sparse-checkout: |
             README.md
 
       - name: Install dependencies
