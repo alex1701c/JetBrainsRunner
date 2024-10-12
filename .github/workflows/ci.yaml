@@ -85,8 +85,6 @@ jobs:
           cmake --install .
 
       - name: Run tests
-        env:
-          Qt_QPA_PLATFORM: offscreen
         run: |
           cd build
           ctest -V
