@@ -60,7 +60,7 @@ sudo zypper install git cmake extra-cmake-modules ki18n-devel krunner-devel kcmu
 ```
 Plasma6:  
 ```bash install-opensuse-plasma6
-sudo zypper install git cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel kf6-kdbusaddons-tools
+sudo zypper install git cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel kf6-kdbusaddons-tools qt6-test-devel
 ```
 
 </details>
