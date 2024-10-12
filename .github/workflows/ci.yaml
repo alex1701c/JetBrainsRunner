@@ -33,6 +33,7 @@ jobs:
             plasma_version: plasma6
 
     runs-on: ubuntu-latest
+    name: ${{ matrix.os.name }}-${{ matrix.plasma_version }}
     container:
       image: ${{ matrix.os.image }}
       options: --user root
