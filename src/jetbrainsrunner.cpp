@@ -1,8 +1,7 @@
 #include "jetbrainsrunner.h"
-#include "jetbrains-api/JetbrainsApplication.h"
 #include "jetbrains-api/ConfigKeys.h"
+#include "jetbrains-api/JetbrainsApplication.h"
 
-#include <krunner_version.h>
 #include <KIO/CommandLauncherJob>
 #include <KIO/DesktopExecParser>
 #include <KLocalizedString>
@@ -10,12 +9,13 @@
 #include <KSharedConfig>
 #include <KShell>
 #include <QDate>
-#include <QStringBuilder>
-#include <QLoggingCategory>
-#include <QJsonDocument>
 #include <QJsonArray>
+#include <QJsonDocument>
+#include <QLoggingCategory>
 #include <QMimeData>
 #include <QProcess>
+#include <QStringBuilder>
+#include <krunner_version.h>
 #include <utility>
 
 #include "jetbrains-api/export.h"
@@ -23,24 +23,24 @@
 // Generated in static lib
 Q_DECLARE_LOGGING_CATEGORY(JETBRAINS)
 
-
-JetbrainsRunner::~JetbrainsRunner() {
+JetbrainsRunner::~JetbrainsRunner()
+{
     qDeleteAll(installed);
 }
 
-void JetbrainsRunner::reloadConfiguration() {
+void JetbrainsRunner::reloadConfiguration()
+{
     KConfigGroup grp = config();
     // General settings
     formatString = grp.readEntry(Config::formatString);
     // Replace invalid string with default
-    if (!formatString.contains(QLatin1String(FormatString::DIR)) &&
-        !formatString.contains(QLatin1String(FormatString::PROJECT))) {
+    if (!formatString.contains(QLatin1String(FormatString::DIR)) && !formatString.contains(QLatin1String(FormatString::PROJECT))) {
         formatString = Config::formatStringDefault;
     }
     launchByAppName = grp.readEntry(Config::launchByAppName, true);
     launchByProjectName = grp.readEntry(Config::launchByProjectName, true);
     displayInCategories = grp.readEntry(Config::displayInCategories, false);
-    searchResultChoice = (SearchResultChoice) grp.readEntry(Config::filterSearchResults, (int) SearchResultChoice::ProjectNameStartsWith);
+    searchResultChoice = (SearchResultChoice)grp.readEntry(Config::filterSearchResults, (int)SearchResultChoice::ProjectNameStartsWith);
 
     qDeleteAll(installed);
     installed.clear();
@@ -53,12 +53,9 @@ void JetbrainsRunner::reloadConfiguration() {
 
     // Version update notification
     QDate lastUpdateCheckDate = QDate::fromString(grp.readEntry(Config::checkedUpdateDate));
-    if (grp.readEntry(Config::notifyUpdates, true) && (
-        !lastUpdateCheckDate.isValid() ||
-        lastUpdateCheckDate.addDays(7) <= QDate::currentDate())) {
+    if (grp.readEntry(Config::notifyUpdates, true) && (!lastUpdateCheckDate.isValid() || lastUpdateCheckDate.addDays(7) <= QDate::currentDate())) {
         auto manager = new QNetworkAccessManager(this);
-        QNetworkRequest request(
-            QUrl(QStringLiteral("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases")));
+        QNetworkRequest request(QUrl(QStringLiteral("https://api.github.com/repos/alex1701c/JetBrainsRunner/releases")));
         manager->get(request);
         connect(manager, &QNetworkAccessManager::finished, this, &JetbrainsRunner::displayUpdateNotification);
         grp.writeEntry(Config::checkedUpdateDate, QDate::currentDate().toString());
@@ -73,7 +70,7 @@ void JetbrainsRunner::reloadConfiguration() {
         }
 #if KRUNNER_VERSION < QT_VERSION_CHECK(5, 106, 0)
         KRunner::RunnerSyntax syn(exampleQueries.takeFirst(), QStringLiteral("Searches the projects of the given jetbrains app"));
-        for (const QString &str: exampleQueries) {
+        for (const QString &str : exampleQueries) {
             syn.addExampleQuery(str);
         }
 #else
@@ -86,7 +83,8 @@ void JetbrainsRunner::reloadConfiguration() {
     setSyntaxes(syntaxes);
 }
 
-void JetbrainsRunner::match(KRunner::RunnerContext &context) {
+void JetbrainsRunner::match(KRunner::RunnerContext &context)
+{
     const QString term = context.query().toLower();
     if (launchByAppName) {
         context.addMatches(addAppNameMatches(term));
@@ -112,7 +110,8 @@ void JetbrainsRunner::run(const KRunner::RunnerContext & /*context*/, const KRun
     job->start();
 }
 
-QList<KRunner::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term) {
+QList<KRunner::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &term)
+{
     QList<KRunner::QueryMatch> matches;
     if (term.size() < 2) {
         return matches;
@@ -120,12 +119,13 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &ter
 
     const auto regexMatch = appNameRegex.match(term);
     const QString termName = regexMatch.captured(1);
-    if (termName.isEmpty()) return matches;
+    if (termName.isEmpty())
+        return matches;
     const QString termProject = regexMatch.captured(2);
 
-    for (auto const &app: std::as_const(installed)) {
-        if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
-            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
+    for (auto const &app : std::as_const(installed)) {
+        if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive)
+            || (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
             for (int i = 0; i < app->recentlyUsed.size(); ++i) {
                 const auto &project = app->recentlyUsed.at(i);
                 if (termProject.isEmpty() || projectMatchesQuery(termProject, project)) {
@@ -133,8 +133,9 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &ter
                     match.setText(app->formatOptionText(formatString, project));
                     match.setIconName(app->iconPath);
                     match.setData(QStringList{app->executablePath, project.path});
-                    match.setRelevance((float) 1 / (float) (i + 1));
-                    if (displayInCategories) match.setMatchCategory(app->name);
+                    match.setRelevance((float)1 / (float)(i + 1));
+                    if (displayInCategories)
+                        match.setMatchCategory(app->name);
                     matches.append(match);
                 }
             }
@@ -144,27 +145,28 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addAppNameMatches(const QString &ter
     return matches;
 }
 
-QList<KRunner::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term) {
+QList<KRunner::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString &term)
+{
     QList<KRunner::QueryMatch> matches;
     if (term.size() < 3) {
         return matches;
     }
-    for (auto const &app: std::as_const(installed)) {
+    for (auto const &app : std::as_const(installed)) {
         // If the plugin displays search suggestions by appname and the application name matches the search
         // term the options have already been created in the addAppNameMatches method
         // => this app should be skipped to avoid duplicates
-        if ((launchByAppName &&
-             app->nameArray[0].startsWith(term, Qt::CaseInsensitive)) ||
-            (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(term, Qt::CaseInsensitive))) {
+        if ((launchByAppName && app->nameArray[0].startsWith(term, Qt::CaseInsensitive))
+            || (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(term, Qt::CaseInsensitive))) {
             continue;
         }
-        for (const auto &project: std::as_const(app->recentlyUsed)) {
+        for (const auto &project : std::as_const(app->recentlyUsed)) {
             if (projectMatchesQuery(term, project)) {
                 KRunner::QueryMatch match(this);
                 match.setText(app->formatOptionText(formatString, project));
                 match.setIconName(app->iconPath);
                 match.setData(QStringList{app->executablePath, project.path});
-                if (displayInCategories) match.setMatchCategory(app->name);
+                if (displayInCategories)
+                    match.setMatchCategory(app->name);
                 matches.append(match);
             }
         }
@@ -172,31 +174,33 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addProjectNameMatches(const QString 
     return matches;
 }
 
-bool JetbrainsRunner::projectMatchesQuery(const QString &term, const Project &project) const {
+bool JetbrainsRunner::projectMatchesQuery(const QString &term, const Project &project) const
+{
     if (searchResultChoice == SearchResultChoice::ProjectNameContains) {
         return project.name.contains(term, Qt::CaseInsensitive);
     } else if (searchResultChoice == SearchResultChoice::PathContains) {
         return project.path.contains(term, Qt::CaseInsensitive);
-    } else if (searchResultChoice == SearchResultChoice::ProjectNameStartsWith){
+    } else if (searchResultChoice == SearchResultChoice::ProjectNameStartsWith) {
         return project.name.startsWith(term, Qt::CaseInsensitive);
     }
     qCritical() << "Found no value for" << searchResultChoice;
     return project.name.startsWith(term, Qt::CaseInsensitive);
 }
 
-void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
+void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply)
+{
     if (reply->error() == QNetworkReply::NoError) {
         QString displayText;
         const auto jsonObject = QJsonDocument::fromJson(reply->readAll());
         if (jsonObject.isArray()) {
             const auto array = jsonObject.array();
-            for (const auto &githubReleaseObj:array) {
+            for (const auto &githubReleaseObj : array) {
                 if (githubReleaseObj.isObject()) {
                     const auto githubRelease = githubReleaseObj.toObject();
                     const QString tagName = githubRelease.value(QLatin1String("tag_name")).toString();
                     if (tagName > QLatin1String(CMAKE_PROJECT_VERSION)) {
                         const QString name = githubRelease.value(QLatin1String("name")).toString();
-                        displayText.append(tagName+ ": " + name + "\n");
+                        displayText.append(tagName + ": " + name + "\n");
                     }
                 }
             }
@@ -204,22 +208,16 @@ void JetbrainsRunner::displayUpdateNotification(QNetworkReply *reply) {
         if (!displayText.isEmpty()) {
             displayText.prepend("New Versions Available:\n");
             displayText.append("Please go to https://github.com/alex1701c/JetBrainsRunner</a>");
-            QProcess::startDetached(QStringLiteral("notify-send"), {
-                "JetBrains Runner Updates!", displayText, "--icon", "jetbrains", "--expire-time", "5000"
-            });
+            QProcess::startDetached(QStringLiteral("notify-send"), {"JetBrains Runner Updates!", displayText, "--icon", "jetbrains", "--expire-time", "5000"});
         }
     }
 }
 
-QMimeData *JetbrainsRunner::mimeDataForMatch(const KRunner::QueryMatch &match) {
+QMimeData *JetbrainsRunner::mimeDataForMatch(const KRunner::QueryMatch &match)
+{
     auto *data = new QMimeData();
-    static const QString folderPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
-                                      + sep
-                                      + QStringLiteral("JetbrainsRunner")
-                                      + sep;
-    const QString desktopFileName = folderPath
-                                    + QString::fromLocal8Bit(QUrl::toPercentEncoding(match.text()))
-                                    + QStringLiteral(".desktop");
+    static const QString folderPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + sep + QStringLiteral("JetbrainsRunner") + sep;
+    const QString desktopFileName = folderPath + QString::fromLocal8Bit(QUrl::toPercentEncoding(match.text())) + QStringLiteral(".desktop");
     QDir folder(folderPath);
     if (!folder.exists()) {
         folder.mkpath(QStringLiteral("."));
@@ -237,7 +235,8 @@ QMimeData *JetbrainsRunner::mimeDataForMatch(const KRunner::QueryMatch &match) {
     return data;
 }
 
-void JetbrainsRunner::writeDesktopFile(const KRunner::QueryMatch &match, const QString &filePath) {
+void JetbrainsRunner::writeDesktopFile(const KRunner::QueryMatch &match, const QString &filePath)
+{
     QFile f(filePath);
     f.open(QFile::WriteOnly);
     f.write(QStringLiteral("[Desktop Entry]\n"
@@ -247,10 +246,12 @@ void JetbrainsRunner::writeDesktopFile(const KRunner::QueryMatch &match, const Q
                            "Name=%3\n"
                            "Terminal=false\n"
                            "Type=Application\n")
-                .arg(match.data().toString(), match.iconName(), match.text()).toLocal8Bit());
+                .arg(match.data().toString(), match.iconName(), match.text())
+                .toLocal8Bit());
 }
 
-QList<KRunner::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term) {
+QList<KRunner::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &term)
+{
     const auto regexMatch = appNameRegex.match(term);
     if (!regexMatch.hasMatch()) {
         return {};
@@ -259,9 +260,9 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &te
     const QString termProject = regexMatch.captured(2).replace('~', QDir::homePath());
     QList<KRunner::QueryMatch> matches;
     if (!termProject.isEmpty() && QFileInfo(termProject).isDir()) {
-        for (auto const &app: std::as_const(installed)) {
-            if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive) ||
-                (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
+        for (auto const &app : std::as_const(installed)) {
+            if (app->nameArray[0].startsWith(termName, Qt::CaseInsensitive)
+                || (!app->nameArray[1].isEmpty() && app->nameArray[1].startsWith(termName, Qt::CaseInsensitive))) {
                 KRunner::QueryMatch match(this);
                 match.setText(QStringLiteral("Open %1 in %2").arg(regexMatch.captured(2), app->name));
                 match.setIconName(app->iconPath);

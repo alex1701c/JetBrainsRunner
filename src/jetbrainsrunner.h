@@ -1,24 +1,27 @@
 #ifndef JETBRAINSRUNNER_H
 #define JETBRAINSRUNNER_H
 
+#include "jetbrains-api/ConfigKeys.h"
+#include "jetbrains-api/JetbrainsApplication.h"
 #include <KRunner/AbstractRunner>
-#include <QtNetwork/QNetworkReply>
 #include <QDir>
 #include <QRegularExpression>
-#include "jetbrains-api/JetbrainsApplication.h"
-#include "jetbrains-api/ConfigKeys.h"
+#include <QtNetwork/QNetworkReply>
 #include <krunner_version.h>
 
-class JetbrainsRunner : public KRunner::AbstractRunner {
-Q_OBJECT
+class JetbrainsRunner : public KRunner::AbstractRunner
+{
+    Q_OBJECT
 
 public:
     JetbrainsRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
 #if QT_VERSION_MAJOR == 6
-    : KRunner::AbstractRunner(parent, pluginMetaData) {
+        : KRunner::AbstractRunner(parent, pluginMetaData)
+    {
         Q_UNUSED(args)
 #else
-    : KRunner::AbstractRunner(parent, pluginMetaData, args) {
+        : KRunner::AbstractRunner(parent, pluginMetaData, args)
+    {
         setObjectName(QStringLiteral("JetbrainsRunner"));
 #endif
     }

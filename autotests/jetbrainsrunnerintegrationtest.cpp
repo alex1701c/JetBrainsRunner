@@ -37,6 +37,7 @@ private Q_SLOTS:
 
         initProperties();
     }
+
     void testProjectWithSpace()
     {
         launchQuery("phpstorm");

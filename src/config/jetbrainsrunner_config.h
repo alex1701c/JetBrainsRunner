@@ -3,19 +3,21 @@
 
 #include "ui_jetbrainsrunner_config.h"
 #include <KCModule>
-#include <kcmutils_version.h>
 #include <KConfigGroup>
 #include <QtNetwork/QNetworkReply>
+#include <kcmutils_version.h>
 
-class JetbrainsRunnerConfigForm : public QWidget, public Ui::JetbrainsRunnerConfigUi {
-Q_OBJECT
+class JetbrainsRunnerConfigForm : public QWidget, public Ui::JetbrainsRunnerConfigUi
+{
+    Q_OBJECT
 
 public:
     explicit JetbrainsRunnerConfigForm(QWidget *parent);
 };
 
-class JetbrainsRunnerConfig : public KCModule {
-Q_OBJECT
+class JetbrainsRunnerConfig : public KCModule
+{
+    Q_OBJECT
 
 public:
     explicit JetbrainsRunnerConfig(QObject *parent, const QVariantList &);
