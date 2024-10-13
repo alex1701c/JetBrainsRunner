@@ -83,7 +83,7 @@ jobs:
         shell: bash
         run: |
           CMAKE_ARGS=".. -DCMAKE_BUILD_TYPE=RelWithDebInfo"
-          if [[ -n "${{ inputs.publish-version }}" ]]
+          if [[ -n "${{ inputs.publish-version }}" ]]; then
             CMAKE_ARGS="$CMAKE_ARGS -DCPACK_OS=${{ matrix.os.name }}"
           fi
           if [[ "${{ matrix.plasma_version }}" == "plasma6" ]]; then
