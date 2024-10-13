@@ -54,7 +54,7 @@ else()
 	set(KRUNNER_PACKAGE_VERSION ${KF6Runner_VERSION})
 endif()
 # Then names of dependencies and paths might differ
-if (CPACK_OS STREQUAL "debian")
+if (CPACK_OS STREQUAL "ubuntu")
 	set(CPACK_DEBIAN_PACKAGE_DEPENDS "libkf5runner5 (>=${KRUNNER_PACKAGE_VERSION})")
 	set(CPACK_DEBIAN_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-Debian.deb")
 	set(CPACK_GENERATOR "DEB")

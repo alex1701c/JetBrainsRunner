@@ -12,7 +12,7 @@ on:
     inputs:
       publish-version:
         description: "new version that should get published"
-        required: false
+        required: true
 
 jobs:
   build:
@@ -59,9 +59,11 @@ jobs:
             echo 'APT::Get::Assume-Yes "true";' >>  /etc/apt/apt.conf
           elif [[ "${{ matrix.os.name }}" == "fedora" ]]; then
             echo "defaultyes=True" >> /etc/dnf/dnf.conf
+            dnf install rpm-build
           elif [[ "${{ matrix.os.name }}" == "opensuse" ]]; then
             zypper refresh
             CMD=$(echo $CMD | sed 's/zypper/zypper --non-interactive/')
+            zypper install rpm-build
           else
             echo "Unsupported OS: ${{ matrix.os.name }}"
             exit 1
@@ -86,10 +88,12 @@ jobs:
             CMAKE_ARGS="$CMAKE_ARGS -DCPACK_OS=${{ matrix.os.name }}"
           fi
           if [[ "${{ matrix.plasma_version }}" == "plasma6" ]]; then
-            cmake $CMAKE_ARGS -DBUILD_WITH_QT6=ON
+            CMAKE_ARGS="$CMAKE_ARGS -DBUILD_WITH_QT6=ON"
           else
-            cmake $CMAKE_ARGS -DBUILD_WITH_QT6=OFF
+            CMAKE_ARGS="$CMAKE_ARGS -DBUILD_WITH_QT6=OFF"
           fi
+          echo cmake $CMAKE_ARGS
+          cmake $CMAKE_ARGS
           cmake --build . -j2
           cmake --install .
 
