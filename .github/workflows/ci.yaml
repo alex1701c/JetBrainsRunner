@@ -74,11 +74,10 @@ jobs:
           submodules: true
 
       - name: Create build directory
-        run: |
-          mkdir -p build
-          cd build
+        run: mkdir -p build
 
       - name: Build and install
+        id: build
         working-directory: build/
         shell: bash
         run: |
@@ -97,4 +96,17 @@ jobs:
       - name: Run tests
         working-directory: build/
         run: ctest -V
+
+      - name: CPack
+        if: ${{ inputs.publish-version  != "" }}
+        shell: bash
+        run: |
+          cpack | tee cpack.out
+          filepath=$(sed -nr 's/.*package: (.+) generated\./\1/p' cpack.out)
+          echo "filepath=$filepath" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.publish-version  != "" }}
+        with:
+          path: ${{ steps.build.outputs.filepath }}
 
