@@ -53,15 +53,11 @@ set(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${CPA
 if (CPACK_OS STREQUAL "ubuntu")
 	set(CPACK_DEBIAN_PACKAGE_DEPENDS "libkf${QT_MAJOR_VERSION}runner${QT_MAJOR_VERSION} (>=${KRUNNER_VERSION})")
 	set(CPACK_GENERATOR "DEB")
-elseif(CPACK_OS STREQUAL "fedora")
+elseif(CPACK_OS STREQUAL "fedora" OR CPACK_OS STREQUAL "opensuse")
 	set(CPACK_RPM_PACKAGE_REQUIRES "kf${QT_MAJOR_VERSION}-krunner >= ${KRUNNER_VERSION}")
-	set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/lib64/qt5;/usr/lib64/qt5/plugins;/usr/lib64/qt5/plugins/kf5;/usr/lib64/qt5/plugins/kf5/krunner;/usr/share/kservices5;/usr/share/icons;/usr/share/pixmaps")
-	set(CPACK_GENERATOR "RPM")
-elseif(CPACK_OS STREQUAL "opensuse")
-	set(CPACK_RPM_PACKAGE_REQUIRES "libkf${QT_MAJOR_VERSION}runner${QT_MAJOR_VERSION} (>=${KRUNNER_VERSION})")
 	set(CPACK_GENERATOR "RPM")
 else()
-unset(CPACK_PACKAGE_FILE_NAME)
+  unset(CPACK_PACKAGE_FILE_NAME)
 endif()
 
 # These scripts will kill krunner and when it is invoked next time the plugins will be loaded
