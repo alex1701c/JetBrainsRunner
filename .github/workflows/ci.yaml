@@ -149,6 +149,12 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: binaries
+      - name: Collect files
+        id: collect_artifacts
+        shell: bash
+        run: |
+          files=$(find binaries -type f | paste -sd "," -)
+          echo "uploaded_files=$files" >> "$GITHUB_OUTPUT"
       - name: Create Tag
         shell: bash
         run: |
@@ -158,6 +164,9 @@ jobs:
           git tag -a "${{ inputs.publish-version }}" -m "Release version ${{ inputs.publish-version }}"
           git push
           git push --tags
-      - run: find .
-      - run: exit 1
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: ${{ steps.collect_artifacts.outputs.uploaded_files }}
+          tag: ${{ inputs.publish-version }}
+          generateReleaseNotes: true
 
