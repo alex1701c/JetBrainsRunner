@@ -110,9 +110,11 @@ jobs:
           cpack | tee cpack.out
           filepath=$(sed -nr 's/.*package: (.+) generated\./\1/p' cpack.out)
           echo "filepath=$filepath" >> "$GITHUB_OUTPUT"
+          echo "filename=$(basename $filepath)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         if: inputs.publish-version
         with:
+          name: ${{ steps.cpack.outputs.filename }}
           path: ${{ steps.cpack.outputs.filepath }}
 
