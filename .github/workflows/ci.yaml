@@ -104,6 +104,7 @@ jobs:
       - name: CPack
         if: inputs.publish-version
         working-directory: build
+        id: cpack
         shell: bash
         run: |
           cpack | tee cpack.out
@@ -113,5 +114,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: inputs.publish-version
         with:
-          path: ${{ steps.build.outputs.filepath }}
+          path: ${{ steps.cpack.outputs.filepath }}
 
