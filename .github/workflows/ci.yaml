@@ -131,7 +131,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: inputs.publish-version
         with:
-          name: ${{ github.job }}
+          name: ${{ matrix.os.name }}-${{ matrix.plasma_version }}
           path: ${{ steps.cpack.outputs.filepath }}
 
   release:
@@ -146,6 +146,9 @@ jobs:
       - name: Update Version in CMakeLists
         run: |
           sed -i -E "s/(set\s*\(\s*CMAKE_PROJECT_VERSION\s*\")[0-9]+\.[0-9]+\.[0-9]+(\")/\1${{ inputs.publish-version }}\2/" CMakeLists.txt
+      - uses: actions/download-artifact@v4
+        with:
+          path: binaries
       - name: Create Tag
         shell: bash
         run: |
@@ -155,4 +158,6 @@ jobs:
           git tag -a "${{ inputs.publish-version }}" -m "Release version ${{ inputs.publish-version }}"
           git push
           git push --tags
+      - run: find .
+      - run: exit 1
 
