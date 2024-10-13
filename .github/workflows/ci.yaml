@@ -77,18 +77,21 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - name: Get defined project version
+        shell: bash
+        run: echo project_version=$(sed -nr 's/set\(CMAKE_PROJECT_VERSION "(.+)"\)/\1/p' CMakeLists.txt) >> $GITHUB_ENV
+
       - name: Update Version in CMakeLists
         if: inputs.publish-version
         shell: bash
         run: |
           publish_version="${{ inputs.publish-version }}"
-          cmake_version=$(sed -nr 's/set\(CMAKE_PROJECT_VERSION "(.+)"\)/\1/p' CMakeLists.txt)
           if ! [[ $publish_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Error: Invalid version format for publish-version: $publish_version. It must be in the format x.y.z."
             exit 1
           fi
-          if [ "$(printf "%s\n%s" "$cmake_version" "$publish_version" | sort -V | head -n1)" != "$cmake_version" ] || [ "$cmake_version" == "$publish_version" ]; then
-              echo "CMake version $cmake_version is not smaller than publish-version $publish_version."
+          if [ "$(printf "%s\n%s" "${{ env.project_version }}" "$publish_version" | sort -V | head -n1)" != "${{ env.project_version }}" ] || [ "${{ env.project_version }}" == "$publish_version" ]; then
+              echo "CMake version ${{ env.project_version }} is not smaller than publish-version $publish_version."
               exit 1
           fi
           sed -i -E "s/(set\s*\(\s*CMAKE_PROJECT_VERSION\s*\")[0-9]+\.[0-9]+\.[0-9]+(\")/\1${publish_version}\2/" CMakeLists.txt
@@ -97,14 +100,10 @@ jobs:
         run: mkdir -p build
 
       - name: Build and install
-        id: build
         working-directory: build/
         shell: bash
         run: |
-          CMAKE_ARGS=".. -DCMAKE_BUILD_TYPE=Release"
-          if [[ -n "${{ inputs.publish-version }}" ]]; then
-            CMAKE_ARGS="$CMAKE_ARGS -DCPACK_OS=${{ matrix.os.name }}"
-          fi
+          CMAKE_ARGS=".. -DCMAKE_BUILD_TYPE=Release -DCPACK_OS=${{ matrix.os.name }}"
           if [[ "${{ matrix.plasma_version }}" == "plasma6" ]]; then
             CMAKE_ARGS="$CMAKE_ARGS -DBUILD_WITH_QT6=ON"
           else
@@ -148,7 +147,7 @@ jobs:
       - name: Update Version in CMakeLists
         run: |
           sed -i -E "s/(set\s*\(\s*CMAKE_PROJECT_VERSION\s*\")[0-9]+\.[0-9]+\.[0-9]+(\")/\1${{ inputs.publish-version }}\2/" CMakeLists.txt
-      - name: Create Relase
+      - name: Create Tag
         shell: bash
         run: |
           git config --global user.name 'alex1701c'
@@ -156,4 +155,5 @@ jobs:
           git commit -am "New release ${{ inputs.publish-version }}"
           git tag -a "${{ inputs.publish-version }}" -m "Release version ${{ inputs.publish-version }}"
           git push
+          git push --tags
 
