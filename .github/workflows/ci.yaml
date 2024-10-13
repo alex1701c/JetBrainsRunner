@@ -23,7 +23,7 @@ jobs:
       matrix:
         os:
           - name: ubuntu
-            image: invent-registry.kde.org/neon/docker-images/plasma:user
+            image: ubuntu:24.10
           - name: ubuntu
             image: ubuntu:24.04
           - name: opensuse
@@ -33,7 +33,7 @@ jobs:
         plasma_version: [plasma5, plasma6]
         exclude:
           - os:
-              image: invent-registry.kde.org/neon/docker-images/plasma:user
+              image: ubuntu:24.10
             plasma_version: plasma5
           - os:
               image: ubuntu:24.04
