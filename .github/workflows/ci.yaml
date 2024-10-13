@@ -82,7 +82,7 @@ jobs:
         if: inputs.publish-version
         run: |
           publish_version="${{ inputs.publish-version }}"
-          cmake_version=$(grep -Po '(?<=set\s*\(\s*CMAKE_PROJECT_VERSION\s*")[0-9]+\.[0-9]+\.[0-9]+' CMakeLists.txt)
+          cmake_version=$(sed -nr 's/set\(CMAKE_PROJECT_VERSION "(.+)"\)/\1/p' CMakeLists.txt)
           if ! [[ $publish_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Error: Invalid version format for publish-version: $publish_version. It must be in the format x.y.z."
             exit 1
