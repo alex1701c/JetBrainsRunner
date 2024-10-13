@@ -98,7 +98,7 @@ jobs:
         run: ctest -V
 
       - name: CPack
-        if: ${{ inputs.publish-version  != "" }}
+        if: inputs.publish-version
         shell: bash
         run: |
           cpack | tee cpack.out
@@ -106,7 +106,7 @@ jobs:
           echo "filepath=$filepath" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
-        if: ${{ inputs.publish-version  != "" }}
+        if: inputs.publish-version
         with:
           path: ${{ steps.build.outputs.filepath }}
 
