@@ -150,7 +150,6 @@ jobs:
           sed -i -E "s/(set\s*\(\s*CMAKE_PROJECT_VERSION\s*\")[0-9]+\.[0-9]+\.[0-9]+(\")/\1${{ inputs.publish-version }}\2/" CMakeLists.txt
       - name: Create Relase
         shell: bash
-        if: false
         run: |
           git config --global user.name 'alex1701c'
           git config --global user.email 'alex1701c@users.noreply.github.com'

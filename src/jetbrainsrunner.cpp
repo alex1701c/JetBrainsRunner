@@ -257,7 +257,7 @@ QList<KRunner::QueryMatch> JetbrainsRunner::addPathNameMatches(const QString &te
         return {};
     }
     const QString termName = regexMatch.captured(1);
-    const QString termProject = regexMatch.captured(2).replace('~', QDir::homePath());
+    const QString termProject = KShell::tildeExpand(regexMatch.captured(2));
     QList<KRunner::QueryMatch> matches;
     if (!termProject.isEmpty() && QFileInfo(termProject).isDir()) {
         for (auto const &app : std::as_const(installed)) {
