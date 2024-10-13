@@ -68,11 +68,6 @@ elseif(CPACK_OS STREQUAL "opensuse")
 	set(CPACK_RPM_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-OpenSUSE.rpm")
 	set(CPACK_GENERATOR "RPM")
 endif()
-# We always have to explicitely set the generator when using cpack, otherwise
-# the different paths of the distros might get messed up
-unset(CPACK_DEBIAN CACHE)
-unset(CPACK_FEDORA CACHE)
-unset(CPACK_OPENSUSE CACHE)
 
 # These scripts will kill krunner and when it is invoked next time the plugins will be loaded
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/postinst;${CMAKE_CURRENT_SOURCE_DIR}/postrm")

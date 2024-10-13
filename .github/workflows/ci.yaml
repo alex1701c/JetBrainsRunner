@@ -63,7 +63,7 @@ jobs:
           elif [[ "${{ matrix.os.name }}" == "opensuse" ]]; then
             zypper refresh
             CMD=$(echo $CMD | sed 's/zypper/zypper --non-interactive/')
-            zypper install rpm-build
+            zypper install -y rpm-build
           else
             echo "Unsupported OS: ${{ matrix.os.name }}"
             exit 1
@@ -103,6 +103,7 @@ jobs:
 
       - name: CPack
         if: inputs.publish-version
+        working-directory: build
         shell: bash
         run: |
           cpack | tee cpack.out
