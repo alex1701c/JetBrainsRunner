@@ -80,6 +80,7 @@ jobs:
 
       - name: Update Version in CMakeLists
         if: inputs.publish-version
+        shell: bash
         run: |
           publish_version="${{ inputs.publish-version }}"
           cmake_version=$(sed -nr 's/set\(CMAKE_PROJECT_VERSION "(.+)"\)/\1/p' CMakeLists.txt)

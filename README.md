@@ -46,7 +46,7 @@ sudo apt install git cmake extra-cmake-modules build-essential libkf5runner-dev 
 ```
 Plasma6:  
 ```bash install-ubuntu-plasma6
-sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev libkf6i18n-dev libkf6kio-dev libkf6service-dev libkf6kcmutils-dev kf6-kdbusaddons
+sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev libkf6i18n-dev libkf6kio-dev libkf6service-dev libkf6kcmutils-dev libkf6dbusaddons-bin
 ```
 
 </details>
