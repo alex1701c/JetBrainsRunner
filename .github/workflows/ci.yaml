@@ -8,6 +8,11 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      publish-version:
+        description: "new version that should get published"
+        required: false
 
 jobs:
   build:
@@ -74,19 +79,22 @@ jobs:
           cd build
 
       - name: Build and install
+        working-directory: build/
         shell: bash
         run: |
-          cd build
+          CMAKE_ARGS = ".. -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+          if [[ -n "${{ inputs.publish-version }}" ]]
+            CMAKE_ARGS = "$CMAKE_ARGS -DCPACK_OS=${{ matrix.os.name }}"
+          fi
           if [[ "${{ matrix.plasma_version }}" == "plasma6" ]]; then
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_WITH_QT6=ON
+            cmake $CMAKE_ARGS -DBUILD_WITH_QT6=ON "
           else
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_WITH_QT6=OFF
+            cmake $CMAKE_ARGS -DBUILD_WITH_QT6=OFF
           fi
           cmake --build .
           cmake --install .
 
       - name: Run tests
-        run: |
-          cd build
-          ctest -V
+        working-directory: build/
+        run: ctest -V
 
