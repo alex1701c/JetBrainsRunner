@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(jetbrainsrunner)
-set(CMAKE_PROJECT_VERSION "3.0.3")
+set(CMAKE_PROJECT_VERSION "3.0.4")
 set(CMAKE_CXX_STANDARD 17)
 add_definitions(-DCMAKE_PROJECT_VERSION="${CMAKE_PROJECT_VERSION}")
 set(CMAKE_PROJECT_HOMEPAGE_URL "https://github.com/alex1701c/JetBrainsRunner")
