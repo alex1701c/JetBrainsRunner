@@ -87,11 +87,11 @@ jobs:
             CMAKE_ARGS="$CMAKE_ARGS -DCPACK_OS=${{ matrix.os.name }}"
           fi
           if [[ "${{ matrix.plasma_version }}" == "plasma6" ]]; then
-            cmake $CMAKE_ARGS -DBUILD_WITH_QT6=ON "
+            cmake $CMAKE_ARGS -DBUILD_WITH_QT6=ON
           else
             cmake $CMAKE_ARGS -DBUILD_WITH_QT6=OFF
           fi
-          cmake --build .
+          cmake --build . -j2
           cmake --install .
 
       - name: Run tests
