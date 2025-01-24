@@ -21,3 +21,4 @@ jobs:
     uses: alex1701c/actions/.github/workflows/plugin_ci_publish.yaml@main
     with:
       publish-version: ${{ inputs.publish-version }}
+      publish-archive: true
