@@ -2,6 +2,7 @@
 <sub> [Icon from icon-icons.com](https://icon-icons.com/icon/jetbrains-toolbox/93803#64) </sub>
 
 # JetBrainsRunner
+
 This plugin allows you to launch your recent JetBrains projects from Krunner.
 
 <p align="center">
@@ -20,31 +21,37 @@ This plugin allows you to launch your recent JetBrains projects from Krunner.
 #### Available CLion projects  
 ![Available CLion projects](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/multible_projects.png)
 
-#### Search for project by name  
+#### Search for project by name
+
 ![Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/launch_by_name.png)
 
-#### Search projects of app  
+#### Search projects of app
+
 ![Search for project by name](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/search_projects_of_app.png)
-  
+
 #### Config Dialog
+
 ![Config Dialog](https://raw.githubusercontent.com/alex1701c/Screenshots/master/JetBrainsRunner/config_dialog.png)
-  
+
 </details>
 
 If you like this plugin you can check out [the dolphin version](https://github.com/alex1701c/JetBrainsDolphinPlugin) and leave a rating in the [KDE Store](https://www.pling.com/p/1311630/).
 
 ## Installation
-### 1 Required Dependencies
 
+### 1 Required Dependencies
 
 <details>
 <summary><b>Debian/Ubuntu</b></summary>
 
-Plasma5:  
+Plasma5:
+
 ```bash install-ubuntu-plasma5
 sudo apt install git cmake extra-cmake-modules build-essential libkf5runner-dev libkf5i18n-dev libkf5kio-dev libkf5service-dev libkf5kcmutils-dev qtdeclarative5-dev libkf5dbusaddons-bin
 ```
-Plasma6:  
+
+Plasma6:
+
 ```bash install-ubuntu-plasma6
 sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev libkf6i18n-dev libkf6kio-dev libkf6service-dev libkf6kcmutils-dev libkf6dbusaddons-bin
 ```
@@ -54,11 +61,14 @@ sudo apt install git cmake extra-cmake-modules build-essential libkf6runner-dev 
 <details>
 <summary><b>OpenSUSE</b></summary>
 
-Plasma5:  
+Plasma5:
+
 ```bash install-opensuse-plasma5
 sudo zypper install git cmake extra-cmake-modules ki18n-devel krunner-devel kcmutils-devel kio-devel kservice-devel kdbusaddons-tools libQt5Test-devel
 ```
-Plasma6:  
+
+Plasma6:
+
 ```bash install-opensuse-plasma6
 sudo zypper install git cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel kf6-kdbusaddons-tools qt6-test-devel
 ```
@@ -68,19 +78,22 @@ sudo zypper install git cmake kf6-extra-cmake-modules kf6-ki18n-devel kf6-krunne
 <details>
 <summary><b>Fedora</b></summary>
 
-Plasma5:  
+Plasma5:
+
 ```bash install-fedora-plasma5
 sudo dnf install git cmake extra-cmake-modules kf5-ki18n-devel kf5-krunner-devel kf5-kcmutils-devel kf5-kio-devel kf5-kservice-devel
 ```
-Plasma6:  
+
+Plasma6:
+
 ```bash install-fedora-plasma6
-sudo dnf install git cmake extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel 
+sudo dnf install git cmake extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel kf6-kcmutils-devel kf6-kio-devel kf6-kservice-devel
 ```
 
 </details>
 
-
 ### 2 KRunner Plugin
+
 #### 2.1 Get Files
 
 <details>
@@ -88,54 +101,62 @@ sudo dnf install git cmake extra-cmake-modules kf6-ki18n-devel kf6-krunner-devel
 
 ```
 curl https://raw.githubusercontent.com/alex1701c/JetBrainsRunner/master/install.sh | bash
-```  
-  
-</details> 
+```
 
-#### Option B: Get it from the AUR for [Plasma5](https://aur.archlinux.org/packages/plasma5-runners-jetbrains-runner-git/) or [Plasma6](https://aur.archlinux.org/packages/plasma6-runners-jetbrains-runner-git)
+</details>
+
+#### Option B: Get it from the AUR for [Plasma6](https://aur.archlinux.org/packages/plasma6-runners-jetbrains-runner-git)
 
 <details>
 <summary>Option C: Manual method</summary>
 
 ```
-git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules  
+git clone https://github.com/alex1701c/JetBrainsRunner --recurse-submodules
 cd JetBrainsRunner/
-mkdir build  
+mkdir build
 cd build
 cmake -DKDE_INSTALL_QTPLUGINDIR=`kf5-config --qt-plugins` ..
 make
 make install
 kquitapp5 krunner;kstart5 krunner
-``` 
-  
-</details> 
+```
+
+</details>
 
 #### 2.2 (Optional) Configure Plugin
-1. Go to system settings (`systemsettings5`)
+
+1. Go to system settings (`systemsettings`)
 2. Search for `krunner`
 3. Search for `JetBrains` in KRunner plugin list
 4. Configure plugin
 
 #### Config Dialog
+
 #### Checkbox Options
-1. Search By Application: Enables search suggestions based on the Application name (like in the [first](#available-clion-projects) and [third](#search-projects-of-app) screenshot).  
-2. Search By Project: Enables suggestions based on the Project name, this is shown in the [second](#search-for-project-by-name) screenshot.  
+
+1. Search By Application: Enables search suggestions based on the Application name (like in the [first](#available-clion-projects) and [third](#search-projects-of-app) screenshot).
+2. Search By Project: Enables suggestions based on the Project name, this is shown in the [second](#search-for-project-by-name) screenshot.
 3. Update Notifications: Enables notifications you when a new version of this plugin has been released. It checks for a new version weekly or when the config is opened. By unchecking it you turn the check permanently off.
 4. Show use application name as catagory for projects.
 
 #### Result Formatting
+
 You can change the displayed text for the run options using the following rules.
-- *%APPNAME*: application name
-- *%APP*: shortened application name
-- *%PROJECT*: project name
-- *%DIR*: full directory path
+
+- _%APPNAME_: application name
+- _%APP_: shortened application name
+- _%PROJECT_: project name
+- _%DIR_: full directory path
 
 #### Manually Adding IDE's
+
 If the plugin fails to find the installed applications or the correct config file you can specify them manually, please open an issue on Github so it can be fixed.
 Once the files have been selected the icon, name and recent project should get displayed.
 
-### Issues:  
-If you have any problems with this plugin please open an issue on Github and provide some information:  
+### Issues:
+
+If you have any problems with this plugin please open an issue on Github and provide some information:
+
 - Which JetBrains IDE isn't working.
 - How it is installed (Snap/Toolbox/Downloaded from website).
 - If you have/had other editions (Community, Educational or Ultimate) of this application installed.
